@@ -2,16 +2,16 @@
 	"name": "devlink-fullstack-2025",
 	"version": "1.0.0",
 	"main": "index.js",
+	"type": "module",
 	"scripts": {
-		"start": "node server.js",
-		"server": "nodemon server.js"
+		"start": "node --env-file=.env server.js",
+		"server": "nodemon --env-file=.env server.js"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"description": "Developer social networking platform",
 	"dependencies": {
-		"config": "^4.1.1",
 		"express": "^5.1.0",
 		"express-validator": "^7.2.1",
 		"jsonwebtoken": "^9.0.2",

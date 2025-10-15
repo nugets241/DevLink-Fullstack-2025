@@ -1,6 +1,10 @@
 import express from 'express';
+import connectDB from './db.js';
 
 const app = express();
+
+// Connect to MongoDB
+connectDB();
 
 app.get('/', (_req, res) => {
 	res.send('API is running...');

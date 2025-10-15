@@ -6,11 +6,11 @@ Developer social networking platform
 
 Requirements:
 
-- Node.js (v18+ recommended)
+- Node.js (v20.6.0+ recommended)
 
 Configuration:
 
-- This project uses the `config` package. Place environment-specific values in `config/` or set environment variables. Do not commit secrets.
+- Set environment variables. Do not commit secrets.
 
 Contributing:
 
