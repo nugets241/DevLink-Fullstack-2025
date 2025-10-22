@@ -6,7 +6,7 @@ Developer social networking platform
 
 Requirements:
 
-- Node.js (v20.6.0+ recommended)
+- Node.js (v20.13.0+ recommended)
 
 Configuration:
 
