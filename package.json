@@ -4,20 +4,23 @@
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
-		"start": "node --env-file=.env server.js",
-		"server": "nodemon --env-file=.env server.js"
+		"dev": "node --watch --env-file=.env server.js",
+		"start": "node --env-file=.env server.js"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"description": "Developer social networking platform",
 	"dependencies": {
+		"cors": "^2.8.5",
 		"express": "^5.1.0",
 		"express-validator": "^7.2.1",
+		"gravatar": "^1.8.2",
+		"helmet": "^8.1.0",
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^8.19.1"
 	},
 	"devDependencies": {
-		"nodemon": "^3.1.10"
+		"@types/express": "^5.0.3"
 	}
 }
