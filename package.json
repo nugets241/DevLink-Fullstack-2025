@@ -12,6 +12,7 @@
 	"license": "ISC",
 	"description": "Developer social networking platform",
 	"dependencies": {
+		"argon2": "^0.44.0",
 		"cors": "^2.8.5",
 		"express": "^5.1.0",
 		"express-validator": "^7.2.1",
