@@ -4,6 +4,7 @@ import User from '../../models/User.js';
 import gravatar from 'gravatar';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
+import { JWT_SECRET, JWT_ISSUER, JWT_AUDIENCE } from '../../utils/config.js';
 
 const router = Router();
 
@@ -57,7 +58,7 @@ router.post('/', registerValidators, async (req, res) => {
 		const user = new User({ name, email, password: hashed, avatar });
 		await user.save();
 
-		const jwtSecret = process.env.JWT_TOKEN;
+		const jwtSecret = JWT_SECRET;
 		if (!jwtSecret)
 			return res.status(500).json({ msg: 'JWT secret not configured' });
 
@@ -65,8 +66,11 @@ router.post('/', registerValidators, async (req, res) => {
 
 		try {
 			const token = await new Promise((resolve, reject) =>
-				jwt.sign(payload, jwtSecret, { expiresIn: '1h' }, (err, t) =>
-					err ? reject(err) : resolve(t)
+				jwt.sign(
+					payload,
+					jwtSecret,
+					{ expiresIn: '1h', issuer: JWT_ISSUER, audience: JWT_AUDIENCE },
+					(err, t) => (err ? reject(err) : resolve(t))
 				)
 			);
 			return res.status(201).json({
