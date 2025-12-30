@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import connectDB from './db.js';
+import authRoutes from './routes/api/auth.js';
 import usersRoutes from './routes/api/users.js';
 import { PORT } from './utils/config.js';
 
@@ -24,6 +25,7 @@ app.get('/', (_req, res) => {
 });
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 
 app.listen(PORT, () => {
