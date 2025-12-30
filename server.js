@@ -3,8 +3,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import connectDB from './db.js';
 import usersRoutes from './routes/api/users.js';
-
-const PORT = process.env.PORT || 5000;
+import { PORT } from './utils/config.js';
 
 const app = express();
 
