@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './db.js';
 import authRoutes from './routes/api/auth.js';
 import usersRoutes from './routes/api/users.js';
+import profileRoutes from './routes/api/profile.js';
 import { PORT } from './utils/config.js';
 
 const app = express();
@@ -27,6 +28,7 @@ app.get('/', (_req, res) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/profile', profileRoutes);
 
 app.listen(PORT, () => {
 	console.log(`Server is running at http://localhost:${PORT}`);
