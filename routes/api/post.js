@@ -160,4 +160,44 @@ router.put('/:id/unlike', auth, async (req, res) => {
 	}
 });
 
+// @route   POST api/posts/:id/comments
+// @desc    Add a comment to a post
+// @access  Private
+router.post(
+	'/:id/comments',
+	[auth, [check('text', 'Comment text is required').not().isEmpty()]],
+	async (req, res) => {
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(400).json({ errors: errors.array() });
+		}
+
+		try {
+			const user = await User.findById(req.user.id);
+			const post = await Post.findById(req.params.id);
+
+			if (!post) {
+				return res.status(404).json({ msg: 'Post not found' });
+			}
+
+			const newComment = {
+				text: req.body.text,
+				name: user.name,
+				avatar: user.avatar,
+				user: req.user.id,
+			};
+
+			post.comments.unshift(newComment);
+			await post.save();
+			res.json(post.comments);
+		} catch (error) {
+			console.error(error.message);
+			if (error.kind === 'ObjectId') {
+				return res.status(404).json({ msg: 'Post not found' });
+			}
+			res.status(500).send('Server error');
+		}
+	}
+);
+
 export default router;
