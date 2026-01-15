@@ -1,11 +1,6 @@
 import { Router } from 'express';
 import auth from '../../middleware/auth.js';
-import { body, check, validationResult } from 'express-validator';
-import gravatar from 'gravatar';
-import argon2 from 'argon2';
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET, JWT_ISSUER, JWT_AUDIENCE } from '../../utils/config.js';
-
+import { check, validationResult } from 'express-validator';
 import Profile from '../../models/Profile.js';
 import User from '../../models/User.js';
 
