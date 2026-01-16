@@ -7,14 +7,37 @@ import Post from '../../models/Post.js';
 const router = Router();
 
 // @route   GET api/posts
-// @desc    Get all posts
+// @desc    Get all posts (paginated)
 // @access  Private
 router.get('/', auth, async (req, res) => {
 	try {
-		const posts = await Post.find()
-			.sort({ createdAt: -1 })
-			.populate('user', ['name', 'avatar']);
-		res.json(posts);
+		// Parse pagination params with defaults and limits
+		const page = Math.max(1, parseInt(req.query.page) || 1);
+		const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 10));
+		const skip = (page - 1) * limit;
+
+		// Use Promise.all to run queries in parallel for better performance
+		const [posts, totalPosts] = await Promise.all([
+			Post.find()
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit)
+				.populate('user', ['name', 'avatar'])
+				.lean(), // Use lean() for read-only data (faster)
+			Post.countDocuments(),
+		]);
+
+		res.json({
+			posts,
+			pagination: {
+				currentPage: page,
+				totalPages: Math.ceil(totalPosts / limit),
+				totalPosts,
+				postsPerPage: limit,
+				hasNextPage: page * limit < totalPosts,
+				hasPrevPage: page > 1,
+			},
+		});
 	} catch (error) {
 		console.error(error.message);
 		res.status(500).send('Server error');
