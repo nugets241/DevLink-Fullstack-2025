@@ -3,6 +3,7 @@ import auth from '../../middleware/auth.js';
 import { check, validationResult } from 'express-validator';
 import Profile from '../../models/Profile.js';
 import User from '../../models/User.js';
+import Post from '../../models/Post.js';
 
 const router = Router();
 
@@ -35,6 +36,35 @@ router.post(
 		[
 			check('status', 'Status is required').not().isEmpty(),
 			check('skills', 'Skills is required').not().isEmpty(),
+			// URL validation: prevents XSS, invalid URLs, and non-http(s) protocols
+			check('website')
+				.optional({ checkFalsy: true })
+				.isURL({ protocols: ['http', 'https'], require_protocol: true })
+				.withMessage('Website must be a valid HTTP/HTTPS URL'),
+			check('social.linkedin')
+				.optional({ checkFalsy: true })
+				.isURL({ protocols: ['http', 'https'], require_protocol: true })
+				.withMessage('LinkedIn must be a valid HTTP/HTTPS URL'),
+			check('social.github')
+				.optional({ checkFalsy: true })
+				.isURL({ protocols: ['http', 'https'], require_protocol: true })
+				.withMessage('GitHub must be a valid HTTP/HTTPS URL'),
+			check('social.twitter')
+				.optional({ checkFalsy: true })
+				.isURL({ protocols: ['http', 'https'], require_protocol: true })
+				.withMessage('Twitter must be a valid HTTP/HTTPS URL'),
+			check('social.facebook')
+				.optional({ checkFalsy: true })
+				.isURL({ protocols: ['http', 'https'], require_protocol: true })
+				.withMessage('Facebook must be a valid HTTP/HTTPS URL'),
+			check('social.youtube')
+				.optional({ checkFalsy: true })
+				.isURL({ protocols: ['http', 'https'], require_protocol: true })
+				.withMessage('YouTube must be a valid HTTP/HTTPS URL'),
+			check('social.instagram')
+				.optional({ checkFalsy: true })
+				.isURL({ protocols: ['http', 'https'], require_protocol: true })
+				.withMessage('Instagram must be a valid HTTP/HTTPS URL'),
 		],
 	],
 	async (req, res) => {
@@ -122,15 +152,24 @@ router.get('/user/:user_id', async (_req, res) => {
 });
 
 // @route   DELETE api/profile/
-// @desc    Delete profile, users and posts
+// @desc    Delete profile, user, and all associated posts
 // @access  Private
 router.delete('/', auth, async (req, res) => {
 	try {
-		// Remove profile
+		// Cascade delete: Remove all data associated with the user
+		// Order matters: delete dependent data first, then the user
+
+		// 1. Remove all posts by this user (prevents orphaned posts)
+		await Post.deleteMany({ user: req.user.id });
+
+		// 2. Remove profile
 		await Profile.findOneAndDelete({ user: req.user.id });
-		// Remove user
+
+		// 3. Remove user (last, as it's the parent record)
 		await User.findOneAndDelete({ _id: req.user.id });
-		res.json({ msg: 'User deleted' });
+
+		// Use 204 No Content for successful deletion (no response body needed)
+		res.status(204).send();
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).send('Server error');
