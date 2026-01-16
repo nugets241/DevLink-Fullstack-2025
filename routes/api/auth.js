@@ -9,7 +9,7 @@ const router = Router();
 
 // @route   GET api/auth
 // @desc    Test route
-// @access  Public
+// @access  Private
 router.get('/', auth, async (req, res) => {
 	try {
 		const user = await User.findById(req.user.id).select('-password');
@@ -20,7 +20,7 @@ router.get('/', auth, async (req, res) => {
 	}
 });
 
-const registerValidators = [
+const loginValidators = [
 	body('email')
 		.trim()
 		.isEmail()
@@ -30,9 +30,9 @@ const registerValidators = [
 ];
 
 // @route   POST api/auth
-// @desc    Aurhenticate user & get token
+// @desc    Authenticate user & get token
 // @access  Public
-router.post('/', registerValidators, async (req, res) => {
+router.post('/', loginValidators, async (req, res) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
@@ -65,4 +65,5 @@ router.post('/', registerValidators, async (req, res) => {
 		return res.status(500).send('Server error');
 	}
 });
+
 export default router;
