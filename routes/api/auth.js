@@ -3,8 +3,7 @@ import auth from '../../middleware/auth.js';
 import { body, validationResult } from 'express-validator';
 import User from '../../models/User.js';
 import argon2 from 'argon2';
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET, JWT_ISSUER, JWT_AUDIENCE } from '../../utils/config.js';
+import { generateToken } from '../../utils/jwt.js';
 
 const router = Router();
 
@@ -51,21 +50,8 @@ router.post('/', registerValidators, async (req, res) => {
 		if (!isPasswordValid)
 			return res.status(401).json({ msg: 'Invalid Credentials' });
 
-		const jwtSecret = JWT_SECRET;
-		if (!jwtSecret)
-			return res.status(500).json({ msg: 'JWT secret not configured' });
-
-		const payload = { user: { id: user.id } };
-
 		try {
-			const token = await new Promise((resolve, reject) =>
-				jwt.sign(
-					payload,
-					jwtSecret,
-					{ expiresIn: '1h', issuer: JWT_ISSUER, audience: JWT_AUDIENCE },
-					(err, t) => (err ? reject(err) : resolve(t))
-				)
-			);
+			const token = await generateToken(user.id);
 			return res.status(200).json({
 				token,
 				user: { id: user.id, name: user.name, email: user.email },
