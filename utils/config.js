@@ -12,9 +12,9 @@ export const PORT = Number(process.env.PORT) || 5000;
 export const MONGO_URI = process.env.MONGO_URI;
 export const JWT_SECRET = process.env.JWT_SECRET;
 export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
-export const JWT_ISSUER = process.env.JWT_ISSUER; // optional
-export const JWT_AUDIENCE = process.env.JWT_AUDIENCE; // optional
-
+// Provide defaults for consistency between signing and verification
+export const JWT_ISSUER = process.env.JWT_ISSUER || 'devlink-api';
+export const JWT_AUDIENCE = process.env.JWT_AUDIENCE || 'devlink-client';
 export const ARGON2_OPTIONS = {
 	type: 2, // argon2id
 	timeCost: Number(process.env.ARGON2_TIME_COST) || 3,
