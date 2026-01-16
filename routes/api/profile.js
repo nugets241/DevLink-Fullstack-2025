@@ -49,10 +49,10 @@ router.post(
 				.optional({ checkFalsy: true })
 				.isURL({ protocols: ['http', 'https'], require_protocol: true })
 				.withMessage('GitHub must be a valid HTTP/HTTPS URL'),
-			check('social.twitter')
+			check('social.x')
 				.optional({ checkFalsy: true })
 				.isURL({ protocols: ['http', 'https'], require_protocol: true })
-				.withMessage('Twitter must be a valid HTTP/HTTPS URL'),
+				.withMessage('X must be a valid HTTP/HTTPS URL'),
 			check('social.facebook')
 				.optional({ checkFalsy: true })
 				.isURL({ protocols: ['http', 'https'], require_protocol: true })
