@@ -7,6 +7,11 @@ import usersRoutes from './routes/api/users.js';
 import profileRoutes from './routes/api/profile.js';
 import postRoutes from './routes/api/post.js';
 import { PORT } from './utils/config.js';
+import dns from 'node:dns/promises';
+
+// Fix DNS resolution issue for MongoDB Atlas SRV records
+// This resolves "querySrv ECONNREFUSED" errors on some machines
+dns.setServers(['1.1.1.1', '8.8.8.8']);
 
 const app = express();
 
