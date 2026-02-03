@@ -5,26 +5,19 @@
 	--font-mono: 'IBM Plex Mono', 'SFMono-Regular', ui-monospace, monospace;
 
 	--color-brand: #258d9b;
-	--color-bg: #0d1117;
-	--color-surface: #161b22;
-	--color-surface-strong: #1c345a;
-	--color-border: rgba(255, 255, 255, 0.1);
-	--color-text: #e6edf3;
-	--color-muted: #8b949e;
-	--color-accent: #258d9b;
-	--color-accent-strong: #3ba9bb;
+	--color-bg: #1c345a;
+	--color-surface: #121a29;
+	--color-surface-strong: #182337;
+	--color-border: rgba(255, 255, 255, 0.12);
+	--color-text: #f5f7fa;
+	--color-muted: #8b94a4;
+	--color-accent: #7c3aed;
+	--color-accent-strong: #a855f7;
 	--color-error: #f97066;
 	--color-success: #3dd598;
 	--color-warning: #facc15;
 
-	--page-bg:
-		radial-gradient(
-			circle at 20% 20%,
-			rgba(37, 141, 155, 0.08),
-			transparent 32%
-		),
-		radial-gradient(circle at 85% 10%, rgba(28, 52, 90, 0.12), transparent 28%),
-		linear-gradient(180deg, #0d1117 0%, #0f1420 100%);
+	--page-bg: #1c345a;
 
 	--radius-sm: 6px;
 	--radius-md: 12px;

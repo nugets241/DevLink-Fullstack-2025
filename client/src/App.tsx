@@ -1,7 +1,9 @@
+import Landing from './components/layout/Landing';
+
 function App() {
 	return (
 		<>
-			<h1>App</h1>
+			<Landing />
 		</>
 	);
 }
