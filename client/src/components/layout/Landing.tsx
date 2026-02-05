@@ -1,3 +1,5 @@
+import Login from '../auth/Login';
+
 function Landing() {
 	return (
 		<div className="landing">
@@ -9,6 +11,7 @@ function Landing() {
 						your network.
 					</h2>
 				</section>
+				<Login />
 			</div>
 		</div>
 	);
