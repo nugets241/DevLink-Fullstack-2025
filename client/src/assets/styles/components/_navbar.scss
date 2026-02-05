@@ -1,43 +1,43 @@
 @use '../mixins' as *;
 
-.navbar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: var(--space-4) 0;
-	border-bottom: 1px solid var(--color-border);
-	position: sticky;
-	top: 0;
-	background: var(--color-surface);
-	backdrop-filter: blur(10px);
-	box-shadow: var(--shadow-soft);
-	z-index: 10;
-	transition: background-color 0.2s ease, border-color 0.2s ease,
-		box-shadow 0.2s ease;
-}
+// .navbar {
+// 	display: flex;
+// 	align-items: center;
+// 	justify-content: space-between;
+// 	padding: var(--space-4) 0;
+// 	border-bottom: 1px solid var(--color-border);
+// 	position: sticky;
+// 	top: 0;
+// 	background: var(--color-surface);
+// 	backdrop-filter: blur(10px);
+// 	box-shadow: var(--shadow-soft);
+// 	z-index: 10;
+// 	transition: background-color 0.2s ease, border-color 0.2s ease,
+// 		box-shadow 0.2s ease;
+// }
 
-.navbar__brand {
-	font-weight: 800;
-	letter-spacing: -0.02em;
-	font-size: 1.1rem;
-}
+// .navbar__brand {
+// 	font-weight: 800;
+// 	letter-spacing: -0.02em;
+// 	font-size: 1.1rem;
+// }
 
-.navbar__links {
-	display: flex;
-	gap: var(--space-3);
-	align-items: center;
-}
+// .navbar__links {
+// 	display: flex;
+// 	gap: var(--space-3);
+// 	align-items: center;
+// }
 
-.navbar__actions {
-	display: flex;
-	gap: var(--space-2);
-}
+// .navbar__actions {
+// 	display: flex;
+// 	gap: var(--space-2);
+// }
 
-.navbar a {
-	color: var(--color-muted);
-	transition: color 0.2s ease;
-}
+// .navbar a {
+// 	color: var(--color-muted);
+// 	transition: color 0.2s ease;
+// }
 
-.navbar a:hover {
-	color: var(--color-text);
-}
+// .navbar a:hover {
+// 	color: var(--color-text);
+// }
