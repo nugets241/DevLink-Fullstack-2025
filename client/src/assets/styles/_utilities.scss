@@ -1,58 +1,58 @@
 @use './mixins' as *;
 
-.container {
-	@include container;
-}
+// .container {
+// 	@include container;
+// }
 
-.page {
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	gap: var(--space-6);
-}
+// .page {
+// 	min-height: 100vh;
+// 	display: flex;
+// 	flex-direction: column;
+// 	gap: var(--space-6);
+// }
 
-.stack {
-	display: grid;
-	gap: var(--space-4);
-}
+// .stack {
+// 	display: grid;
+// 	gap: var(--space-4);
+// }
 
-.stack--lg {
-	gap: var(--space-6);
-}
+// .stack--lg {
+// 	gap: var(--space-6);
+// }
 
-.cluster {
-	display: flex;
-	align-items: center;
-	gap: var(--space-3);
-	flex-wrap: wrap;
-}
+// .cluster {
+// 	display: flex;
+// 	align-items: center;
+// 	gap: var(--space-3);
+// 	flex-wrap: wrap;
+// }
 
-.surface {
-	@include card-surface;
-	border-radius: var(--radius-lg);
-	padding: var(--space-5);
-}
+// .surface {
+// 	@include card-surface;
+// 	border-radius: var(--radius-lg);
+// 	padding: var(--space-5);
+// }
 
-.pill {
-	display: inline-flex;
-	align-items: center;
-	gap: var(--space-2);
-	padding: 0.4rem 0.9rem;
-	border-radius: 999px;
-	background: rgba(255, 255, 255, 0.04);
-	border: 1px solid var(--color-border);
-	color: var(--color-text);
-	font-weight: 600;
-	letter-spacing: 0.05em;
-}
+// .pill {
+// 	display: inline-flex;
+// 	align-items: center;
+// 	gap: var(--space-2);
+// 	padding: 0.4rem 0.9rem;
+// 	border-radius: 999px;
+// 	background: rgba(255, 255, 255, 0.04);
+// 	border: 1px solid var(--color-border);
+// 	color: var(--color-text);
+// 	font-weight: 600;
+// 	letter-spacing: 0.05em;
+// }
 
-.visually-hidden {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	margin: -1px;
-	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
-	border: 0;
-}
+// .visually-hidden {
+// 	position: absolute;
+// 	width: 1px;
+// 	height: 1px;
+// 	padding: 0;
+// 	margin: -1px;
+// 	overflow: hidden;
+// 	clip: rect(0, 0, 0, 0);
+// 	border: 0;
+// }
