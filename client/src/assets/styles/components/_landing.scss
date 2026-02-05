@@ -22,17 +22,25 @@
 
 		.tagline {
 			max-width: 500px;
-			min-width: 400px;
-			font-size: clamp(1.5rem, 3vw, 1.8rem);
-			font-weight: 700;
+			font-size: clamp(1.5rem, 2vw, 1.8rem);
+			font-weight: 400;
 			line-height: 1.2;
 			color: $text-primary;
+		}
+	}
+
+	@include respond(lg) {
+		.container {
+			.tagline {
+				width: 300px;
+			}
 		}
 	}
 
 	@include respond(md) {
 		align-items: normal;
 		.container {
+			flex-direction: column;
 			.marketing {
 				text-align: center;
 			}
