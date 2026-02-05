@@ -1,0 +1,9 @@
+.container {
+	max-width: 1200px;
+	padding: 1rem;
+	margin: 0 auto;
+
+	@include respond(md) {
+		padding: 2rem;
+	}
+}
