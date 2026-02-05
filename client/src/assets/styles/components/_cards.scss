@@ -1,4 +1,13 @@
-@use '../mixins' as *;
+@use '../abstracts/variables' as *;
+
+.card {
+	background-color: $card-bg;
+	border: 1px solid $border-default;
+	border-radius: 8px;
+	width: 400px;
+	padding: 1rem;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
 
 // .card {
 // 	@include card-surface;
