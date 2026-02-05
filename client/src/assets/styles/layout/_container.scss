@@ -1,9 +1,11 @@
+@use '../abstracts/mixins' as *;
+
 .container {
-	max-width: 1200px;
-	padding: 1rem;
+	max-width: 1000px;
 	margin: 0 auto;
+	padding-top: 72px;
 
 	@include respond(md) {
-		padding: 2rem;
+		padding-top: 20px;
 	}
 }
