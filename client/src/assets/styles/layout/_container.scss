@@ -2,10 +2,5 @@
 
 .container {
 	max-width: 1000px;
-	margin: 0 auto;
-	padding-top: 72px;
-
-	@include respond(md) {
-		padding-top: 20px;
-	}
+	padding: 20px 0;
 }
