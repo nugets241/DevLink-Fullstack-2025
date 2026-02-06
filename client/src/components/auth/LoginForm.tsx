@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Card from '../common/Card';
 import Input from '../common/Input';
 import Button from '../common/Button';
@@ -33,9 +34,9 @@ function LoginForm() {
 
 				<div className="divider" role="separator" />
 
-				<Button variant="secondary" className="login-signup" type="button">
+				<Link className="button button-secondary login-signup" to="/register">
 					Create new account
-				</Button>
+				</Link>
 			</form>
 		</Card>
 	);
