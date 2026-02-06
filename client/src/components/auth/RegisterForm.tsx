@@ -2,6 +2,7 @@ import React from 'react';
 import Card from '../common/Card';
 import Input from '../common/Input';
 import Button from '../common/Button';
+import { Link } from 'react-router-dom';
 
 function RegisterForm() {
 	function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -50,9 +51,9 @@ function RegisterForm() {
 
 				<div className="divider" role="separator" />
 
-				<Button variant="tertiary" className="register-login" type="button">
+				<Link className="button button-tertiary register-signup" to="/">
 					Already have an account?
-				</Button>
+				</Link>
 			</form>
 		</Card>
 	);
