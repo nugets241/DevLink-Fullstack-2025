@@ -1,0 +1,12 @@
+@use '../abstracts/mixins' as *;
+
+.register {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	.logo {
+		padding: 32px 0;
+	}
+}
