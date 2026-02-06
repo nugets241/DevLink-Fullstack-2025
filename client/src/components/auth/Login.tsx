@@ -1,5 +1,6 @@
 import React from 'react';
 import Card from '../common/Card';
+import Input from '../common/Input';
 
 function Login() {
 	function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -10,15 +11,20 @@ function Login() {
 		<section aria-label="Login">
 			<Card>
 				<form className="form" onSubmit={handleSubmit}>
-					<label className="visually-hidden" htmlFor="login-identifier">
-						Email or phone number
-					</label>
-					<input
+					<Input
 						id="login-identifier"
 						name="identifier"
-						type="text"
+						type="email"
 						autoComplete="username"
-						placeholder="Email or phone number"
+						placeholder="Email"
+						required
+					/>
+					<Input
+						id="login-password"
+						name="password"
+						type="password"
+						autoComplete="current-password"
+						placeholder="Password"
 						required
 					/>
 				</form>
