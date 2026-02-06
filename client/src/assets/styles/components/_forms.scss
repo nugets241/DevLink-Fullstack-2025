@@ -14,7 +14,8 @@
 		}
 
 		.below {
-			margin-top: 1.5rem;
+			margin: 1.5rem auto 0;
+			width: 360px;
 			font-size: 0.9rem;
 		}
 	}
@@ -69,5 +70,12 @@
 		color: $error;
 		margin: 0;
 		padding: 0;
+	}
+
+	.divider {
+		height: 1px;
+		background-color: $border-default;
+		opacity: 0.7;
+		margin: 0.8rem 0;
 	}
 }
