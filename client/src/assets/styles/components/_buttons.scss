@@ -41,6 +41,18 @@
 			background-color: $color-lime-green-400;
 		}
 	}
+
+	&-tertiary {
+		background-color: $color-moses-300;
+
+		&:hover {
+			background-color: $color-moses-200;
+		}
+
+		&:active {
+			background-color: $color-moses-400;
+		}
+	}
 }
 
 // // Secondary
