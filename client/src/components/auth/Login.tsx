@@ -31,6 +31,12 @@ function Login() {
 					<Button type="submit" variant="primary" className="login">
 						Log In
 					</Button>
+
+					<div className="divider" role="separator" />
+
+					<Button variant="secondary" className="login-signup" type="button">
+						Create new account
+					</Button>
 				</form>
 			</Card>
 			<p className="below">
