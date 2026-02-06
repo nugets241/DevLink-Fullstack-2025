@@ -1,40 +1,60 @@
-@use '../mixins' as *;
+@use '../abstracts/mixins' as *;
+@use '../abstracts/variables' as *;
 
-// .field {
-// 	display: grid;
-// 	gap: var(--space-2);
-// }
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
 
-// .field__label {
-// 	font-weight: 600;
-// 	color: var(--color-text);
-// }
+	.label {
+		font-weight: 600;
+		font-size: 0.95rem;
+		color: $text-primary;
+		cursor: pointer;
+	}
 
-// .field__hint {
-// 	color: var(--color-muted);
-// 	font-size: 0.95rem;
-// }
+	.input {
+		width: 100%;
+		background-color: $bg-surface;
+		border: 1px solid $border-default;
+		border-radius: 6px;
+		padding: 0.75rem 1rem;
+		color: $text-primary;
+		font-size: 1.1rem;
+		font-family: inherit;
+		transition:
+			border-color 0.2s ease,
+			box-shadow 0.2s ease,
+			background-color 0.2s ease;
 
-// input,
-// textarea,
-// select {
-// 	width: 100%;
-// 	background: var(--color-surface);
-// 	border: 1px solid var(--color-border);
-// 	border-radius: var(--radius-md);
-// 	padding: 0.75rem 1rem;
-// 	color: var(--color-text);
-// 	transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-// }
+		&::placeholder {
+			color: $text-muted;
+		}
 
-// input:focus,
-// textarea:focus,
-// select:focus {
-// 	border-color: var(--color-accent);
-// 	box-shadow: 0 0 0 3px rgba(60, 225, 195, 0.25);
-// 	outline: none;
-// }
+		&:focus {
+			outline: none;
+			border-color: $color-primary;
+			box-shadow: 0 0 0 3px rgba(37, 141, 155, 0.1);
+			background-color: darken($bg-surface, 2%);
+		}
 
-// label {
-// 	cursor: pointer;
-// }
+		&[aria-invalid='true'] {
+			border-color: $error;
+			box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+		}
+	}
+
+	.hint {
+		font-size: 0.875rem;
+		color: $text-muted;
+		margin: 0;
+		padding: 0;
+	}
+
+	.error {
+		font-size: 0.875rem;
+		color: $error;
+		margin: 0;
+		padding: 0;
+	}
+}
