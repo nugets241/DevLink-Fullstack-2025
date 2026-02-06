@@ -4,7 +4,9 @@
 .button {
 	padding: 0.6rem 1.2rem;
 	border-radius: 6px;
-	font-weight: 500;
+	font-weight: 600;
+	font-size: 1rem;
+	color: $text-primary;
 	border: 1px solid transparent;
 	cursor: pointer;
 	transition:
@@ -16,23 +18,27 @@
 	}
 
 	&-primary {
-		background-color: $color-primary;
-		color: $text-primary;
+		background-color: $color-dark-aqua-300;
 		font-size: 1.2rem;
-		font-weight: 600;
-		border-color: transparent;
 
 		&:hover {
-			background-color: $color-primary-hover;
+			background-color: $color-dark-aqua-200;
 		}
 
 		&:active {
-			background-color: $color-primary-active;
+			background-color: $color-dark-aqua-400;
+		}
+	}
+
+	&-secondary {
+		background-color: $color-lime-green-300;
+
+		&:hover {
+			background-color: $color-lime-green-200;
 		}
 
-		&:disabled {
-			background-color: $color-primary-disabled;
-			color: $text-muted;
+		&:active {
+			background-color: $color-lime-green-400;
 		}
 	}
 }
