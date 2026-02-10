@@ -51,9 +51,7 @@ function RegisterForm() {
 
 				<div className="divider" role="separator" />
 
-				<Link className="button button-tertiary register-signup" to="/">
-					Already have an account?
-				</Link>
+				<Link to="/">Already have an account?</Link>
 			</form>
 		</Card>
 	);
