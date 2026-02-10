@@ -21,26 +21,32 @@
 	}
 
 	&-primary {
+		color: $text-primary;
 		background-color: $color-dark-aqua-300;
 		font-size: 1.2rem;
 
 		&:hover {
+			color: $text-primary;
 			background-color: $color-dark-aqua-200;
 		}
 
 		&:active {
+			color: $text-primary;
 			background-color: $color-dark-aqua-400;
 		}
 	}
 
 	&-secondary {
+		color: $text-primary;
 		background-color: $color-lime-green-300;
 
 		&:hover {
+			color: $text-primary;
 			background-color: $color-lime-green-200;
 		}
 
 		&:active {
+			color: $text-primary;
 			background-color: $color-lime-green-400;
 		}
 	}
