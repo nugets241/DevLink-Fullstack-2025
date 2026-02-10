@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 *,
 *::before,
 *::after {
@@ -25,8 +27,16 @@ select {
 }
 
 a {
-	color: inherit;
+	color: $color-moses-200;
 	text-decoration: none;
+
+	&:hover {
+		color: $color-moses-100;
+	}
+
+	&:active {
+		color: $color-moses-400;
+	}
 }
 
 // img,
