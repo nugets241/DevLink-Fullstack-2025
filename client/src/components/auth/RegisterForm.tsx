@@ -17,9 +17,23 @@ function RegisterForm() {
 		setFormValues((prev) => ({ ...prev, [name]: value }));
 	}
 
+	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		if (formValues.password !== formValues.confirmPassword) {
+			console.log('Passwords do not match');
+			return;
+		}
+		console.log(formValues);
+	}
+
 	return (
 		<Card>
-			<form className="form">
+			<form className="form" onSubmit={handleSubmit}>
+				<div>
+					<h2 className="register-title">Create a New Account</h2>
+					<p className="register-subtitle">It's quick and easy.</p>
+				</div>
+				<div className="divider signup-top" role="separator" />
 				<Input
 					id="register-name"
 					name="name"
