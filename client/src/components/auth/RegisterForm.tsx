@@ -5,28 +5,40 @@ import Button from '../common/Button';
 import { Link } from 'react-router-dom';
 
 function RegisterForm() {
-	function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault();
+	const [formValues, setFormValues] = React.useState({
+		name: '',
+		email: '',
+		password: '',
+		confirmPassword: '',
+	});
+
+	function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const { name, value } = event.target;
+		setFormValues((prev) => ({ ...prev, [name]: value }));
 	}
 
 	return (
 		<Card>
-			<form className="form" onSubmit={handleSubmit}>
+			<form className="form">
 				<Input
 					id="register-name"
 					name="name"
 					type="text"
 					autoComplete="name"
 					placeholder="Name"
+					value={formValues.name}
+					onChange={handleChange}
 					required
 				/>
 				<Input
-					id="register-identifier"
-					name="identifier"
+					id="register-email"
+					name="email"
 					type="email"
 					autoComplete="username"
 					placeholder="Email"
 					hint="Want a profile image? Use a Gravatar email."
+					value={formValues.email}
+					onChange={handleChange}
 					required
 				/>
 				<Input
@@ -35,6 +47,8 @@ function RegisterForm() {
 					type="password"
 					autoComplete="new-password"
 					placeholder="Password"
+					value={formValues.password}
+					onChange={handleChange}
 					required
 				/>
 				<Input
@@ -43,6 +57,8 @@ function RegisterForm() {
 					type="password"
 					autoComplete="new-password"
 					placeholder="Confirm Password"
+					value={formValues.confirmPassword}
+					onChange={handleChange}
 					required
 				/>
 				<Button type="submit" variant="secondary" className="register">
