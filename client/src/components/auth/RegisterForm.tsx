@@ -21,6 +21,12 @@ function RegisterForm() {
 	const [confirmError, setConfirmError] = React.useState<string | undefined>(
 		undefined,
 	);
+	const [nameError, setNameError] = React.useState<string | undefined>(
+		undefined,
+	);
+	const [passwordError, setPasswordError] = React.useState<string | undefined>(
+		undefined,
+	);
 
 	React.useEffect(() => {
 		if (token) navigate('/', { replace: true });
@@ -29,6 +35,12 @@ function RegisterForm() {
 	function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const { name, value } = event.target;
 		setFormValues((prev) => ({ ...prev, [name]: value }));
+		if (name === 'name') {
+			setNameError(undefined);
+		}
+		if (name === 'password') {
+			setPasswordError(undefined);
+		}
 		if (name === 'confirmPassword' || name === 'password') {
 			setConfirmError(undefined);
 		}
@@ -36,10 +48,25 @@ function RegisterForm() {
 
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
+
+		let isValid = true;
+
+		if (!formValues.name.trim()) {
+			setNameError('Name required.');
+			isValid = false;
+		}
+
+		if (formValues.password.length < 6) {
+			setPasswordError('Password must be at least 6 characters.');
+			isValid = false;
+		}
+
 		if (formValues.password !== formValues.confirmPassword) {
 			setConfirmError('Passwords do not match.');
-			return;
+			isValid = false;
 		}
+
+		if (!isValid) return;
 
 		dispatch(
 			registerUser({
@@ -56,6 +83,7 @@ function RegisterForm() {
 				<div>
 					<h2 className="register-title">Create a New Account</h2>
 					<p className="register-subtitle">It's quick and easy.</p>
+					{error && <p className="error">{error}</p>}
 				</div>
 				<div className="divider signup-top" role="separator" />
 				<Input
@@ -66,7 +94,7 @@ function RegisterForm() {
 					placeholder="Name"
 					value={formValues.name}
 					onChange={handleChange}
-					error={fieldErrors.name}
+					error={nameError || fieldErrors.name}
 					required
 				/>
 				<Input
@@ -89,7 +117,7 @@ function RegisterForm() {
 					placeholder="Password"
 					value={formValues.password}
 					onChange={handleChange}
-					error={fieldErrors.password}
+					error={passwordError || fieldErrors.password}
 					required
 				/>
 				<Input
@@ -103,7 +131,6 @@ function RegisterForm() {
 					error={confirmError}
 					required
 				/>
-				{error && <p className="error">{error}</p>}
 				<Button
 					type="submit"
 					variant="secondary"
