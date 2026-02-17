@@ -17,7 +17,7 @@ const registerValidators = [
 		.normalizeEmail(),
 	body('password')
 		.isLength({ min: 6 })
-		.withMessage('Password must be at least 6 chars'),
+		.withMessage('Password must be at least 6 characters'),
 ];
 
 // @route   POST api/users
@@ -43,7 +43,7 @@ router.post('/', registerValidators, async (req, res) => {
 		const avatar = gravatar.url(
 			email,
 			{ s: '200', r: 'pg', d: 'identicon' },
-			true
+			true,
 		);
 
 		// Save user with hashed password
