@@ -38,6 +38,10 @@
 	font-weight: 500;
 }
 
+.success-check {
+	color: $success;
+}
+
 @keyframes spin {
 	to {
 		transform: rotate(360deg);
