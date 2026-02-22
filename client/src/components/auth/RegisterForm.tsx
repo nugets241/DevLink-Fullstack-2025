@@ -6,6 +6,7 @@ import Modal from '../common/Modal';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { registerUser } from '../../store/slices/authSlice';
+import { FaRegCheckCircle } from 'react-icons/fa';
 
 function RegisterForm() {
 	const dispatch = useAppDispatch();
@@ -25,7 +26,7 @@ function RegisterForm() {
 	React.useEffect(() => {
 		if (token) {
 			// Brief delay to show success state
-			setTimeout(() => navigate('/', { replace: true }), 800);
+			setTimeout(() => navigate('/', { replace: true }), 1000);
 		}
 	}, [token, navigate]);
 
@@ -55,10 +56,19 @@ function RegisterForm() {
 
 	return (
 		<>
-			<Modal isOpen={status === 'loading'}>
+			<Modal isOpen={status === 'loading' || status === 'succeeded'}>
 				<div className="loading-modal">
-					<div className="spinner"></div>
-					<p>Creating your account...</p>
+					{status === 'loading' ? (
+						<>
+							<div className="spinner"></div>
+							<p>Creating your account...</p>
+						</>
+					) : (
+						<>
+							<FaRegCheckCircle className="success-check" size={48} />
+							<p className="loading-success">Account created. Redirecting...</p>
+						</>
+					)}
 				</div>
 			</Modal>
 			<Card>
