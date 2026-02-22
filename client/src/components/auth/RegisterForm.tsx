@@ -65,8 +65,8 @@ function RegisterForm() {
 						</>
 					) : (
 						<>
-							<FaRegCheckCircle className="success-check" size={48} />
-							<p className="loading-success">Account created. Redirecting...</p>
+							<FaRegCheckCircle className="success-check" size={40} />
+							<p>Account created. Redirecting...</p>
 						</>
 					)}
 				</div>
