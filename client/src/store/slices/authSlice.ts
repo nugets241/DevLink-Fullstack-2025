@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import { API_ENDPOINTS } from '../../config/api';
 
 type User = {
@@ -12,6 +13,8 @@ type FieldErrors = {
 	email?: string;
 	password?: string;
 };
+
+type FieldErrorKey = keyof FieldErrors;
 
 type AuthState = {
 	user: User | null;
@@ -81,7 +84,14 @@ export const registerUser = createAsyncThunk<
 const authSlice = createSlice({
 	name: 'auth',
 	initialState,
-	reducers: {},
+	reducers: {
+		clearAuthError: (state) => {
+			state.error = null;
+		},
+		clearFieldError: (state, action: PayloadAction<FieldErrorKey>) => {
+			delete state.fieldErrors[action.payload];
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(registerUser.pending, (state) => {
@@ -101,5 +111,7 @@ const authSlice = createSlice({
 			});
 	},
 });
+
+export const { clearAuthError, clearFieldError } = authSlice.actions;
 
 export default authSlice.reducer;
