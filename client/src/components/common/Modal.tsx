@@ -17,12 +17,24 @@ export default function Modal({
 	const dialogRef = useRef<HTMLDialogElement>(null);
 
 	useEffect(() => {
+		const dialog = dialogRef.current;
+		if (!dialog) return;
+
 		if (isOpen) {
-			dialogRef.current?.showModal();
+			if (!dialog.open) {
+				dialog.showModal();
+			}
 		} else {
-			dialogRef.current?.close();
+			dialog.close();
 		}
 	}, [isOpen]);
+
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLDialogElement>) => {
+		if (event.key === 'Escape' && preventClose) {
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	};
 
 	const modalRoot = document.getElementById('modal');
 	if (!modalRoot) return null;
@@ -31,9 +43,7 @@ export default function Modal({
 		<dialog
 			ref={dialogRef}
 			className="loading-dialog"
-			onCancel={(event) => {
-				if (preventClose) event.preventDefault();
-			}}
+			onKeyDown={handleKeyDown}
 		>
 			{children ?? (message ? <p>{message}</p> : null)}
 		</dialog>,
