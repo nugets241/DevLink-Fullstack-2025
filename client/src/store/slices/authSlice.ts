@@ -223,6 +223,14 @@ const authSlice = createSlice({
 			.addCase(getUserData.rejected, (state, action) => {
 				state.status = 'failed';
 				state.error = action.payload?.message ?? 'Failed to load user data.';
+
+				if (action.payload?.status === 401) {
+					state.token = null;
+					state.user = null;
+					state.status = 'idle';
+					state.error = 'Session expired. Please log in again.';
+					localStorage.removeItem('token');
+				}
 			});
 	},
 });
