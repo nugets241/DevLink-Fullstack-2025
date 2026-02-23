@@ -17,7 +17,7 @@ function Navbar() {
 		<nav className="navbar">
 			<div className="navbar-container">
 				<Link to="/" className="navbar-brand">
-					<h1>DevLink</h1>
+					<img src="/favicon.svg" alt="DevLink Logo" className="navbar-logo" />
 				</Link>
 				{token && user && (
 					<div className="navbar-menu">
