@@ -39,6 +39,7 @@ type LoginPayload = {
 type RejectValue = {
 	message: string;
 	fieldErrors?: FieldErrors;
+	status?: number;
 };
 
 const initialState: AuthState = {
@@ -141,7 +142,7 @@ export const getUserData = createAsyncThunk<
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'x-auth-token': token,
+				Authorization: `Bearer ${token}`,
 			},
 		});
 
@@ -149,6 +150,7 @@ export const getUserData = createAsyncThunk<
 			const data = await response.json().catch(() => null);
 			return rejectWithValue({
 				message: data?.msg ?? 'Failed to fetch user data.',
+				status: response.status,
 			});
 		}
 
@@ -221,9 +223,6 @@ const authSlice = createSlice({
 			.addCase(getUserData.rejected, (state, action) => {
 				state.status = 'failed';
 				state.error = action.payload?.message ?? 'Failed to load user data.';
-				state.token = null;
-				state.user = null;
-				localStorage.removeItem('token');
 			});
 	},
 });
