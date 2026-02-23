@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Card from '../common/Card';
 import Input from '../common/Input';
 import Button from '../common/Button';
@@ -14,9 +14,7 @@ import { FaRegCheckCircle } from 'react-icons/fa';
 
 function LoginForm() {
 	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
-	const { error, fieldErrors, token } = useAppSelector((state) => state.auth);
-	const initialTokenRef = React.useRef(token);
+	const { error, fieldErrors } = useAppSelector((state) => state.auth);
 	const [formValues, setFormValues] = React.useState({
 		email: '',
 		password: '',
@@ -25,21 +23,12 @@ function LoginForm() {
 	const [showSuccess, setShowSuccess] = React.useState(false);
 
 	React.useEffect(() => {
-		if (initialTokenRef.current) {
-			navigate('/', { replace: true });
-		}
-	}, [navigate]);
-
-	React.useEffect(() => {
 		if (!showSuccess) return;
 
-		const timeoutId = window.setTimeout(
-			() => navigate('/', { replace: true }),
-			1000,
-		);
+		const timeoutId = window.setTimeout(() => setShowSuccess(false), 1500);
 
 		return () => window.clearTimeout(timeoutId);
-	}, [showSuccess, navigate]);
+	}, [showSuccess]);
 
 	function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const { name, value } = event.target;
@@ -80,7 +69,7 @@ function LoginForm() {
 
 	return (
 		<>
-			<Modal isOpen={isSubmitting || showSuccess}>
+			<Modal isOpen={isSubmitting || showSuccess} preventClose={isSubmitting}>
 				<div className="loading-modal">
 					{isSubmitting && (
 						<>
