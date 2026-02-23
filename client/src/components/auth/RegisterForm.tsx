@@ -5,7 +5,11 @@ import Button from '../common/Button';
 import Modal from '../common/Modal';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { registerUser } from '../../store/slices/authSlice';
+import {
+	clearAuthError,
+	clearFieldError,
+	registerUser,
+} from '../../store/slices/authSlice';
 import { FaRegCheckCircle } from 'react-icons/fa';
 
 function RegisterForm() {
@@ -48,6 +52,17 @@ function RegisterForm() {
 		if (name === 'confirmPassword' || name === 'password') {
 			setConfirmError(undefined);
 		}
+
+		if (error && name === 'email') {
+			dispatch(clearAuthError());
+		}
+
+		if (name === 'name' || name === 'email' || name === 'password') {
+			const fieldName = name as keyof typeof fieldErrors;
+			if (fieldErrors[fieldName]) {
+				dispatch(clearFieldError(fieldName));
+			}
+		}
 	}
 
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -79,12 +94,13 @@ function RegisterForm() {
 		<>
 			<Modal isOpen={isSubmitting || showSuccess}>
 				<div className="loading-modal">
-					{isSubmitting ? (
+					{isSubmitting && (
 						<>
 							<div className="spinner"></div>
 							<p>Creating your account...</p>
 						</>
-					) : (
+					)}
+					{showSuccess && (
 						<>
 							<FaRegCheckCircle
 								className="success-check"
