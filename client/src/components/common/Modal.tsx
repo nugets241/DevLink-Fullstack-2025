@@ -5,9 +5,15 @@ interface ModalProps {
 	isOpen: boolean;
 	message?: string;
 	children?: React.ReactNode;
+	preventClose?: boolean;
 }
 
-export default function Modal({ isOpen, message, children }: ModalProps) {
+export default function Modal({
+	isOpen,
+	message,
+	children,
+	preventClose = false,
+}: ModalProps) {
 	const dialogRef = useRef<HTMLDialogElement>(null);
 
 	useEffect(() => {
@@ -22,7 +28,13 @@ export default function Modal({ isOpen, message, children }: ModalProps) {
 	if (!modalRoot) return null;
 
 	return createPortal(
-		<dialog ref={dialogRef} className="loading-dialog">
+		<dialog
+			ref={dialogRef}
+			className="loading-dialog"
+			onCancel={(event) => {
+				if (preventClose) event.preventDefault();
+			}}
+		>
 			{children ?? (message ? <p>{message}</p> : null)}
 		</dialog>,
 		modalRoot,
