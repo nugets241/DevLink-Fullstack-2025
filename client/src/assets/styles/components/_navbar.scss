@@ -1,43 +1,36 @@
-@use '../mixins' as *;
+@use '../abstracts/variables' as *;
 
-// .navbar {
-// 	display: flex;
-// 	align-items: center;
-// 	justify-content: space-between;
-// 	padding: var(--space-4) 0;
-// 	border-bottom: 1px solid var(--color-border);
-// 	position: sticky;
-// 	top: 0;
-// 	background: var(--color-surface);
-// 	backdrop-filter: blur(10px);
-// 	box-shadow: var(--shadow-soft);
-// 	z-index: 10;
-// 	transition: background-color 0.2s ease, border-color 0.2s ease,
-// 		box-shadow 0.2s ease;
-// }
+.navbar {
+	background: $bg-surface;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	padding: 1rem 0;
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	backdrop-filter: blur(10px);
+}
 
-// .navbar__brand {
-// 	font-weight: 800;
-// 	letter-spacing: -0.02em;
-// 	font-size: 1.1rem;
-// }
+.navbar-container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 2rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
 
-// .navbar__links {
-// 	display: flex;
-// 	gap: var(--space-3);
-// 	align-items: center;
-// }
+.navbar-logo {
+	width: 50px;
+	display: block;
+}
 
-// .navbar__actions {
-// 	display: flex;
-// 	gap: var(--space-2);
-// }
+.navbar-menu {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+}
 
-// .navbar a {
-// 	color: var(--color-muted);
-// 	transition: color 0.2s ease;
-// }
-
-// .navbar a:hover {
-// 	color: var(--color-text);
-// }
+.navbar-user {
+	color: $text-secondary;
+	font-size: 0.9rem;
+}
