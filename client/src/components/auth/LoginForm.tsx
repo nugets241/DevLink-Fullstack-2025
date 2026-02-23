@@ -1,44 +1,150 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Card from '../common/Card';
 import Input from '../common/Input';
 import Button from '../common/Button';
+import Modal from '../common/Modal';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {
+	clearAuthError,
+	clearFieldError,
+	loginUser,
+} from '../../store/slices/authSlice';
+import { FaRegCheckCircle } from 'react-icons/fa';
 
 function LoginForm() {
-	function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+	const { error, fieldErrors, token } = useAppSelector((state) => state.auth);
+	const initialTokenRef = React.useRef(token);
+	const [formValues, setFormValues] = React.useState({
+		email: '',
+		password: '',
+	});
+	const [isSubmitting, setIsSubmitting] = React.useState(false);
+	const [showSuccess, setShowSuccess] = React.useState(false);
+
+	React.useEffect(() => {
+		if (initialTokenRef.current) {
+			navigate('/', { replace: true });
+		}
+	}, [navigate]);
+
+	React.useEffect(() => {
+		if (!showSuccess) return;
+
+		const timeoutId = window.setTimeout(
+			() => navigate('/', { replace: true }),
+			1000,
+		);
+
+		return () => window.clearTimeout(timeoutId);
+	}, [showSuccess, navigate]);
+
+	function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const { name, value } = event.target;
+		setFormValues((prev) => ({ ...prev, [name]: value }));
+
+		if (error && name === 'email') {
+			dispatch(clearAuthError());
+		}
+
+		if (name === 'email' || name === 'password') {
+			const fieldName = name as keyof typeof fieldErrors;
+			if (fieldErrors[fieldName]) {
+				dispatch(clearFieldError(fieldName));
+			}
+		}
+	}
+
+	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
+		if (isSubmitting) return;
+
+		setIsSubmitting(true);
+		setShowSuccess(false);
+
+		try {
+			await dispatch(
+				loginUser({
+					email: formValues.email.trim(),
+					password: formValues.password,
+				}),
+			).unwrap();
+			setShowSuccess(true);
+		} catch {
+		} finally {
+			setIsSubmitting(false);
+		}
 	}
 
 	return (
-		<Card>
-			<form className="form" onSubmit={handleSubmit}>
-				<Input
-					id="login-identifier"
-					name="identifier"
-					type="email"
-					autoComplete="username"
-					placeholder="Email"
-					required
-				/>
-				<Input
-					id="login-password"
-					name="password"
-					type="password"
-					autoComplete="current-password"
-					placeholder="Password"
-					required
-				/>
-				<Button type="submit" variant="primary" className="login">
-					Log In
-				</Button>
+		<>
+			<Modal isOpen={isSubmitting || showSuccess}>
+				<div className="loading-modal">
+					{isSubmitting && (
+						<>
+							<div className="spinner"></div>
+							<p>Logging in...</p>
+						</>
+					)}
+					{showSuccess && (
+						<>
+							<FaRegCheckCircle
+								className="success-check"
+								size={40}
+								aria-hidden="true"
+								focusable="false"
+							/>
+							<p className="loading-success" role="status" aria-live="polite">
+								Login successful. Redirecting...
+							</p>
+						</>
+					)}
+				</div>
+			</Modal>
+			<Card>
+				<form className="form" onSubmit={handleSubmit}>
+					{error && <p className="error">{error}</p>}
+					<Input
+						id="login-email"
+						name="email"
+						type="email"
+						autoComplete="username"
+						placeholder="Email"
+						value={formValues.email}
+						onChange={handleChange}
+						error={fieldErrors.email}
+						required
+					/>
+					<Input
+						id="login-password"
+						name="password"
+						type="password"
+						autoComplete="current-password"
+						placeholder="Password"
+						value={formValues.password}
+						onChange={handleChange}
+						error={fieldErrors.password}
+						required
+					/>
+					<Button
+						type="submit"
+						variant="primary"
+						className="login"
+						disabled={isSubmitting}
+					>
+						{isSubmitting ? 'Logging in...' : 'Log In'}
+					</Button>
 
-				<div className="divider" role="separator" />
+					<div className="divider" role="separator" />
 
-				<Link className="button button-secondary login-signup" to="/register">
-					Create new account
-				</Link>
-			</form>
-		</Card>
+					<Link className="button button-secondary login-signup" to="/register">
+						Create new account
+					</Link>
+				</form>
+			</Card>
+		</>
 	);
 }
 
