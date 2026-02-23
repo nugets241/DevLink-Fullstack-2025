@@ -6,6 +6,7 @@ type User = {
 	id: string;
 	name: string;
 	email: string;
+	avatar?: string;
 };
 
 type FieldErrors = {
@@ -125,6 +126,40 @@ export const loginUser = createAsyncThunk<
 	}
 });
 
+export const getUserData = createAsyncThunk<
+	User,
+	void,
+	{ rejectValue: RejectValue }
+>('auth/getUserData', async (_, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const response = await fetch(API_ENDPOINTS.getUser, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-auth-token': token,
+			},
+		});
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to fetch user data.',
+			});
+		}
+
+		const data = (await response.json()) as User;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
 const authSlice = createSlice({
 	name: 'auth',
 	initialState,
@@ -134,6 +169,14 @@ const authSlice = createSlice({
 		},
 		clearFieldError: (state, action: PayloadAction<FieldErrorKey>) => {
 			delete state.fieldErrors[action.payload];
+		},
+		logout: (state) => {
+			state.user = null;
+			state.token = null;
+			state.status = 'idle';
+			state.error = null;
+			state.fieldErrors = {};
+			localStorage.removeItem('token');
 		},
 	},
 	extraReducers: (builder) => {
@@ -167,10 +210,24 @@ const authSlice = createSlice({
 				state.status = 'failed';
 				state.error = action.payload?.message ?? 'Login failed.';
 				state.fieldErrors = action.payload?.fieldErrors ?? {};
+			})
+			.addCase(getUserData.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(getUserData.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.user = action.payload;
+			})
+			.addCase(getUserData.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Failed to load user data.';
+				state.token = null;
+				state.user = null;
+				localStorage.removeItem('token');
 			});
 	},
 });
 
-export const { clearAuthError, clearFieldError } = authSlice.actions;
+export const { clearAuthError, clearFieldError, logout } = authSlice.actions;
 
 export default authSlice.reducer;
