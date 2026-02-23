@@ -11,9 +11,8 @@ import { FaRegCheckCircle } from 'react-icons/fa';
 function RegisterForm() {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const { status, error, fieldErrors, token } = useAppSelector(
-		(state) => state.auth,
-	);
+	const { error, fieldErrors, token } = useAppSelector((state) => state.auth);
+	const initialTokenRef = React.useRef(token);
 	const [formValues, setFormValues] = React.useState({
 		name: '',
 		email: '',
@@ -23,12 +22,25 @@ function RegisterForm() {
 	const [confirmError, setConfirmError] = React.useState<string | undefined>(
 		undefined,
 	);
+	const [isSubmitting, setIsSubmitting] = React.useState(false);
+	const [showSuccess, setShowSuccess] = React.useState(false);
+
 	React.useEffect(() => {
-		if (token) {
-			// Brief delay to show success state
-			setTimeout(() => navigate('/', { replace: true }), 1000);
+		if (initialTokenRef.current) {
+			navigate('/', { replace: true });
 		}
-	}, [token, navigate]);
+	}, [navigate]);
+
+	React.useEffect(() => {
+		if (!showSuccess) return;
+
+		const timeoutId = window.setTimeout(
+			() => navigate('/', { replace: true }),
+			1000,
+		);
+
+		return () => window.clearTimeout(timeoutId);
+	}, [showSuccess, navigate]);
 
 	function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const { name, value } = event.target;
@@ -45,28 +57,44 @@ function RegisterForm() {
 			return;
 		}
 
-		dispatch(
-			registerUser({
-				name: formValues.name.trim(),
-				email: formValues.email.trim(),
-				password: formValues.password,
-			}),
-		);
+		setIsSubmitting(true);
+		setShowSuccess(false);
+
+		try {
+			await dispatch(
+				registerUser({
+					name: formValues.name.trim(),
+					email: formValues.email.trim(),
+					password: formValues.password,
+				}),
+			).unwrap();
+			setShowSuccess(true);
+		} catch {
+		} finally {
+			setIsSubmitting(false);
+		}
 	}
 
 	return (
 		<>
-			<Modal isOpen={status === 'loading' || status === 'succeeded'}>
+			<Modal isOpen={isSubmitting || showSuccess}>
 				<div className="loading-modal">
-					{status === 'loading' ? (
+					{isSubmitting ? (
 						<>
 							<div className="spinner"></div>
 							<p>Creating your account...</p>
 						</>
 					) : (
 						<>
-							<FaRegCheckCircle className="success-check" size={40} />
-							<p>Account created. Redirecting...</p>
+							<FaRegCheckCircle
+								className="success-check"
+								size={40}
+								aria-hidden="true"
+								focusable="false"
+							/>
+							<p className="loading-success" role="status" aria-live="polite">
+								Account created. Redirecting...
+							</p>
 						</>
 					)}
 				</div>
@@ -128,9 +156,9 @@ function RegisterForm() {
 						type="submit"
 						variant="secondary"
 						className="register"
-						disabled={status === 'loading'}
+						disabled={isSubmitting}
 					>
-						Register
+						{isSubmitting ? 'Registering...' : 'Register'}
 					</Button>
 
 					<div className="divider" role="separator" />
