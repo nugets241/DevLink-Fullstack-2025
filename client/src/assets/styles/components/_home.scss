@@ -1,0 +1,35 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.home-layout {
+	display: grid;
+	grid-template-columns: 280px 1fr;
+	gap: 1rem;
+	align-items: start;
+}
+
+.home-layout > .card {
+	width: auto;
+	max-width: none;
+	border-radius: 12px;
+}
+
+.profile-avatar {
+	width: 72px;
+	height: 72px;
+	border-radius: 999px;
+	object-fit: cover;
+	border: 2px solid $border-default;
+	margin-bottom: 0.75rem;
+}
+
+.posts-empty {
+	color: $text-muted;
+	font-size: 0.95rem;
+}
+
+@include respond(md) {
+	.home-layout {
+		grid-template-columns: 1fr;
+	}
+}
