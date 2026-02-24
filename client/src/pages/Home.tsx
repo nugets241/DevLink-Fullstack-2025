@@ -1,22 +1,16 @@
-import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { getUserData } from '../store/slices/authSlice';
+import Button from '../components/common/Button';
 
 function Home() {
 	const dispatch = useAppDispatch();
-	const { user, token, status } = useAppSelector((state) => state.auth);
-
-	React.useEffect(() => {
-		if (token && !user) {
-			dispatch(getUserData());
-		}
-	}, [token, user, dispatch]);
+	const { user, token, status, error } = useAppSelector((state) => state.auth);
 
 	if (!token) {
 		return null;
 	}
 
-	if (status === 'loading' || !user) {
+	if (status === 'loading') {
 		return (
 			<div className="container">
 				<div className="loading-modal">
@@ -27,13 +21,46 @@ function Home() {
 		);
 	}
 
+	if (status === 'failed' && !user) {
+		return (
+			<div className="container">
+				<div className="loading-modal">
+					<p>{error ?? 'Could not load your profile.'}</p>
+					<Button
+						type="button"
+						variant="primary"
+						onClick={() => dispatch(getUserData())}
+					>
+						Try Again
+					</Button>
+				</div>
+			</div>
+		);
+	}
+
+	if (!user) {
+		return (
+			<div className="container">
+				<div className="loading-modal">
+					<div className="spinner"></div>
+					<p>Preparing your home page...</p>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="container">
-			<h1>Welcome, {user.name}!</h1>
-			<div>
-				<h2>Your Profile</h2>
-				<p>Email: {user.email}</p>
-				{user.avatar && <img src={user.avatar} alt="Avatar" />}
+			<div className="home-layout">
+				<aside className="card">
+					<img src={user.avatar} alt="Avatar" className="profile-avatar" />
+					<h2>{user.name}</h2>
+					<p>Email: {user.email}</p>
+				</aside>
+				<main className="card">
+					<h2>Posts</h2>
+					<p className="posts-empty">No posts yet.</p>
+				</main>
 			</div>
 		</div>
 	);
