@@ -4,25 +4,8 @@
 	background-color: $card-bg;
 	border: 1px solid $border-default;
 	border-radius: 8px;
-	width: 400px;
+	width: 100%;
+	max-width: 400px;
 	padding: 1rem;
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
-
-// .card {
-// 	@include card-surface;
-// 	border-radius: var(--radius-lg);
-// 	padding: var(--space-5);
-// 	position: relative;
-// 	overflow: hidden;
-// }
-
-// .card__title {
-// 	font-weight: 700;
-// 	margin-bottom: var(--space-3);
-// }
-
-// .card__meta {
-// 	color: var(--color-muted);
-// 	font-size: 0.95rem;
-// }
