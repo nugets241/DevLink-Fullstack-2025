@@ -49,11 +49,21 @@ function Home() {
 		);
 	}
 
+	const avatarSrc = user.avatar?.trim() || '/devlink.svg';
+
 	return (
 		<div className="container">
 			<div className="home-layout">
 				<aside className="card">
-					<img src={user.avatar} alt="Avatar" className="profile-avatar" />
+					<img
+						src={avatarSrc}
+						alt="Avatar"
+						className="profile-avatar"
+						onError={(event) => {
+							event.currentTarget.onerror = null;
+							event.currentTarget.src = '/devlink.svg';
+						}}
+					/>
 					<h2>{user.name}</h2>
 					<p>Email: {user.email}</p>
 				</aside>
