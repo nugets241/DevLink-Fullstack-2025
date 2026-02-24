@@ -12,6 +12,7 @@
 	.container {
 		display: flex;
 		flex-direction: row;
+		align-items: center;
 		gap: var(--space-12);
 
 		.marketing {
@@ -24,19 +25,12 @@
 		}
 
 		.tagline {
+			margin: 0 auto;
 			max-width: 500px;
 			font-size: clamp(1.1rem, 2vw, 1.8rem);
 			font-weight: 400;
 			line-height: 1.2;
 			color: $text-primary;
-		}
-	}
-
-	@include respond(lg) {
-		.container {
-			.tagline {
-				width: 300px;
-			}
 		}
 	}
 
@@ -54,7 +48,7 @@
 			}
 
 			.tagline {
-				width: 400px;
+				max-width: 400px;
 			}
 		}
 	}
