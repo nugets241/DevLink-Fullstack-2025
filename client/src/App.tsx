@@ -3,10 +3,19 @@ import Navbar from './components/layout/Navbar';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useAppSelector } from './store/hooks';
+import React from 'react';
+import { useAppDispatch, useAppSelector } from './store/hooks';
+import { getUserData } from './store/slices/authSlice';
 
 function App() {
-	const { token } = useAppSelector((state) => state.auth);
+	const dispatch = useAppDispatch();
+	const { token, user, status } = useAppSelector((state) => state.auth);
+
+	React.useEffect(() => {
+		if (token && !user && status === 'idle') {
+			dispatch(getUserData());
+		}
+	}, [token, user, status, dispatch]);
 
 	return (
 		<>
