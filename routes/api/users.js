@@ -54,7 +54,12 @@ router.post('/', registerValidators, async (req, res) => {
 			const token = await generateToken(user.id);
 			return res.status(201).json({
 				token,
-				user: { id: user.id, name: user.name, email: user.email },
+				user: {
+					id: user.id,
+					name: user.name,
+					email: user.email,
+					avatar: user.avatar,
+				},
 			});
 		} catch (err) {
 			console.error(err);
