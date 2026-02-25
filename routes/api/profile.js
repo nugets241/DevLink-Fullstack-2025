@@ -14,7 +14,7 @@ router.get('/me', auth, async (req, res) => {
 	try {
 		const profile = await Profile.findOne({ user: req.user.id }).populate(
 			'user',
-			['name', 'avatar']
+			['name', 'avatar'],
 		);
 		if (!profile) {
 			return res.status(404).json({ msg: 'Profile not found' });
@@ -26,10 +26,10 @@ router.get('/me', auth, async (req, res) => {
 	}
 });
 
-// @route POST api/profile
+// @route PATCH api/profile
 // @desc    Create or update user profile
 // @access  Private
-router.post(
+router.patch(
 	'/',
 	[
 		auth,
@@ -77,8 +77,7 @@ router.post(
 			company,
 			website,
 			location,
-			bio,
-			status,
+			about,
 			skills,
 			social,
 			experience,
@@ -92,8 +91,7 @@ router.post(
 				company,
 				website,
 				location,
-				bio,
-				status,
+				about,
 				skills: Array.isArray(skills)
 					? skills
 					: skills.split(',').map((skill) => skill.trim()),
@@ -106,7 +104,7 @@ router.post(
 			let profile = await Profile.findOneAndUpdate(
 				{ user: req.user.id },
 				{ $set: profileFields },
-				{ new: true, upsert: true, setDefaultsOnInsert: true }
+				{ new: true, upsert: true, setDefaultsOnInsert: true },
 			).populate('user', ['name', 'avatar']);
 
 			res.json(profile);
@@ -114,7 +112,7 @@ router.post(
 			console.error(err.message);
 			res.status(500).send('Server error');
 		}
-	}
+	},
 );
 
 // @route   GET api/profile
@@ -222,7 +220,7 @@ router.put(
 			console.error(err.message);
 			res.status(500).send('Server error');
 		}
-	}
+	},
 );
 
 // @route   DELETE api/profile/experience/:exp_id
@@ -301,7 +299,7 @@ router.put(
 			console.error(err.message);
 			res.status(500).send('Server error');
 		}
-	}
+	},
 );
 
 // @route   DELETE api/profile/education/:edu_id
