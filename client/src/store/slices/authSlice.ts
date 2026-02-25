@@ -11,6 +11,12 @@ type User = {
 	location?: string;
 };
 
+type UpdateUserPayload = {
+	name?: string;
+	headline?: string;
+	location?: string;
+};
+
 type FieldErrors = {
 	name?: string;
 	email?: string;
@@ -153,6 +159,42 @@ export const getUserData = createAsyncThunk<
 			return rejectWithValue({
 				message: data?.msg ?? 'Failed to fetch user data.',
 				status: response.status,
+			});
+		}
+
+		const data = (await response.json()) as User;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
+export const updateUser = createAsyncThunk<
+	User,
+	UpdateUserPayload,
+	{ rejectValue: RejectValue }
+>('auth/updateUser', async (payload, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const response = await fetch(API_ENDPOINTS.updateUser, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(payload),
+		});
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			return rejectWithValue({
+				message: data?.msg ?? 'Update failed.',
+				fieldErrors: data?.errors,
 			});
 		}
 
