@@ -58,6 +58,8 @@ router.post('/', loginValidators, async (req, res) => {
 					id: user.id,
 					name: user.name,
 					email: user.email,
+					headline: user.headline,
+					location: user.location,
 					avatar: user.avatar,
 				},
 			});
