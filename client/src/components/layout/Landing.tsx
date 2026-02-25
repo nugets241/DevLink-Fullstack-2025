@@ -6,10 +6,10 @@ function Landing() {
 			<div className="container">
 				<section aria-label="Marketing" className="marketing">
 					<img src="/devlink.svg" alt="DevLink Logo" className="logo" />
-					<h2 className="tagline">
+					<h1 className="tagline">
 						Connect with other developers, collaborate on projects, and grow
 						your network.
-					</h2>
+					</h1>
 				</section>
 				<section aria-label="Login" className="form-container">
 					<LoginForm />

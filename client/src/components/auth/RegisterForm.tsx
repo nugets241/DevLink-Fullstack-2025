@@ -118,7 +118,7 @@ function RegisterForm() {
 			<Card>
 				<form className="form" onSubmit={handleSubmit}>
 					<div>
-						<h2 className="register-title">Create a New Account</h2>
+						<h1 className="register-title">Create a New Account</h1>
 						<p className="register-subtitle">It's quick and easy.</p>
 						{error && <p className="error">{error}</p>}
 					</div>
