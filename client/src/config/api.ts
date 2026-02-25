@@ -8,8 +8,10 @@ export const API_ENDPOINTS = {
 	register: `${API_BASE_URL}/api/users`,
 	login: `${API_BASE_URL}/api/auth`,
 	getUser: `${API_BASE_URL}/api/auth`,
+	updateUser: `${API_BASE_URL}/api/users/me`,
 	profileMe: `${API_BASE_URL}/api/profile/me`,
 	profile: `${API_BASE_URL}/api/profile`,
+
 	// Add more endpoints as needed
 } as const;
 
