@@ -16,11 +16,14 @@ function Navbar() {
 	return (
 		<nav className="navbar">
 			<div className="navbar-container">
-				<Link to="/" className="navbar-brand">
+				<Link to="/">
 					<img src="/favicon.svg" alt="DevLink Logo" className="navbar-logo" />
 				</Link>
 				{token && user && (
 					<div className="navbar-menu">
+						<Link className="navbar-link" to="/profile">
+							Profile
+						</Link>
 						<span className="navbar-user">Hello, {user.name}</span>
 						<Button variant="primary" onClick={handleLogout}>
 							Logout
