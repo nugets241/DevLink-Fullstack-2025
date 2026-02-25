@@ -5,9 +5,7 @@ const ProfileSchema = new mongoose.Schema(
 		user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
 		company: { type: String, trim: true },
 		website: { type: String, trim: true },
-		location: { type: String, trim: true },
-		bio: { type: String, trim: true },
-		status: { type: String, required: true, trim: true },
+		about: { type: String, trim: true },
 		skills: { type: [String], required: true },
 		social: {
 			youtube: { type: String, trim: true },
@@ -40,7 +38,7 @@ const ProfileSchema = new mongoose.Schema(
 			},
 		],
 	},
-	{ timestamps: true }
+	{ timestamps: true },
 );
 
 export default mongoose.model('profile', ProfileSchema);
