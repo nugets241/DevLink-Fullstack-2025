@@ -7,6 +7,8 @@ type User = {
 	name: string;
 	email: string;
 	avatar?: string;
+	headline?: string;
+	location?: string;
 };
 
 type FieldErrors = {
