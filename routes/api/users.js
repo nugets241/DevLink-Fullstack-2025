@@ -110,37 +110,28 @@ router.post('/', registerValidators, async (req, res) => {
 // @route   PUT api/users/me
 // @desc    Update current user basic profile fields
 // @access  Private
-router.put('/me', updateMeValidators, async (req, res) => {
+router.patch('/me', updateMeValidators, async (req, res) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
 	}
 
-	const updates = {};
-	if (typeof req.body.name === 'string') {
-		updates.name = req.body.name.trim();
-	}
-	if (typeof req.body.headline === 'string') {
-		updates.headline = req.body.headline.trim();
-	}
-	if (typeof req.body.location === 'string') {
-		updates.location = req.body.location.trim();
-	}
-
-	if (Object.keys(updates).length === 0) {
-		return res.status(400).json({
-			msg: 'Provide at least one field to update: name, headline, or location.',
-		});
-	}
+	const updates = {
+		name: req.body.name,
+		headline: req.body.headline,
+		location: req.body.location,
+	};
 
 	try {
-		const user = await User.findById(req.user.id);
+		const user = await User.findByIdAndUpdate(
+			req.user.id,
+			{ $set: updates },
+			{ new: true, runValidators: true },
+		);
+
 		if (!user) {
 			return res.status(404).json({ msg: 'User not found' });
 		}
-
-		Object.assign(user, updates);
-		await user.save();
 
 		return res.json(serializeUser(user));
 	} catch (err) {
