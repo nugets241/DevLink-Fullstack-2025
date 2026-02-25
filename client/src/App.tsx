@@ -2,6 +2,7 @@ import Landing from './components/layout/Landing';
 import Navbar from './components/layout/Navbar';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import Profile from './pages/Profile';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from './store/hooks';
@@ -23,6 +24,10 @@ function App() {
 			<Routes>
 				<Route path="/" element={token ? <Home /> : <Landing />} />
 				<Route path="/register" element={<Register />} />
+				<Route
+					path="/profile"
+					element={token ? <Profile /> : <Navigate to="/" replace />}
+				/>
 				<Route path="*" element={<Navigate to="/" replace />} />
 			</Routes>
 		</>
