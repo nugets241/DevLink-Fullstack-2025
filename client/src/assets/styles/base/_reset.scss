@@ -39,6 +39,12 @@ a {
 	}
 }
 
+ul,
+ol {
+	list-style: none;
+	padding: 0;
+}
+
 // img,
 // picture,
 // video,
@@ -46,10 +52,4 @@ a {
 // svg {
 // 	display: block;
 // 	max-width: 100%;
-// }
-
-// ul,
-// ol {
-// 	list-style: none;
-// 	padding: 0;
 // }
