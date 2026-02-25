@@ -90,9 +90,15 @@ function Profile() {
 						}}
 					/>
 					<h2>{user?.name ?? 'Developer'}</h2>
+					{user?.headline && (
+						<p className="profile-headline">{user.headline}</p>
+					)}
+					{user?.location && (
+						<p className="profile-location">{user.location}</p>
+					)}
 				</section>
 
-				<div className="card">
+				{/* <div className="card">
 					<h3>Status</h3>
 					<p>{profileStatus}</p>
 					<p className="profile-meta">
@@ -202,7 +208,7 @@ function Profile() {
 							)}
 						</li>
 					</ul>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);
