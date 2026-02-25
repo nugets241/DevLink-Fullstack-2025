@@ -11,9 +11,11 @@ const UserSchema = new mongoose.Schema(
 			trim: true,
 		},
 		password: { type: String, required: true }, // hashed
+		headline: { type: String, trim: true, default: '' },
+		location: { type: String, trim: true, default: '' },
 		avatar: { type: String, default: '' },
 	},
-	{ timestamps: true }
+	{ timestamps: true },
 );
 
 // // Text search index for basic profile search
