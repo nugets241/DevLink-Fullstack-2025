@@ -19,6 +19,8 @@ type UpdateUserPayload = {
 
 type FieldErrors = {
 	name?: string;
+	headline?: string;
+	location?: string;
 	email?: string;
 	password?: string;
 };
@@ -192,9 +194,18 @@ export const updateUser = createAsyncThunk<
 
 		if (!response.ok) {
 			const data = await response.json().catch(() => null);
+			const fieldErrors: FieldErrors = {};
+			if (data?.errors) {
+				for (const error of data.errors) {
+					if (error.path === 'name') fieldErrors.name = error.msg;
+					if (error.path === 'headline') fieldErrors.headline = error.msg;
+					if (error.path === 'location') fieldErrors.location = error.msg;
+				}
+			}
+
 			return rejectWithValue({
 				message: data?.msg ?? 'Update failed.',
-				fieldErrors: data?.errors,
+				fieldErrors,
 			});
 		}
 
@@ -275,6 +286,22 @@ const authSlice = createSlice({
 					state.error = 'Session expired. Please log in again.';
 					localStorage.removeItem('token');
 				}
+			})
+			.addCase(updateUser.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+				state.fieldErrors = {};
+			})
+			.addCase(updateUser.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.user = action.payload;
+				state.error = null;
+				state.fieldErrors = {};
+			})
+			.addCase(updateUser.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Update failed.';
+				state.fieldErrors = action.payload?.fieldErrors ?? {};
 			});
 	},
 });
