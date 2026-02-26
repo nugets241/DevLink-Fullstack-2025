@@ -1,69 +1,26 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import {
-	clearProfileError,
-	clearProfileFieldError,
-	getMyProfile,
-	upsertProfile,
-} from '../store/slices/profileSlice';
-import Button from '../components/common/Button';
-import Input from '../components/common/Input';
-
-const EMPTY_SOCIAL = {
-	youtube: '',
-	x: '',
-	facebook: '',
-	linkedin: '',
-	instagram: '',
-	github: '',
-};
+import { getMyProfile } from '../store/slices/profileSlice';
+import UserBasicsSection from '../components/profile/UserBasicsSection';
 
 function Profile() {
 	const dispatch = useAppDispatch();
-	const { token, user } = useAppSelector((state) => state.auth);
-	const { profile, status, error, fieldErrors } = useAppSelector(
+	const { token } = useAppSelector((state) => state.auth);
+	const { profile, status: profileStatus } = useAppSelector(
 		(state) => state.profile,
 	);
-	const [isEditing, setIsEditing] = React.useState(false);
-	const [formValues, setFormValues] = React.useState({
-		status: '',
-		company: '',
-		location: '',
-		website: '',
-		bio: '',
-		skills: '',
-		social: { ...EMPTY_SOCIAL },
-	});
 
 	React.useEffect(() => {
-		if (token && status === 'idle') {
+		if (token && profileStatus === 'idle') {
 			dispatch(getMyProfile());
 		}
-	}, [dispatch, status, token]);
-
-	React.useEffect(() => {
-		if (!profile) return;
-		setFormValues({
-			status: profile.status ?? '',
-			company: profile.company ?? '',
-			location: profile.location ?? '',
-			website: profile.website ?? '',
-			bio: profile.bio ?? '',
-			skills: profile.skills?.join(', ') ?? '',
-			social: { ...EMPTY_SOCIAL, ...(profile.social ?? {}) },
-		});
-	}, [profile]);
+	}, [dispatch, profileStatus, token]);
 
 	if (!token) {
 		return null;
 	}
 
-	const profileStatus = profile?.status || 'Not set';
-	const profileSkills = profile?.skills?.length
-		? profile.skills.join(', ')
-		: 'No skills added yet.';
-
-	if (status === 'loading' && !profile) {
+	if (profileStatus === 'loading' && !profile) {
 		return (
 			<div className="container">
 				<div className="loading-modal">
@@ -74,29 +31,10 @@ function Profile() {
 		);
 	}
 
-	const avatarSrc = user?.avatar?.trim() || '/devlink.svg';
-
 	return (
 		<div className="profile-page">
 			<div className="container">
-				<section className="profile-header card">
-					<img
-						src={avatarSrc}
-						alt="Avatar"
-						className="profile-avatar"
-						onError={(event) => {
-							event.currentTarget.onerror = null;
-							event.currentTarget.src = '/devlink.svg';
-						}}
-					/>
-					<h2>{user?.name ?? 'Developer'}</h2>
-					{user?.headline && (
-						<p className="profile-headline">{user.headline}</p>
-					)}
-					{user?.location && (
-						<p className="profile-location">{user.location}</p>
-					)}
-				</section>
+				<UserBasicsSection />
 
 				{/* <div className="card">
 					<h3>Status</h3>
