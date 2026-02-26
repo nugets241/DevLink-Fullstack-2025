@@ -2,6 +2,45 @@
 @use '../abstracts/mixins' as *;
 @use '../abstracts/variables' as *;
 
+input,
+textarea {
+	width: 100%;
+	background-color: $bg-surface;
+	color: $text-primary;
+	border: 1px solid $border-default;
+	border-radius: 6px;
+	padding: 0.75rem 1rem;
+	caret-color: $text-primary;
+	transition:
+		border-color 0.2s ease,
+		box-shadow 0.2s ease,
+		background-color 0.2s ease;
+
+	&::placeholder {
+		color: $text-muted;
+	}
+
+	&:focus {
+		outline: none;
+		border-color: $color-primary;
+		box-shadow: 0 0 0 3px rgba(37, 141, 155, 0.1);
+		background-color: color.adjust($bg-surface, $lightness: -2%);
+	}
+
+	&[aria-invalid='true'] {
+		border-color: $error;
+		box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+	}
+
+	&:-webkit-autofill,
+	&:-webkit-autofill:hover,
+	&:-webkit-autofill:focus {
+		-webkit-text-fill-color: $text-primary;
+		-webkit-box-shadow: 0 0 0 1000px $bg-surface inset;
+		transition: background-color 9999s ease-in-out 0s;
+	}
+}
+
 .form {
 	display: flex;
 	flex-direction: column;
@@ -27,43 +66,7 @@
 	}
 
 	.input {
-		width: 100%;
-		background-color: $bg-surface;
-		border: 1px solid $border-default;
-		border-radius: 6px;
-		padding: 0.75rem 1rem;
-		color: $text-primary;
-		caret-color: $text-primary;
 		font-size: 1.1rem;
-		font-family: inherit;
-		transition:
-			border-color 0.2s ease,
-			box-shadow 0.2s ease,
-			background-color 0.2s ease;
-
-		&::placeholder {
-			color: $text-muted;
-		}
-
-		&:focus {
-			outline: none;
-			border-color: $color-primary;
-			box-shadow: 0 0 0 3px rgba(37, 141, 155, 0.1);
-			background-color: color.adjust($bg-surface, $lightness: -2%);
-		}
-
-		&[aria-invalid='true'] {
-			border-color: $error;
-			box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-		}
-
-		&:-webkit-autofill,
-		&:-webkit-autofill:hover,
-		&:-webkit-autofill:focus {
-			-webkit-text-fill-color: $text-primary;
-			-webkit-box-shadow: 0 0 0 1000px $bg-surface inset;
-			transition: background-color 9999s ease-in-out 0s;
-		}
 	}
 
 	.hint {
