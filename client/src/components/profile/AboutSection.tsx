@@ -18,7 +18,7 @@ function AboutSection() {
 
 	React.useEffect(() => {
 		if (!isAboutModalOpen) return;
-		setAboutValue(profile?.about ?? profile?.bio ?? '');
+		setAboutValue(profile?.about || '');
 	}, [isAboutModalOpen, profile]);
 
 	const closeAboutModal = () => {
@@ -51,7 +51,7 @@ function AboutSection() {
 		}
 	};
 
-	const aboutText = profile?.about ?? profile?.bio;
+	const aboutText = profile?.about;
 
 	return (
 		<EditableSection
