@@ -2,6 +2,7 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { getMyProfile } from '../store/slices/profileSlice';
 import UserBasicsSection from '../components/profile/UserBasicsSection';
+import AboutSection from '../components/profile/AboutSection';
 
 function Profile() {
 	const dispatch = useAppDispatch();
@@ -35,6 +36,7 @@ function Profile() {
 		<div className="profile-page">
 			<div className="container">
 				<UserBasicsSection />
+				<AboutSection />
 
 				{/* <div className="card">
 					<h3>Status</h3>
