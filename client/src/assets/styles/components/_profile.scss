@@ -20,6 +20,43 @@
 			border-radius: 50%;
 			object-fit: cover;
 		}
+
+		.profile-header {
+			display: flex;
+			justify-content: space-between;
+
+			h2 {
+				margin: 0;
+			}
+
+			& > svg {
+				// color: $primary;
+				cursor: pointer;
+				transition: color 0.2s;
+			}
+		}
+
+		.profile-edit-modal {
+			align-items: stretch;
+			min-width: min(460px, calc(100vw - 3rem));
+			gap: 1rem;
+
+			h3 {
+				margin: 0;
+			}
+		}
+
+		.profile-edit-form {
+			display: flex;
+			flex-direction: column;
+			gap: 0.75rem;
+		}
+
+		.profile-edit-actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 0.5rem;
+		}
 	}
 }
 
