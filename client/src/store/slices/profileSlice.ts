@@ -24,6 +24,7 @@ type Profile = {
 	company?: string;
 	website?: string;
 	location?: string;
+	about?: string;
 	bio?: string;
 	status?: string;
 	skills?: string[];
@@ -51,6 +52,7 @@ type UpsertProfilePayload = {
 	company?: string;
 	website?: string;
 	location?: string;
+	about?: string;
 	bio?: string;
 	status: string;
 	skills: string | string[];
@@ -120,7 +122,7 @@ export const upsertProfile = createAsyncThunk<
 		}
 
 		const response = await fetch(API_ENDPOINTS.profile, {
-			method: 'POST',
+			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: `Bearer ${token}`,
