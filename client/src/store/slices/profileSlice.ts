@@ -25,7 +25,6 @@ type Profile = {
 	website?: string;
 	location?: string;
 	about?: string;
-	bio?: string;
 	status?: string;
 	skills?: string[];
 	social?: ProfileSocial;
@@ -53,7 +52,6 @@ type UpsertProfilePayload = {
 	website?: string;
 	location?: string;
 	about?: string;
-	bio?: string;
 	status: string;
 	skills: string | string[];
 	social?: ProfileSocial;
