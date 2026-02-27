@@ -1,0 +1,22 @@
+@use '../abstracts/variables' as *;
+
+.dialog {
+	border: 0;
+	outline: none;
+	border-radius: 8px;
+	padding: 0;
+	background-color: $card-bg;
+	color: $text-primary;
+	box-shadow: $card-shadow;
+	margin: auto;
+	overflow: hidden;
+
+	&:focus,
+	&:focus-visible {
+		outline: none;
+	}
+
+	&::backdrop {
+		background-color: rgba(0, 0, 0, 0.6);
+	}
+}
