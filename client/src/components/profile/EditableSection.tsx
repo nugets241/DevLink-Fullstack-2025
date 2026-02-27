@@ -4,8 +4,7 @@ import Button from '../common/Button';
 import Modal from '../common/Modal';
 
 type EditableSectionProps = {
-	sectionClassName: string;
-	headerClassName: string;
+	className: string;
 	headerContent: React.ReactNode;
 	content: React.ReactNode;
 	isModalOpen: boolean;
@@ -21,8 +20,7 @@ type EditableSectionProps = {
 };
 
 function EditableSection({
-	sectionClassName,
-	headerClassName,
+	className,
 	headerContent,
 	content,
 	isModalOpen,
@@ -38,21 +36,30 @@ function EditableSection({
 }: EditableSectionProps) {
 	return (
 		<>
-			<section className={sectionClassName}>
-				<header className={headerClassName}>
+			<section className={className}>
+				<header className="profile-section-header">
 					{headerContent}
-					<LuPencil className="profile-edit-trigger" onClick={onOpen} />
+					<button
+						type="button"
+						className="profile-edit-trigger"
+						onClick={onOpen}
+						aria-label="Edit section"
+					>
+						<LuPencil aria-hidden="true" focusable="false" />
+					</button>
 				</header>
 				{content}
 			</section>
 
 			<Modal isOpen={isModalOpen} preventClose={isSubmitting}>
-				<div className="loading-modal profile-edit-modal">
-					<h3>{modalTitle}</h3>
+				<div className="profile-edit-modal">
+					<h2>{modalTitle}</h2>
 					<form className="profile-edit-form" onSubmit={onSubmit}>
-						{children}
+						<div className="profile-edit-body">
+							{children}
 
-						{errorMessage && <p className="error">{errorMessage}</p>}
+							{errorMessage && <p className="error">{errorMessage}</p>}
+						</div>
 
 						<div className="profile-edit-actions">
 							<Button
