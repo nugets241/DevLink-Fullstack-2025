@@ -52,6 +52,58 @@
 	}
 }
 
+.work-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.work-empty {
+	color: $text-muted;
+}
+
+.work-item {
+	border: 1px solid $border-default;
+	border-radius: 8px;
+	padding: 0.75rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.work-item-header {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.75rem;
+
+	h3 {
+		margin: 0;
+	}
+
+	p {
+		margin: 0.25rem 0 0;
+	}
+}
+
+.work-dates,
+.work-description {
+	color: $text-muted;
+}
+
+.work-current-field {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	input[type='checkbox'] {
+		width: auto;
+	}
+
+	.label {
+		margin: 0;
+	}
+}
+
 .profile-edit-modal {
 	display: flex;
 	flex-direction: column;
