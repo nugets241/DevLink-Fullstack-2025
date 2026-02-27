@@ -1,11 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import clsx from 'clsx';
 
 interface ModalProps {
 	isOpen: boolean;
 	message?: string;
 	children?: React.ReactNode;
 	preventClose?: boolean;
+	className?: string;
 }
 
 export default function Modal({
@@ -13,6 +15,7 @@ export default function Modal({
 	message,
 	children,
 	preventClose = false,
+	className,
 }: ModalProps) {
 	const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -42,7 +45,7 @@ export default function Modal({
 	return createPortal(
 		<dialog
 			ref={dialogRef}
-			className="loading-dialog"
+			className={clsx('dialog', className)}
 			onKeyDown={handleKeyDown}
 		>
 			{children ?? (message ? <p>{message}</p> : null)}
