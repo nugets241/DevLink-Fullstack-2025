@@ -55,9 +55,8 @@ function AboutSection() {
 
 	return (
 		<EditableSection
-			sectionClassName="card"
-			headerClassName="profile-header"
-			headerContent={<h3>About</h3>}
+			className="card"
+			headerContent={<h2>About</h2>}
 			content={<p>{aboutText || 'Tell the community about yourself.'}</p>}
 			isModalOpen={isAboutModalOpen}
 			onOpen={handleOpenAboutModal}
