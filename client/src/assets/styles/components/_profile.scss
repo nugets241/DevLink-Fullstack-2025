@@ -36,12 +36,26 @@
 		margin-top: 0.5rem;
 		font-size: 0.9rem;
 	}
+
+	.profile-about-text {
+		white-space: pre-line;
+	}
+}
+
+.profile-about-textarea {
+	resize: none;
+	overflow: hidden;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 }
 
 .profile-edit-modal {
 	display: flex;
 	flex-direction: column;
-	min-width: min(460px, calc(100vw - 3rem));
+	min-width: min(750px, calc(100vw - 3rem));
 	max-height: calc(100vh - 3rem);
 	padding: 1rem 0;
 	gap: 1rem;
