@@ -102,12 +102,12 @@ function UserBasicsSection() {
 				<>
 					<main>
 						<h2 className="heading-xl">{user?.name ?? 'Developer'}</h2>
-						{user?.headline && (
-							<p className="profile-headline">{user.headline}</p>
-						)}
-						{user?.location && (
-							<p className="profile-location">{user.location}</p>
-						)}
+						<p className="profile-headline">
+							{user?.headline || 'Add a headline'}
+						</p>
+						<p className="profile-location">
+							{user?.location || 'Add your location'}
+						</p>
 					</main>
 					<aside className="user-status"></aside>
 				</>
