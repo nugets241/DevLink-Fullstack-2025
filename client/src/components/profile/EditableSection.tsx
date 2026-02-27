@@ -1,7 +1,9 @@
 import React from 'react';
 import { LuPencil } from 'react-icons/lu';
+import { MdOutlineClose } from 'react-icons/md';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
+import clsx from 'clsx';
 
 type EditableSectionProps = {
 	className: string;
@@ -30,13 +32,13 @@ function EditableSection({
 	onSubmit,
 	isSubmitting,
 	errorMessage,
-	submitLabel = 'Save changes',
+	submitLabel = 'Save',
 	submittingLabel = 'Saving...',
 	children,
 }: EditableSectionProps) {
 	return (
 		<>
-			<section className={className}>
+			<section className={clsx('profile-section-card', className)}>
 				<header className="profile-section-header">
 					{headerContent}
 					<button
@@ -48,12 +50,22 @@ function EditableSection({
 						<LuPencil aria-hidden="true" focusable="false" />
 					</button>
 				</header>
-				{content}
+				<div className="profile-contents">{content}</div>
 			</section>
 
 			<Modal isOpen={isModalOpen} preventClose={isSubmitting}>
 				<div className="profile-edit-modal">
-					<h2>{modalTitle}</h2>
+					<div className="profile-modal-header">
+						<h2>{modalTitle}</h2>
+						<button
+							type="button"
+							className="profile-modal-close"
+							onClick={onClose}
+							aria-label="Close modal"
+						>
+							<MdOutlineClose aria-hidden="true" focusable="false" />
+						</button>
+					</div>
 					<form className="profile-edit-form" onSubmit={onSubmit}>
 						<div className="profile-edit-body">
 							{children}
@@ -61,15 +73,7 @@ function EditableSection({
 							{errorMessage && <p className="error">{errorMessage}</p>}
 						</div>
 
-						<div className="profile-edit-actions">
-							<Button
-								type="button"
-								variant="secondary"
-								onClick={onClose}
-								disabled={isSubmitting}
-							>
-								Cancel
-							</Button>
+						<div className="profile-edit-footer">
 							<Button type="submit" disabled={isSubmitting}>
 								{isSubmitting ? submittingLabel : submitLabel}
 							</Button>
