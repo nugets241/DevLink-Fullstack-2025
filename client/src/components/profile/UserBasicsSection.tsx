@@ -79,8 +79,7 @@ function UserBasicsSection() {
 
 	return (
 		<EditableSection
-			sectionClassName="profile-intro card"
-			headerClassName="profile-header"
+			className="profile-intro card"
 			headerContent={
 				<img
 					src={avatarSrc}
@@ -92,10 +91,17 @@ function UserBasicsSection() {
 					}}
 				/>
 			}
+			modalTitle="Edit introduction"
+			isModalOpen={isUserModalOpen}
+			onOpen={handleOpenUserModal}
+			onClose={closeUserModal}
+			onSubmit={handleUserFormSubmit}
+			isSubmitting={authStatus === 'loading'}
+			errorMessage={authError}
 			content={
 				<div className="profile-contents">
-					<main className="contents-main">
-						<h2>{user?.name ?? 'Developer'}</h2>
+					<main>
+						<h2 className="heading-xl">{user?.name ?? 'Developer'}</h2>
 						{user?.headline && (
 							<p className="profile-headline">{user.headline}</p>
 						)}
@@ -106,13 +112,6 @@ function UserBasicsSection() {
 					<aside className="user-status"></aside>
 				</div>
 			}
-			isModalOpen={isUserModalOpen}
-			onOpen={handleOpenUserModal}
-			onClose={closeUserModal}
-			modalTitle="Update profile basics"
-			onSubmit={handleUserFormSubmit}
-			isSubmitting={authStatus === 'loading'}
-			errorMessage={authError}
 		>
 			<Input
 				name="name"
