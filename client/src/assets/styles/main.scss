@@ -11,8 +11,11 @@
 @use 'components/cards';
 @use 'components/navbar';
 @use 'components/landing';
+@use 'components/modal';
 @use 'components/loading';
 @use 'components/home';
 @use 'components/profile';
+
+@use 'utilities';
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
