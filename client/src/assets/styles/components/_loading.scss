@@ -1,18 +1,5 @@
 @use '../abstracts/variables' as *;
 
-.loading-dialog {
-	border: none;
-	border-radius: 8px;
-	padding: 0;
-	background-color: $card-bg;
-	box-shadow: $card-shadow;
-	margin: auto;
-
-	&::backdrop {
-		background-color: rgba(0, 0, 0, 0.6);
-	}
-}
-
 .loading-modal {
 	display: flex;
 	flex-direction: column;
@@ -31,7 +18,7 @@
 	animation: spin 1s linear infinite;
 }
 
-.loading-dialog p {
+.loading-modal p {
 	margin: 0;
 	font-size: 16px;
 	color: $text-primary;
