@@ -18,6 +18,18 @@ type ProfileSocial = {
 	github?: string;
 };
 
+type Experience = {
+	id?: string;
+	_id?: string;
+	title: string;
+	company: string;
+	location?: string;
+	from: string;
+	to?: string;
+	current?: boolean;
+	description?: string;
+};
+
 type Profile = {
 	_id?: string;
 	user?: ProfileUser;
@@ -28,7 +40,7 @@ type Profile = {
 	status?: string;
 	skills?: string[];
 	social?: ProfileSocial;
-	experience?: Array<Record<string, unknown>>;
+	experience?: Experience[];
 	education?: Array<Record<string, unknown>>;
 };
 
@@ -55,6 +67,16 @@ type UpsertProfilePayload = {
 	status: string;
 	skills: string | string[];
 	social?: ProfileSocial;
+};
+
+type AddExperiencePayload = {
+	title: string;
+	company: string;
+	location?: string;
+	from: string;
+	to?: string;
+	current?: boolean;
+	description?: string;
 };
 
 const initialState: ProfileState = {
@@ -145,6 +167,80 @@ export const upsertProfile = createAsyncThunk<
 	}
 });
 
+export const addExperience = createAsyncThunk<
+	Profile,
+	AddExperiencePayload,
+	{ rejectValue: RejectValue }
+>('profile/addExperience', async (payload, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const response = await fetch(API_ENDPOINTS.profileExperience, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(payload),
+		});
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			const fieldErrors = data?.errors ? mapFieldErrors(data.errors) : {};
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to add experience.',
+				fieldErrors,
+			});
+		}
+
+		const data = (await response.json()) as Profile;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
+export const deleteExperience = createAsyncThunk<
+	Profile,
+	string,
+	{ rejectValue: RejectValue }
+>('profile/deleteExperience', async (experienceId, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const response = await fetch(
+			API_ENDPOINTS.profileExperienceById(experienceId),
+			{
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+			},
+		);
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to delete experience.',
+			});
+		}
+
+		const data = (await response.json()) as Profile;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
 const profileSlice = createSlice({
 	name: 'profile',
 	initialState,
@@ -190,6 +286,32 @@ const profileSlice = createSlice({
 				state.status = 'failed';
 				state.error = action.payload?.message ?? 'Failed to save profile.';
 				state.fieldErrors = action.payload?.fieldErrors ?? {};
+			})
+			.addCase(addExperience.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+				state.fieldErrors = {};
+			})
+			.addCase(addExperience.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.profile = action.payload;
+			})
+			.addCase(addExperience.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Failed to add experience.';
+				state.fieldErrors = action.payload?.fieldErrors ?? {};
+			})
+			.addCase(deleteExperience.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+			})
+			.addCase(deleteExperience.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.profile = action.payload;
+			})
+			.addCase(deleteExperience.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Failed to delete experience.';
 			});
 	},
 });
