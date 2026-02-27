@@ -99,7 +99,7 @@ function UserBasicsSection() {
 			isSubmitting={authStatus === 'loading'}
 			errorMessage={authError}
 			content={
-				<div className="profile-contents">
+				<>
 					<main>
 						<h2 className="heading-xl">{user?.name ?? 'Developer'}</h2>
 						{user?.headline && (
@@ -110,7 +110,7 @@ function UserBasicsSection() {
 						)}
 					</main>
 					<aside className="user-status"></aside>
-				</div>
+				</>
 			}
 		>
 			<Input
