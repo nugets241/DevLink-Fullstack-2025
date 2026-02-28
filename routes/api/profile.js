@@ -7,6 +7,39 @@ import Post from '../../models/Post.js';
 
 const router = Router();
 
+const experienceValidators = [
+	check('title', 'Title is required').not().isEmpty(),
+	check('company', 'Company is required').not().isEmpty(),
+	check('from', 'From date is required').not().isEmpty(),
+	check('to').custom((value, { req }) => {
+		const isCurrent = req.body.current === true || req.body.current === 'true';
+
+		if (!isCurrent && !value) {
+			throw new Error('To date is required when experience is not current');
+		}
+
+		return true;
+	}),
+	check('to').custom((value, { req }) => {
+		const isCurrent = req.body.current === true || req.body.current === 'true';
+
+		if (isCurrent || !value || !req.body.from) return true;
+
+		const fromDate = new Date(req.body.from);
+		const toDate = new Date(value);
+
+		if (Number.isNaN(fromDate.getTime()) || Number.isNaN(toDate.getTime())) {
+			throw new Error('From and To must be valid dates');
+		}
+
+		if (toDate < fromDate) {
+			throw new Error('To date must be on or after From date');
+		}
+
+		return true;
+	}),
+];
+
 // @route   GET api/profile/me
 // @desc    Get current user's profile
 // @access  Private
@@ -177,16 +210,46 @@ router.delete('/', auth, async (req, res) => {
 // @route   PUT api/profile/experience
 // @desc    Add profile experience
 // @access  Private
-router.put(
-	'/experience',
-	[
-		auth,
-		[
-			check('title', 'Title is required').not().isEmpty(),
-			check('company', 'Company is required').not().isEmpty(),
-			check('from', 'From date is required').not().isEmpty(),
-		],
-	],
+router.put('/experience', [auth, ...experienceValidators], async (req, res) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+
+	const { title, company, location, from, to, current, description } = req.body;
+
+	const newExp = {
+		title,
+		company,
+		location,
+		from,
+		to,
+		current,
+		description,
+	};
+
+	try {
+		const profile = await Profile.findOne({ user: req.user.id });
+		if (!profile) {
+			return res.status(404).json({ msg: 'Profile not found' });
+		}
+
+		profile.experience.unshift(newExp);
+		await profile.save();
+
+		res.json(profile);
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).send('Server error');
+	}
+});
+
+// @route   PATCH api/profile/experience/:exp_id
+// @desc    Update profile experience
+// @access  Private
+router.patch(
+	'/experience/:exp_id',
+	[auth, ...experienceValidators],
 	async (req, res) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
@@ -196,23 +259,25 @@ router.put(
 		const { title, company, location, from, to, current, description } =
 			req.body;
 
-		const newExp = {
-			title,
-			company,
-			location,
-			from,
-			to,
-			current,
-			description,
-		};
-
 		try {
 			const profile = await Profile.findOne({ user: req.user.id });
 			if (!profile) {
 				return res.status(404).json({ msg: 'Profile not found' });
 			}
 
-			profile.experience.unshift(newExp);
+			const experience = profile.experience.id(req.params.exp_id);
+			if (!experience) {
+				return res.status(404).json({ msg: 'Experience not found' });
+			}
+
+			experience.title = title;
+			experience.company = company;
+			experience.location = location;
+			experience.from = from;
+			experience.to = current ? undefined : to;
+			experience.current = current;
+			experience.description = description;
+
 			await profile.save();
 
 			res.json(profile);
