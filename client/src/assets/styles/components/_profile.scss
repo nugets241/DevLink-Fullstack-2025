@@ -52,70 +52,6 @@
 	}
 }
 
-.work-list,
-.experience-list {
-	display: flex;
-	flex-direction: column;
-	gap: 0.75rem;
-}
-
-.work-empty,
-.experience-empty {
-	color: $text-muted;
-}
-
-.work-item,
-.experience-item {
-	border: 1px solid $border-default;
-	border-radius: 8px;
-	padding: 0.75rem;
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-
-.work-item-header,
-.experience-item-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
-	gap: 0.75rem;
-
-	h3 {
-		margin: 0;
-	}
-
-	p {
-		margin: 0.25rem 0 0;
-	}
-
-	button + button {
-		margin-left: 0.5rem;
-	}
-}
-
-.work-dates,
-.work-description,
-.experience-dates,
-.experience-description {
-	color: $text-muted;
-}
-
-.work-current-field,
-.experience-current-field {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-
-	input[type='checkbox'] {
-		width: auto;
-	}
-
-	.label {
-		margin: 0;
-	}
-}
-
 .profile-edit-modal {
 	display: flex;
 	flex-direction: column;
@@ -173,9 +109,7 @@
 	}
 }
 
-.profile-edit-trigger,
-.profile-add-trigger,
-.profile-modal-close {
+.profile-icon-button {
 	color: $text-secondary;
 	width: 40px;
 	height: 40px;
@@ -197,6 +131,67 @@
 	&:hover {
 		color: $text-primary;
 		background: $border-default;
+	}
+}
+
+// Experience Section
+.experience-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.experience-empty {
+	color: $text-muted;
+}
+
+.experience-item {
+	border-bottom: 1px solid $border-default;
+	padding: 0.75rem 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+
+	&:last-child {
+		border-bottom: none;
+	}
+}
+
+.experience-item-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 0.75rem;
+
+	h3 {
+		margin: 0;
+	}
+
+	p {
+		margin: 0.25rem 0 0;
+	}
+
+	button + button {
+		margin-left: 0.5rem;
+	}
+}
+
+.experience-dates,
+.experience-description {
+	color: $text-muted;
+}
+
+.experience-current-field {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+
+	input[type='checkbox'] {
+		width: auto;
+	}
+
+	.label {
+		margin: 0;
 	}
 }
 
