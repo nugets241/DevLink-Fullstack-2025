@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import User from '../../models/User.js';
+import Profile from '../../models/Profile.js';
 import gravatar from 'gravatar';
 import argon2 from 'argon2';
 import { ARGON2_OPTIONS } from '../../utils/config.js';
@@ -87,6 +88,13 @@ router.post('/', registerValidators, async (req, res) => {
 			avatar,
 		});
 		await user.save();
+
+		await Profile.create({
+			user: user.id,
+			skills: [],
+			experience: [],
+			education: [],
+		});
 
 		try {
 			const token = await generateToken(user.id);
