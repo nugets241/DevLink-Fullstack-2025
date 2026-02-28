@@ -6,7 +6,7 @@ const ProfileSchema = new mongoose.Schema(
 		company: { type: String, trim: true },
 		website: { type: String, trim: true },
 		about: { type: String, trim: true },
-		skills: { type: [String], required: true },
+		skills: { type: [String] },
 		social: {
 			youtube: { type: String, trim: true },
 			x: { type: String, trim: true },
