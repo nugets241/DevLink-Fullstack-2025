@@ -79,6 +79,10 @@ type AddExperiencePayload = {
 	description?: string;
 };
 
+type UpdateExperiencePayload = AddExperiencePayload & {
+	experienceId: string;
+};
+
 const initialState: ProfileState = {
 	profile: null,
 	status: 'idle',
@@ -241,6 +245,47 @@ export const deleteExperience = createAsyncThunk<
 	}
 });
 
+export const updateExperience = createAsyncThunk<
+	Profile,
+	UpdateExperiencePayload,
+	{ rejectValue: RejectValue }
+>('profile/updateExperience', async (payload, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const { experienceId, ...body } = payload;
+		const response = await fetch(
+			API_ENDPOINTS.profileExperienceById(experienceId),
+			{
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(body),
+			},
+		);
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			const fieldErrors = data?.errors ? mapFieldErrors(data.errors) : {};
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to update experience.',
+				fieldErrors,
+			});
+		}
+
+		const data = (await response.json()) as Profile;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
 const profileSlice = createSlice({
 	name: 'profile',
 	initialState,
@@ -312,6 +357,20 @@ const profileSlice = createSlice({
 			.addCase(deleteExperience.rejected, (state, action) => {
 				state.status = 'failed';
 				state.error = action.payload?.message ?? 'Failed to delete experience.';
+			})
+			.addCase(updateExperience.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+				state.fieldErrors = {};
+			})
+			.addCase(updateExperience.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.profile = action.payload;
+			})
+			.addCase(updateExperience.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Failed to update experience.';
+				state.fieldErrors = action.payload?.fieldErrors ?? {};
 			});
 	},
 });
