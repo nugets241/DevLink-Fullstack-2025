@@ -1,5 +1,5 @@
 import React from 'react';
-import { LuPencil } from 'react-icons/lu';
+import { LuPencil, LuPlus } from 'react-icons/lu';
 import { MdOutlineClose } from 'react-icons/md';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
@@ -9,6 +9,9 @@ type EditableSectionProps = {
 	className: string;
 	headerContent: React.ReactNode;
 	content: React.ReactNode;
+	triggerVariant?: 'edit' | 'add';
+	triggerIcon?: React.ReactNode;
+	triggerAriaLabel?: string;
 	isModalOpen: boolean;
 	onOpen: () => void;
 	onClose: () => void;
@@ -25,6 +28,9 @@ function EditableSection({
 	className,
 	headerContent,
 	content,
+	triggerVariant = 'edit',
+	triggerIcon,
+	triggerAriaLabel = 'Edit section',
 	isModalOpen,
 	onOpen,
 	onClose,
@@ -36,6 +42,14 @@ function EditableSection({
 	submittingLabel = 'Saving...',
 	children,
 }: EditableSectionProps) {
+	const resolvedTriggerIcon =
+		triggerIcon ??
+		(triggerVariant === 'add' ? (
+			<LuPlus aria-hidden="true" focusable="false" />
+		) : (
+			<LuPencil aria-hidden="true" focusable="false" />
+		));
+
 	return (
 		<>
 			<section className={clsx('profile-section-card', className)}>
@@ -43,11 +57,15 @@ function EditableSection({
 					{headerContent}
 					<button
 						type="button"
-						className="profile-edit-trigger"
+						className={
+							triggerVariant === 'add'
+								? 'profile-add-trigger'
+								: 'profile-edit-trigger'
+						}
 						onClick={onOpen}
-						aria-label="Edit section"
+						aria-label={triggerAriaLabel}
 					>
-						<LuPencil aria-hidden="true" focusable="false" />
+						{resolvedTriggerIcon}
 					</button>
 				</header>
 				<div className="profile-contents">{content}</div>
