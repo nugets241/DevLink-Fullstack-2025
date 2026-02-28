@@ -21,7 +21,12 @@ const ProfileSchema = new mongoose.Schema(
 				company: { type: String, required: true, trim: true },
 				location: { type: String, trim: true },
 				from: { type: Date, required: true },
-				to: { type: Date },
+				to: {
+					type: Date,
+					required: function () {
+						return !this.current;
+					},
+				},
 				current: { type: Boolean, default: false },
 				description: { type: String, trim: true },
 			},
@@ -32,7 +37,12 @@ const ProfileSchema = new mongoose.Schema(
 				degree: { type: String, required: true, trim: true },
 				fieldofstudy: { type: String, required: true, trim: true },
 				from: { type: Date, required: true },
-				to: { type: Date },
+				to: {
+					type: Date,
+					required: function () {
+						return !this.current;
+					},
+				},
 				current: { type: Boolean, default: false },
 				description: { type: String, trim: true },
 			},
