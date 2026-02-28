@@ -41,11 +41,6 @@ textarea {
 	}
 }
 
-label {
-	color: $text-secondary;
-	font-size: 0.9rem;
-}
-
 .form {
 	display: flex;
 	flex-direction: column;
@@ -64,9 +59,9 @@ label {
 	}
 
 	.label {
+		color: $text-secondary;
 		font-weight: 600;
-		font-size: 0.95rem;
-		color: $text-primary;
+		font-size: 0.9rem;
 		cursor: pointer;
 	}
 
