@@ -57,11 +57,7 @@ function EditableSection({
 					{headerContent}
 					<button
 						type="button"
-						className={
-							triggerVariant === 'add'
-								? 'profile-add-trigger'
-								: 'profile-edit-trigger'
-						}
+						className="profile-icon-button"
 						onClick={onOpen}
 						aria-label={triggerAriaLabel}
 					>
@@ -77,7 +73,7 @@ function EditableSection({
 						<h2>{modalTitle}</h2>
 						<button
 							type="button"
-							className="profile-modal-close"
+							className="profile-icon-button"
 							onClick={onClose}
 							aria-label="Close modal"
 						>
