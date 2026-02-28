@@ -5,6 +5,7 @@ import {
 	clearProfileError,
 	clearProfileFieldError,
 	deleteExperience,
+	updateExperience,
 } from '../../store/slices/profileSlice';
 import Input from '../common/Input';
 import Button from '../common/Button';
@@ -29,6 +30,11 @@ const initialExperienceFormValues: ExperienceFormValues = {
 	current: false,
 	description: '',
 };
+
+function normalizeDateInput(value?: string) {
+	if (!value) return '';
+	return value.slice(0, 10);
+}
 
 function formatDateLabel(value?: string) {
 	if (!value) return '';
@@ -56,17 +62,42 @@ function ExperienceSection() {
 	const [deletingExperienceId, setDeletingExperienceId] = React.useState<
 		string | null
 	>(null);
+	const [editingExperienceId, setEditingExperienceId] = React.useState<
+		string | null
+	>(null);
 
 	const experiences = profile?.experience ?? [];
 
 	const openExperienceModal = () => {
 		dispatch(clearProfileError());
+		setEditingExperienceId(null);
 		setExperienceFormValues(initialExperienceFormValues);
+		setIsExperienceModalOpen(true);
+	};
+
+	const openEditExperienceModal = (
+		experience: (typeof experiences)[number],
+	) => {
+		const experienceId = experience._id || experience.id || null;
+		if (!experienceId) return;
+
+		dispatch(clearProfileError());
+		setEditingExperienceId(experienceId);
+		setExperienceFormValues({
+			title: experience.title ?? '',
+			company: experience.company ?? '',
+			location: experience.location ?? '',
+			from: normalizeDateInput(experience.from),
+			to: normalizeDateInput(experience.to),
+			current: Boolean(experience.current),
+			description: experience.description ?? '',
+		});
 		setIsExperienceModalOpen(true);
 	};
 
 	const closeExperienceModal = () => {
 		setIsExperienceModalOpen(false);
+		setEditingExperienceId(null);
 		dispatch(clearProfileError());
 	};
 
@@ -92,21 +123,31 @@ function ExperienceSection() {
 	) => {
 		event.preventDefault();
 
-		const actionResult = await dispatch(
-			addExperience({
-				title: experienceFormValues.title.trim(),
-				company: experienceFormValues.company.trim(),
-				location: experienceFormValues.location.trim() || undefined,
-				from: experienceFormValues.from,
-				to: experienceFormValues.current
-					? undefined
-					: experienceFormValues.to || undefined,
-				current: experienceFormValues.current,
-				description: experienceFormValues.description.trim() || undefined,
-			}),
-		);
+		const payload = {
+			title: experienceFormValues.title.trim(),
+			company: experienceFormValues.company.trim(),
+			location: experienceFormValues.location.trim() || undefined,
+			from: experienceFormValues.from,
+			to: experienceFormValues.current
+				? undefined
+				: experienceFormValues.to || undefined,
+			current: experienceFormValues.current,
+			description: experienceFormValues.description.trim() || undefined,
+		};
 
-		if (addExperience.fulfilled.match(actionResult)) {
+		const actionResult = editingExperienceId
+			? await dispatch(
+					updateExperience({
+						experienceId: editingExperienceId,
+						...payload,
+					}),
+				)
+			: await dispatch(addExperience(payload));
+
+		if (
+			addExperience.fulfilled.match(actionResult) ||
+			updateExperience.fulfilled.match(actionResult)
+		) {
 			closeExperienceModal();
 		}
 	};
@@ -156,6 +197,14 @@ function ExperienceSection() {
 										</div>
 										<Button
 											type="button"
+											variant="secondary"
+											onClick={() => openEditExperienceModal(experience)}
+											disabled={profileStatus === 'loading'}
+										>
+											Edit
+										</Button>
+										<Button
+											type="button"
 											variant="tertiary"
 											onClick={() => handleDeleteExperience(experienceId)}
 											disabled={
@@ -183,11 +232,11 @@ function ExperienceSection() {
 			isModalOpen={isExperienceModalOpen}
 			onOpen={openExperienceModal}
 			onClose={closeExperienceModal}
-			modalTitle="Add experience"
+			modalTitle={editingExperienceId ? 'Edit experience' : 'Add experience'}
 			onSubmit={handleExperienceSubmit}
 			isSubmitting={profileStatus === 'loading' && !deletingExperienceId}
 			errorMessage={profileError}
-			submitLabel="Add experience"
+			submitLabel={editingExperienceId ? 'Update experience' : 'Add experience'}
 			submittingLabel="Saving..."
 		>
 			<Input
@@ -233,7 +282,7 @@ function ExperienceSection() {
 					checked={experienceFormValues.current}
 					onChange={handleExperienceInputChange}
 				/>
-				<span className="label">I currently experience here</span>
+				<span className="label">I currently work here</span>
 			</label>
 			<div className="field">
 				<label className="label" htmlFor="experience-description">
