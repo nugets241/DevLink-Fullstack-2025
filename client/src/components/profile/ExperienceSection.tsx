@@ -166,6 +166,8 @@ function ExperienceSection() {
 		<EditableSection
 			className="card"
 			headerContent={<h2>Experience</h2>}
+			triggerVariant="add"
+			triggerAriaLabel="Add experience"
 			content={
 				<div className="experience-list">
 					{experiences.length === 0 ? (
