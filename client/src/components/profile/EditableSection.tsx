@@ -84,12 +84,9 @@ function EditableSection({
 							<MdOutlineClose aria-hidden="true" focusable="false" />
 						</button>
 					</div>
-					<form className="profile-edit-form" onSubmit={onSubmit}>
-						<div className="profile-edit-body">
-							{children}
-
-							{errorMessage && <p className="error">{errorMessage}</p>}
-						</div>
+					<form className="form profile-edit-form" onSubmit={onSubmit}>
+						<div className="profile-edit-body">{children}</div>
+						{errorMessage && <p className="error">{errorMessage}</p>}
 
 						<div className="profile-edit-footer">
 							<Button type="submit" disabled={isSubmitting}>
