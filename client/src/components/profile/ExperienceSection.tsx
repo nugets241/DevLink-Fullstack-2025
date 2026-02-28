@@ -116,6 +116,10 @@ function ExperienceSection() {
 		}));
 
 		dispatch(clearProfileFieldError(name));
+
+		if (name === 'current' && value === true) {
+			dispatch(clearProfileFieldError('to'));
+		}
 	};
 
 	const handleExperienceSubmit = async (
@@ -276,6 +280,7 @@ function ExperienceSection() {
 				value={experienceFormValues.to}
 				onChange={handleExperienceInputChange}
 				disabled={experienceFormValues.current}
+				error={profileFieldErrors.to}
 			/>
 			<label className="field experience-current-field">
 				<input
