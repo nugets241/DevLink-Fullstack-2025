@@ -10,6 +10,7 @@ import {
 import Input from '../common/Input';
 import Button from '../common/Button';
 import EditableSection from './EditableSection';
+import { LuPencil, LuX } from 'react-icons/lu';
 
 type ExperienceFormValues = {
 	title: string;
@@ -201,28 +202,24 @@ function ExperienceSection() {
 											)}
 											{experience.location && <p>{experience.location}</p>}
 										</div>
-										<Button
-											type="button"
-											variant="secondary"
-											onClick={() => openEditExperienceModal(experience)}
-											disabled={profileStatus === 'loading'}
-										>
-											Edit
-										</Button>
-										<Button
-											type="button"
-											variant="tertiary"
-											onClick={() => handleDeleteExperience(experienceId)}
-											disabled={
-												profileStatus === 'loading' &&
-												deletingExperienceId === experienceId
-											}
-										>
-											{profileStatus === 'loading' &&
-											deletingExperienceId === experienceId
-												? 'Deleting...'
-												: 'Delete'}
-										</Button>
+										<div>
+											<button
+												type="button"
+												className="profile-icon-button"
+												onClick={() => handleDeleteExperience(experienceId)}
+												aria-label={`Delete experience at ${experience.company}`}
+											>
+												<LuX aria-hidden="true" focusable="false" />
+											</button>
+											<button
+												type="button"
+												className="profile-icon-button"
+												onClick={() => openEditExperienceModal(experience)}
+												aria-label={`Edit experience at ${experience.company}`}
+											>
+												<LuPencil aria-hidden="true" focusable="false" />
+											</button>
+										</div>
 									</div>
 									{experience.description && (
 										<p className="experience-description">
