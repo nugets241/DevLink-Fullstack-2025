@@ -7,7 +7,9 @@ import {
 	deleteExperience,
 	updateExperience,
 } from '../../store/slices/profileSlice';
+import Button from '../common/Button';
 import Input from '../common/Input';
+import Modal from '../common/Modal';
 import Textarea from '../common/Textarea';
 import EditableSection from './EditableSection';
 import { LuPencil, LuX } from 'react-icons/lu';
@@ -63,6 +65,10 @@ function ExperienceSection() {
 	const [deletingExperienceId, setDeletingExperienceId] = React.useState<
 		string | null
 	>(null);
+	const [confirmingExperience, setConfirmingExperience] = React.useState<{
+		id: string;
+		company: string;
+	} | null>(null);
 	const [editingExperienceId, setEditingExperienceId] = React.useState<
 		string | null
 	>(null);
@@ -99,6 +105,20 @@ function ExperienceSection() {
 	const closeExperienceModal = () => {
 		setIsExperienceModalOpen(false);
 		setEditingExperienceId(null);
+		dispatch(clearProfileError());
+	};
+
+	const openDeleteConfirmation = (experienceId: string, company?: string) => {
+		dispatch(clearProfileError());
+		setConfirmingExperience({
+			id: experienceId,
+			company: company || 'this company',
+		});
+	};
+
+	const closeDeleteConfirmation = () => {
+		if (deletingExperienceId) return;
+		setConfirmingExperience(null);
 		dispatch(clearProfileError());
 	};
 
@@ -157,151 +177,198 @@ function ExperienceSection() {
 		}
 	};
 
-	const handleDeleteExperience = async (experienceId: string) => {
+	const handleDeleteExperience = async () => {
+		if (!confirmingExperience) return;
+		const experienceId = confirmingExperience.id;
 		setDeletingExperienceId(experienceId);
 		const result = await dispatch(deleteExperience(experienceId));
 		if (deleteExperience.fulfilled.match(result)) {
 			setDeletingExperienceId(null);
+			setConfirmingExperience(null);
 			return;
 		}
 		setDeletingExperienceId(null);
 	};
 
 	return (
-		<EditableSection
-			className="card"
-			headerContent={<h2>Experience</h2>}
-			triggerVariant="add"
-			triggerAriaLabel="Add experience"
-			content={
-				<div className="experience-list">
-					{experiences.length === 0 ? (
-						<p className="experience-empty">Add your experience experience.</p>
-					) : (
-						experiences.map((experience) => {
-							const experienceId = experience._id || experience.id || '';
-							if (!experienceId) return null;
+		<>
+			<EditableSection
+				className="card"
+				headerContent={<h2>Experience</h2>}
+				triggerVariant="add"
+				triggerAriaLabel="Add experience"
+				content={
+					<div className="experience-list">
+						{experiences.length === 0 ? (
+							<p className="experience-empty">
+								Add your experience experience.
+							</p>
+						) : (
+							experiences.map((experience) => {
+								const experienceId = experience._id || experience.id || '';
+								if (!experienceId) return null;
 
-							const fromLabel = formatDateLabel(experience.from);
-							const toLabel = experience.current
-								? 'Present'
-								: formatDateLabel(experience.to);
+								const fromLabel = formatDateLabel(experience.from);
+								const toLabel = experience.current
+									? 'Present'
+									: formatDateLabel(experience.to);
 
-							return (
-								<article key={experienceId} className="experience-item">
-									<div className="experience-item-header">
-										<div>
-											<h3>{experience.title}</h3>
-											<p>{experience.company}</p>
-											{(fromLabel || toLabel) && (
-												<p className="experience-dates">
-													{fromLabel}
-													{fromLabel && toLabel ? ' - ' : ''}
-													{toLabel}
-												</p>
-											)}
-											{experience.location && (
-												<p className="experience-location">
-													{experience.location}
-												</p>
-											)}
+								return (
+									<article key={experienceId} className="experience-item">
+										<div className="experience-item-header">
+											<div>
+												<h3>{experience.title}</h3>
+												<p>{experience.company}</p>
+												{(fromLabel || toLabel) && (
+													<p className="experience-dates">
+														{fromLabel}
+														{fromLabel && toLabel ? ' - ' : ''}
+														{toLabel}
+													</p>
+												)}
+												{experience.location && (
+													<p className="experience-location">
+														{experience.location}
+													</p>
+												)}
+											</div>
+											<div>
+												<button
+													type="button"
+													className="profile-icon-button"
+													onClick={() =>
+														openDeleteConfirmation(
+															experienceId,
+															experience.company,
+														)
+													}
+													aria-label={`Delete experience at ${experience.company}`}
+												>
+													<LuX aria-hidden="true" focusable="false" />
+												</button>
+												<button
+													type="button"
+													className="profile-icon-button"
+													onClick={() => openEditExperienceModal(experience)}
+													aria-label={`Edit experience at ${experience.company}`}
+												>
+													<LuPencil aria-hidden="true" focusable="false" />
+												</button>
+											</div>
 										</div>
-										<div>
-											<button
-												type="button"
-												className="profile-icon-button"
-												onClick={() => handleDeleteExperience(experienceId)}
-												aria-label={`Delete experience at ${experience.company}`}
-											>
-												<LuX aria-hidden="true" focusable="false" />
-											</button>
-											<button
-												type="button"
-												className="profile-icon-button"
-												onClick={() => openEditExperienceModal(experience)}
-												aria-label={`Edit experience at ${experience.company}`}
-											>
-												<LuPencil aria-hidden="true" focusable="false" />
-											</button>
-										</div>
-									</div>
-									{experience.description && (
-										<p className="experience-description">
-											{experience.description}
-										</p>
-									)}
-								</article>
-							);
-						})
-					)}
-				</div>
-			}
-			isModalOpen={isExperienceModalOpen}
-			onOpen={openExperienceModal}
-			onClose={closeExperienceModal}
-			modalTitle={editingExperienceId ? 'Edit experience' : 'Add experience'}
-			onSubmit={handleExperienceSubmit}
-			isSubmitting={profileStatus === 'loading' && !deletingExperienceId}
-			errorMessage={profileError}
-			submitLabel={editingExperienceId ? 'Update experience' : 'Add experience'}
-			submittingLabel="Saving..."
-		>
-			<Input
-				name="title"
-				label="Job title"
-				value={experienceFormValues.title}
-				onChange={handleExperienceInputChange}
-				error={profileFieldErrors.title}
-			/>
-			<Input
-				name="company"
-				label="Company"
-				value={experienceFormValues.company}
-				onChange={handleExperienceInputChange}
-				error={profileFieldErrors.company}
-			/>
-			<Input
-				name="location"
-				label="Location"
-				value={experienceFormValues.location}
-				onChange={handleExperienceInputChange}
-			/>
-			<Input
-				name="from"
-				label="From"
-				type="date"
-				value={experienceFormValues.from}
-				onChange={handleExperienceInputChange}
-				error={profileFieldErrors.from}
-			/>
-			<Input
-				name="to"
-				label="To"
-				type="date"
-				value={experienceFormValues.to}
-				onChange={handleExperienceInputChange}
-				disabled={experienceFormValues.current}
-				error={profileFieldErrors.to}
-			/>
-			<label className="field experience-current-field">
-				<input
-					type="checkbox"
-					name="current"
-					checked={experienceFormValues.current}
+										{experience.description && (
+											<p className="experience-description">
+												{experience.description}
+											</p>
+										)}
+									</article>
+								);
+							})
+						)}
+					</div>
+				}
+				isModalOpen={isExperienceModalOpen}
+				onOpen={openExperienceModal}
+				onClose={closeExperienceModal}
+				modalTitle={editingExperienceId ? 'Edit experience' : 'Add experience'}
+				onSubmit={handleExperienceSubmit}
+				isSubmitting={profileStatus === 'loading' && !deletingExperienceId}
+				errorMessage={profileError}
+				submitLabel={
+					editingExperienceId ? 'Update experience' : 'Add experience'
+				}
+				submittingLabel="Saving..."
+			>
+				<Input
+					name="title"
+					label="Job title"
+					value={experienceFormValues.title}
+					onChange={handleExperienceInputChange}
+					error={profileFieldErrors.title}
+				/>
+				<Input
+					name="company"
+					label="Company"
+					value={experienceFormValues.company}
+					onChange={handleExperienceInputChange}
+					error={profileFieldErrors.company}
+				/>
+				<Input
+					name="location"
+					label="Location"
+					value={experienceFormValues.location}
 					onChange={handleExperienceInputChange}
 				/>
-				<span className="label">I currently work here</span>
-			</label>
-			<Textarea
-				id="experience-description"
-				label="Description"
-				name="description"
-				minRows={1}
-				value={experienceFormValues.description}
-				onChange={handleExperienceInputChange}
-				error={profileFieldErrors.description}
-			/>
-		</EditableSection>
+				<Input
+					name="from"
+					label="From"
+					type="date"
+					value={experienceFormValues.from}
+					onChange={handleExperienceInputChange}
+					error={profileFieldErrors.from}
+				/>
+				<Input
+					name="to"
+					label="To"
+					type="date"
+					value={experienceFormValues.to}
+					onChange={handleExperienceInputChange}
+					disabled={experienceFormValues.current}
+					error={profileFieldErrors.to}
+				/>
+				<label className="field experience-current-field">
+					<input
+						type="checkbox"
+						name="current"
+						checked={experienceFormValues.current}
+						onChange={handleExperienceInputChange}
+					/>
+					<span className="label">I currently work here</span>
+				</label>
+				<Textarea
+					id="experience-description"
+					label="Description"
+					name="description"
+					minRows={1}
+					value={experienceFormValues.description}
+					onChange={handleExperienceInputChange}
+					error={profileFieldErrors.description}
+				/>
+			</EditableSection>
+
+			<Modal
+				isOpen={Boolean(confirmingExperience)}
+				preventClose={Boolean(deletingExperienceId)}
+			>
+				<div className="profile-delete-modal">
+					<h3>Delete experience?</h3>
+					<p>
+						This will remove your experience at{' '}
+						<strong>{confirmingExperience?.company}</strong>.
+					</p>
+					<p>This action cannot be undone.</p>
+					{profileError && <p className="error">{profileError}</p>}
+					<div className="profile-delete-actions">
+						<Button
+							type="button"
+							variant="tertiary"
+							onClick={closeDeleteConfirmation}
+							disabled={Boolean(deletingExperienceId)}
+						>
+							Cancel
+						</Button>
+						<Button
+							type="button"
+							variant="secondary"
+							onClick={handleDeleteExperience}
+							disabled={Boolean(deletingExperienceId)}
+						>
+							{deletingExperienceId ? 'Deleting...' : 'Delete'}
+						</Button>
+					</div>
+				</div>
+			</Modal>
+		</>
 	);
 }
 
