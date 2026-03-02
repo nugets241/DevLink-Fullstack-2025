@@ -7,7 +7,7 @@ interface IButton extends React.ComponentPropsWithoutRef<'button'> {
 	 *
 	 * @default "primary"
 	 */
-	variant?: 'primary' | 'secondary' | 'tertiary';
+	variant?: 'primary' | 'secondary' | 'tertiary' | 'icon';
 }
 
 /**
@@ -32,6 +32,9 @@ function Button({
 
 			// Tertiary button
 			['button-tertiary']: variant === 'tertiary',
+
+			// Icon button
+			['icon-button']: variant === 'icon',
 		},
 		className,
 	);
