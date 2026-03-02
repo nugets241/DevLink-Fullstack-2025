@@ -111,7 +111,11 @@ function EditableSection({
 							<MdOutlineClose aria-hidden="true" focusable="false" />
 						</Button>
 					</div>
-					<form className="form profile-edit-form" onSubmit={onSubmit}>
+					<form
+						className="form profile-edit-form"
+						onSubmit={onSubmit}
+						noValidate
+					>
 						<div className="profile-edit-body">
 							{showsRequiredHint && (
 								<p className="required-fields-note">
