@@ -55,7 +55,18 @@ function SkillsSection() {
 
 	const skills = profile?.skills ?? [];
 
+	const handleOpenCreateModal = () => {
+		setSkillTitleError(null);
+		openCreateModal();
+	};
+
+	const handleCloseSkillModal = () => {
+		setSkillTitleError(null);
+		closeSkillModal();
+	};
+
 	const openEditSkillModal = (skillIndex: number, title: string) => {
+		setSkillTitleError(null);
 		openEditModal(String(skillIndex), {
 			title,
 		});
@@ -106,7 +117,7 @@ function SkillsSection() {
 			addSkill.fulfilled.match(actionResult) ||
 			updateSkill.fulfilled.match(actionResult)
 		) {
-			closeSkillModal();
+			handleCloseSkillModal();
 		}
 	};
 
@@ -167,8 +178,8 @@ function SkillsSection() {
 					</div>
 				}
 				isModalOpen={isSkillModalOpen}
-				onOpen={openCreateModal}
-				onClose={closeSkillModal}
+				onOpen={handleOpenCreateModal}
+				onClose={handleCloseSkillModal}
 				modalTitle={editingSkillId ? 'Edit skill' : 'Add skill'}
 				onSubmit={handleSkillSubmit}
 				isSubmitting={profileStatus === 'loading' && !deletingSkillId}
