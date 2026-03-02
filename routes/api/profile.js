@@ -74,6 +74,10 @@ const educationValidators = [
 	}),
 ];
 
+const skillValidators = [
+	check('title', 'Skill is a required field').trim().notEmpty(),
+];
+
 // @route   GET api/profile/me
 // @desc    Get current user's profile
 // @access  Private
@@ -102,7 +106,35 @@ router.patch(
 		auth,
 		[
 			check('status', 'Status is required').not().isEmpty(),
-			check('skills', 'Skills is required').not().isEmpty(),
+			check('skills')
+				.optional({ nullable: true })
+				.custom((value) => {
+					if (Array.isArray(value)) {
+						const hasEmptySkill = value.some(
+							(skill) => String(skill).trim().length === 0,
+						);
+
+						if (hasEmptySkill) {
+							throw new Error('Skill is a required field');
+						}
+
+						return true;
+					}
+
+					if (typeof value === 'string') {
+						const hasEmptySkill = value
+							.split(',')
+							.some((skill) => skill.trim().length === 0);
+
+						if (hasEmptySkill) {
+							throw new Error('Skill is a required field');
+						}
+
+						return true;
+					}
+
+					throw new Error('Skills must be a string or an array of strings');
+				}),
 			// URL validation: prevents XSS, invalid URLs, and non-http(s) protocols
 			check('website')
 				.optional({ checkFalsy: true })
@@ -152,6 +184,13 @@ router.patch(
 		} = req.body;
 
 		try {
+			const normalizedSkills =
+				skills === undefined || skills === null
+					? undefined
+					: Array.isArray(skills)
+						? skills.map((skill) => String(skill).trim())
+						: skills.split(',').map((skill) => skill.trim());
+
 			// Build profile object
 			const profileFields = {
 				user: req.user.id,
@@ -159,9 +198,7 @@ router.patch(
 				website,
 				location,
 				about,
-				skills: Array.isArray(skills)
-					? skills
-					: skills.split(',').map((skill) => skill.trim()),
+				...(normalizedSkills !== undefined ? { skills: normalizedSkills } : {}),
 				social,
 				experience,
 				education,
@@ -453,6 +490,108 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
 		}
 
 		profile.education.splice(removeIndex, 1);
+		await profile.save();
+
+		res.json(profile);
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).send('Server error');
+	}
+});
+
+// @route   PUT api/profile/skills
+// @desc    Add profile skill
+// @access  Private
+router.put('/skills', [auth, ...skillValidators], async (req, res) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+
+	const { title } = req.body;
+	const normalizedTitle = title.trim();
+
+	try {
+		const profile = await Profile.findOne({ user: req.user.id });
+		if (!profile) {
+			return res.status(404).json({ msg: 'Profile not found' });
+		}
+
+		profile.skills = profile.skills || [];
+		profile.skills.unshift(normalizedTitle);
+		await profile.save();
+
+		res.json(profile);
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).send('Server error');
+	}
+});
+
+// @route   PATCH api/profile/skills/:skill_index
+// @desc    Update profile skill
+// @access  Private
+router.patch(
+	'/skills/:skill_index',
+	[auth, ...skillValidators],
+	async (req, res) => {
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(400).json({ errors: errors.array() });
+		}
+
+		const { title } = req.body;
+		const normalizedTitle = title.trim();
+		const skillIndex = Number(req.params.skill_index);
+
+		if (!Number.isInteger(skillIndex) || skillIndex < 0) {
+			return res.status(400).json({ msg: 'Invalid skill index' });
+		}
+
+		try {
+			const profile = await Profile.findOne({ user: req.user.id });
+			if (!profile) {
+				return res.status(404).json({ msg: 'Profile not found' });
+			}
+
+			profile.skills = profile.skills || [];
+			if (skillIndex >= profile.skills.length) {
+				return res.status(404).json({ msg: 'Skill not found' });
+			}
+
+			profile.skills[skillIndex] = normalizedTitle;
+			await profile.save();
+
+			res.json(profile);
+		} catch (err) {
+			console.error(err.message);
+			res.status(500).send('Server error');
+		}
+	},
+);
+
+// @route   DELETE api/profile/skills/:skill_index
+// @desc    Delete profile skill
+// @access  Private
+router.delete('/skills/:skill_index', auth, async (req, res) => {
+	const skillIndex = Number(req.params.skill_index);
+
+	if (!Number.isInteger(skillIndex) || skillIndex < 0) {
+		return res.status(400).json({ msg: 'Invalid skill index' });
+	}
+
+	try {
+		const profile = await Profile.findOne({ user: req.user.id });
+		if (!profile) {
+			return res.status(404).json({ msg: 'Profile not found' });
+		}
+
+		profile.skills = profile.skills || [];
+		if (skillIndex >= profile.skills.length) {
+			return res.status(404).json({ msg: 'Skill not found' });
+		}
+
+		profile.skills.splice(skillIndex, 1);
 		await profile.save();
 
 		res.json(profile);

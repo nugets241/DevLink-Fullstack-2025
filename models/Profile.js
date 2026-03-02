@@ -6,7 +6,19 @@ const ProfileSchema = new mongoose.Schema(
 		company: { type: String, trim: true },
 		website: { type: String, trim: true },
 		about: { type: String, trim: true },
-		skills: { type: [String] },
+		skills: {
+			type: [
+				{
+					type: String,
+					trim: true,
+					validate: {
+						validator: (value) =>
+							typeof value === 'string' && value.trim().length > 0,
+						message: 'Skill is a required field',
+					},
+				},
+			],
+		},
 		social: {
 			youtube: { type: String, trim: true },
 			x: { type: String, trim: true },
