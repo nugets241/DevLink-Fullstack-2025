@@ -7,9 +7,8 @@ import {
 	deleteExperience,
 	updateExperience,
 } from '../../store/slices/profileSlice';
-import Button from '../common/Button';
+import ConfirmModal from '../common/ConfirmModal';
 import Input from '../common/Input';
-import Modal from '../common/Modal';
 import Textarea from '../common/Textarea';
 import EditableSection from './EditableSection';
 import { LuPencil, LuX } from 'react-icons/lu';
@@ -235,7 +234,7 @@ function ExperienceSection() {
 											<div>
 												<button
 													type="button"
-													className="profile-icon-button"
+													className="icon-button"
 													onClick={() =>
 														openDeleteConfirmation(
 															experienceId,
@@ -248,7 +247,7 @@ function ExperienceSection() {
 												</button>
 												<button
 													type="button"
-													className="profile-icon-button"
+													className="icon-button"
 													onClick={() => openEditExperienceModal(experience)}
 													aria-label={`Edit experience at ${experience.company}`}
 												>
@@ -336,38 +335,24 @@ function ExperienceSection() {
 				/>
 			</EditableSection>
 
-			<Modal
+			<ConfirmModal
 				isOpen={Boolean(confirmingExperience)}
-				preventClose={Boolean(deletingExperienceId)}
-			>
-				<div className="profile-delete-modal">
-					<h3>Delete experience?</h3>
-					<p>
+				title="Delete experience?"
+				description={
+					<>
 						This will remove your experience at{' '}
 						<strong>{confirmingExperience?.company}</strong>.
-					</p>
-					<p>This action cannot be undone.</p>
-					{profileError && <p className="error">{profileError}</p>}
-					<div className="profile-delete-actions">
-						<Button
-							type="button"
-							variant="tertiary"
-							onClick={closeDeleteConfirmation}
-							disabled={Boolean(deletingExperienceId)}
-						>
-							Cancel
-						</Button>
-						<Button
-							type="button"
-							variant="primary"
-							onClick={handleDeleteExperience}
-							disabled={Boolean(deletingExperienceId)}
-						>
-							{deletingExperienceId ? 'Deleting...' : 'Delete'}
-						</Button>
-					</div>
-				</div>
-			</Modal>
+					</>
+				}
+				details="This action cannot be undone."
+				errorMessage={profileError}
+				cancelLabel="Cancel"
+				confirmLabel="Delete"
+				confirmingLabel="Deleting..."
+				isConfirming={Boolean(deletingExperienceId)}
+				onCancel={closeDeleteConfirmation}
+				onConfirm={handleDeleteExperience}
+			/>
 		</>
 	);
 }
