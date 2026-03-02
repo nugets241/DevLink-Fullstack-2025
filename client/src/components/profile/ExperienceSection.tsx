@@ -13,6 +13,7 @@ import Textarea from '../common/Textarea';
 import EditableSection from './EditableSection';
 import useEntrySectionController from './hooks/useEntrySectionController';
 import ProfileEntryItem from './ProfileEntryItem';
+import { formatDateLabel, normalizeDateInput } from './utils/date';
 
 type ExperienceFormValues = {
 	title: string;
@@ -33,21 +34,6 @@ const initialExperienceFormValues: ExperienceFormValues = {
 	current: false,
 	description: '',
 };
-
-function normalizeDateInput(value?: string) {
-	if (!value) return '';
-	return value.slice(0, 10);
-}
-
-function formatDateLabel(value?: string) {
-	if (!value) return '';
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) return value;
-	return date.toLocaleDateString(undefined, {
-		year: 'numeric',
-		month: 'short',
-	});
-}
 
 function ExperienceSection() {
 	const dispatch = useAppDispatch();
