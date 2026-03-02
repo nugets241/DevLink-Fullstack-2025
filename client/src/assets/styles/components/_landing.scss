@@ -32,6 +32,10 @@
 			line-height: 1.2;
 			color: $text-primary;
 		}
+
+		.login {
+			font-size: 1.2rem;
+		}
 	}
 
 	@include respond(md) {
