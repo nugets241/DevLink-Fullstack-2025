@@ -172,19 +172,28 @@
 			margin-left: 0.5rem;
 		}
 	}
+}
 
-	.experience-current-field {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
+.experience-current-field {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
 
-		input[type='checkbox'] {
-			width: auto;
+	input[type='checkbox'] {
+		width: auto;
+		height: 1rem;
+		accent-color: $color-primary;
+		cursor: pointer;
+
+		&:focus-visible {
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(37, 141, 155, 0.1);
 		}
+	}
 
-		.label {
-			margin: 0;
-		}
+	.label {
+		margin: 0;
+		cursor: pointer;
 	}
 }
 
