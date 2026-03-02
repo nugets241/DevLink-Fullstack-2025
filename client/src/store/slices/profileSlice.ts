@@ -30,6 +30,19 @@ type Experience = {
 	description?: string;
 };
 
+type Education = {
+	id?: string;
+	_id?: string;
+	school: string;
+	degree: string;
+	fieldofstudy: string;
+	location?: string;
+	from: string;
+	to?: string;
+	current?: boolean;
+	description?: string;
+};
+
 type Profile = {
 	_id?: string;
 	user?: ProfileUser;
@@ -41,7 +54,7 @@ type Profile = {
 	skills?: string[];
 	social?: ProfileSocial;
 	experience?: Experience[];
-	education?: Array<Record<string, unknown>>;
+	education?: Education[];
 };
 
 type FieldErrors = Record<string, string>;
@@ -81,6 +94,20 @@ type AddExperiencePayload = {
 
 type UpdateExperiencePayload = AddExperiencePayload & {
 	experienceId: string;
+};
+
+type AddEducationPayload = {
+	school: string;
+	degree: string;
+	fieldofstudy: string;
+	from: string;
+	to?: string;
+	current?: boolean;
+	description?: string;
+};
+
+type UpdateEducationPayload = AddEducationPayload & {
+	educationId: string;
 };
 
 const initialState: ProfileState = {
@@ -286,6 +313,121 @@ export const updateExperience = createAsyncThunk<
 	}
 });
 
+export const addEducation = createAsyncThunk<
+	Profile,
+	AddEducationPayload,
+	{ rejectValue: RejectValue }
+>('profile/addEducation', async (payload, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const response = await fetch(API_ENDPOINTS.profileEducation, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(payload),
+		});
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			const fieldErrors = data?.errors ? mapFieldErrors(data.errors) : {};
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to add education.',
+				fieldErrors,
+			});
+		}
+
+		const data = (await response.json()) as Profile;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
+export const deleteEducation = createAsyncThunk<
+	Profile,
+	string,
+	{ rejectValue: RejectValue }
+>('profile/deleteEducation', async (educationId, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const response = await fetch(
+			API_ENDPOINTS.profileEducationById(educationId),
+			{
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+			},
+		);
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to delete education.',
+			});
+		}
+
+		const data = (await response.json()) as Profile;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
+export const updateEducation = createAsyncThunk<
+	Profile,
+	UpdateEducationPayload,
+	{ rejectValue: RejectValue }
+>('profile/updateEducation', async (payload, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const { educationId, ...body } = payload;
+		const response = await fetch(
+			API_ENDPOINTS.profileEducationById(educationId),
+			{
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(body),
+			},
+		);
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			const fieldErrors = data?.errors ? mapFieldErrors(data.errors) : {};
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to update education.',
+				fieldErrors,
+			});
+		}
+
+		const data = (await response.json()) as Profile;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
 const profileSlice = createSlice({
 	name: 'profile',
 	initialState,
@@ -374,6 +516,46 @@ const profileSlice = createSlice({
 			.addCase(updateExperience.rejected, (state, action) => {
 				state.status = 'failed';
 				state.error = action.payload?.message ?? 'Failed to update experience.';
+				state.fieldErrors = action.payload?.fieldErrors ?? {};
+			})
+			.addCase(addEducation.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+				state.fieldErrors = {};
+			})
+			.addCase(addEducation.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.profile = action.payload;
+			})
+			.addCase(addEducation.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Failed to add education.';
+				state.fieldErrors = action.payload?.fieldErrors ?? {};
+			})
+			.addCase(deleteEducation.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+			})
+			.addCase(deleteEducation.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.profile = action.payload;
+			})
+			.addCase(deleteEducation.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Failed to delete education.';
+			})
+			.addCase(updateEducation.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+				state.fieldErrors = {};
+			})
+			.addCase(updateEducation.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.profile = action.payload;
+			})
+			.addCase(updateEducation.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Failed to update education.';
 				state.fieldErrors = action.payload?.fieldErrors ?? {};
 			});
 	},
