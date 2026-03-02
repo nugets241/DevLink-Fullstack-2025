@@ -116,6 +116,7 @@ function UserBasicsSection() {
 			<Input
 				name="name"
 				label="Name"
+				required
 				value={userFormValues.name}
 				onChange={handleUserInputChange}
 				error={authFieldErrors.name}
