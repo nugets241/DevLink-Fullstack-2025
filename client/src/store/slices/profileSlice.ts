@@ -293,6 +293,10 @@ const profileSlice = createSlice({
 		clearProfileError: (state) => {
 			state.error = null;
 		},
+		clearProfileErrors: (state) => {
+			state.error = null;
+			state.fieldErrors = {};
+		},
 		clearProfileFieldError: (state, action: PayloadAction<string>) => {
 			delete state.fieldErrors[action.payload];
 		},
@@ -375,7 +379,7 @@ const profileSlice = createSlice({
 	},
 });
 
-export const { clearProfileError, clearProfileFieldError } =
+export const { clearProfileError, clearProfileErrors, clearProfileFieldError } =
 	profileSlice.actions;
 
 export default profileSlice.reducer;
