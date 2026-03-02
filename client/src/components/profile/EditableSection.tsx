@@ -86,14 +86,14 @@ function EditableSection({
 			<section className={clsx('profile-section-card', className)}>
 				<header className="profile-section-header">
 					{headerContent}
-					<button
+					<Button
 						type="button"
-						className="icon-button"
+						variant="icon"
 						onClick={onOpen}
 						aria-label={triggerAriaLabel}
 					>
 						{resolvedTriggerIcon}
-					</button>
+					</Button>
 				</header>
 				<div className="profile-contents">{content}</div>
 			</section>
@@ -102,14 +102,14 @@ function EditableSection({
 				<div className="profile-edit-modal">
 					<div className="profile-modal-header">
 						<h2>{modalTitle}</h2>
-						<button
+						<Button
 							type="button"
-							className="icon-button"
+							variant="icon"
 							onClick={onClose}
 							aria-label="Close modal"
 						>
 							<MdOutlineClose aria-hidden="true" focusable="false" />
-						</button>
+						</Button>
 					</div>
 					<form className="form profile-edit-form" onSubmit={onSubmit}>
 						<div className="profile-edit-body">
