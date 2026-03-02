@@ -57,7 +57,7 @@ function EditableSection({
 					{headerContent}
 					<button
 						type="button"
-						className="profile-icon-button"
+						className="icon-button"
 						onClick={onOpen}
 						aria-label={triggerAriaLabel}
 					>
@@ -73,7 +73,7 @@ function EditableSection({
 						<h2>{modalTitle}</h2>
 						<button
 							type="button"
-							className="profile-icon-button"
+							className="icon-button"
 							onClick={onClose}
 							aria-label="Close modal"
 						>
