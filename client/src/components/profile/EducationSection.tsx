@@ -11,8 +11,8 @@ import ConfirmModal from '../common/ConfirmModal';
 import Input from '../common/Input';
 import Textarea from '../common/Textarea';
 import EditableSection from './EditableSection';
-import { LuPencil, LuX } from 'react-icons/lu';
 import useEntrySectionController from './hooks/useEntrySectionController';
+import ProfileEntryItem from './ProfileEntryItem';
 
 type EducationFormValues = {
 	school: string;
@@ -184,54 +184,35 @@ function EducationSection() {
 									: formatDateLabel(education.to);
 
 								return (
-									<article key={educationId} className="education-item">
-										<div className="education-item-header">
-											<div>
-												<h3>{education.school}</h3>
-												<p>
-													{education.degree}
-													{education.fieldofstudy
-														? `, ${education.fieldofstudy}`
-														: ''}
-												</p>
-												{(fromLabel || toLabel) && (
-													<p className="education-dates">
-														{fromLabel}
-														{fromLabel && toLabel ? ' - ' : ''}
-														{toLabel}
-													</p>
-												)}
-											</div>
-											<div>
-												<button
-													type="button"
-													className="icon-button"
-													onClick={() =>
-														openDeleteConfirmation(
-															educationId,
-															education.school,
-														)
-													}
-													aria-label={`Delete education at ${education.school}`}
-												>
-													<LuX aria-hidden="true" focusable="false" />
-												</button>
-												<button
-													type="button"
-													className="icon-button"
-													onClick={() => openEditEducationModal(education)}
-													aria-label={`Edit education at ${education.school}`}
-												>
-													<LuPencil aria-hidden="true" focusable="false" />
-												</button>
-											</div>
-										</div>
-										{education.description && (
-											<p className="education-description">
-												{education.description}
-											</p>
-										)}
-									</article>
+									<ProfileEntryItem
+										key={educationId}
+										variant="education"
+										title={education.school}
+										subtitle={
+											<>
+												{education.degree}
+												{education.fieldofstudy
+													? `, ${education.fieldofstudy}`
+													: ''}
+											</>
+										}
+										dateText={
+											(fromLabel || toLabel) && (
+												<>
+													{fromLabel}
+													{fromLabel && toLabel ? ' - ' : ''}
+													{toLabel}
+												</>
+											)
+										}
+										description={education.description}
+										onDelete={() =>
+											openDeleteConfirmation(educationId, education.school)
+										}
+										onEdit={() => openEditEducationModal(education)}
+										deleteAriaLabel={`Delete education at ${education.school}`}
+										editAriaLabel={`Edit education at ${education.school}`}
+									/>
 								);
 							})
 						)}
