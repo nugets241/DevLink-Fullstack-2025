@@ -102,7 +102,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 				<textarea
 					ref={setRefs}
 					id={textareaId}
-					className={clsx('input', className)}
+					className={className}
 					rows={minRows}
 					aria-describedby={describedBy}
 					aria-invalid={error ? true : undefined}
