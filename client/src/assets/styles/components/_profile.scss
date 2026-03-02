@@ -3,6 +3,7 @@
 
 .profile-page {
 	padding: 0 1rem;
+	font-size: 0.9rem;
 
 	.container {
 		display: flex;
@@ -18,6 +19,7 @@
 	}
 }
 
+// Profile Section Styles
 .profile-section-card {
 	max-width: 100%;
 	padding: 1.5rem;
@@ -28,6 +30,7 @@
 
 		h2 {
 			align-self: center;
+			font-size: 1.25rem;
 		}
 	}
 
@@ -37,21 +40,17 @@
 		font-size: 0.9rem;
 	}
 
-	.profile-about-text {
+	.profile-contents {
+		padding-top: 0.5rem;
+	}
+
+	.profile-about-text,
+	.experience-description {
 		white-space: pre-line;
 	}
 }
 
-.profile-about-textarea {
-	resize: none;
-	overflow: hidden;
-	scrollbar-width: none;
-
-	&::-webkit-scrollbar {
-		display: none;
-	}
-}
-
+// Profile Edit Modal Styles
 .profile-edit-modal {
 	display: flex;
 	flex-direction: column;
@@ -104,11 +103,11 @@
 		button {
 			border-radius: 9999px;
 			padding: 0.4rem 1rem;
-			font-size: 1rem;
 		}
 	}
 }
 
+// Icon Button Styles
 .profile-icon-button {
 	color: $text-secondary;
 	width: 40px;
@@ -139,59 +138,53 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0.75rem;
-}
 
-.experience-empty {
-	color: $text-muted;
-}
-
-.experience-item {
-	border-bottom: 1px solid $border-default;
-	padding: 0.75rem 0;
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-
-	&:last-child {
-		border-bottom: none;
-	}
-}
-
-.experience-item-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
-	gap: 0.75rem;
-
-	h3 {
-		margin: 0;
+	.experience-empty,
+	.experience-location,
+	.experience-dates {
+		color: $text-muted;
 	}
 
-	p {
-		margin: 0.25rem 0 0;
+	.experience-item {
+		border-bottom: 1px solid $border-default;
+		padding: 0.75rem 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+
+		&:last-child {
+			border-bottom: none;
+		}
 	}
 
-	button + button {
-		margin-left: 0.5rem;
-	}
-}
+	.experience-item-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 0.75rem;
 
-.experience-dates,
-.experience-description {
-	color: $text-muted;
-}
+		h3 {
+			margin: 0;
+			font-size: 1rem;
+		}
 
-.experience-current-field {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-
-	input[type='checkbox'] {
-		width: auto;
+		button + button {
+			margin-left: 0.5rem;
+		}
 	}
 
-	.label {
-		margin: 0;
+	.experience-current-field {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+
+		input[type='checkbox'] {
+			width: auto;
+		}
+
+		.label {
+			margin: 0;
+		}
 	}
 }
 
