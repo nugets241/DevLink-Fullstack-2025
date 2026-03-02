@@ -5,10 +5,10 @@ import {
 	upsertProfile,
 } from '../../store/slices/profileSlice';
 import EditableSection from './EditableSection';
+import Textarea from '../common/Textarea';
 
 function AboutSection() {
 	const dispatch = useAppDispatch();
-	const aboutTextareaRef = React.useRef<HTMLTextAreaElement>(null);
 	const {
 		profile,
 		status: profileStatus,
@@ -17,25 +17,13 @@ function AboutSection() {
 	const [isAboutModalOpen, setIsAboutModalOpen] = React.useState(false);
 	const [aboutValue, setAboutValue] = React.useState('');
 
-	const resizeAboutTextarea = (textarea: HTMLTextAreaElement) => {
-		textarea.style.height = 'auto';
-		textarea.style.height = `${textarea.scrollHeight}px`;
-	};
-
 	React.useEffect(() => {
 		if (!isAboutModalOpen) return;
 		setAboutValue(profile?.about || '');
 	}, [isAboutModalOpen, profile]);
 
-	React.useEffect(() => {
-		const textarea = aboutTextareaRef.current;
-		if (!textarea) return;
-		resizeAboutTextarea(textarea);
-	}, [aboutValue, isAboutModalOpen]);
-
 	const handleAboutChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setAboutValue(event.target.value);
-		resizeAboutTextarea(event.currentTarget);
 	};
 
 	const closeAboutModal = () => {
@@ -87,19 +75,15 @@ function AboutSection() {
 			isSubmitting={profileStatus === 'loading'}
 			errorMessage={profileError}
 		>
-			<div className="field">
-				<label className="label" htmlFor="about-input">
-					About
-				</label>
-				<textarea
-					ref={aboutTextareaRef}
-					id="about-input"
-					className="input profile-about-textarea"
-					rows={5}
-					value={aboutValue}
-					onChange={handleAboutChange}
-				/>
-			</div>
+			<Textarea
+				id="about-input"
+				label="About"
+				className="profile-about-textarea"
+				name="about"
+				minRows={1}
+				value={aboutValue}
+				onChange={handleAboutChange}
+			/>
 		</EditableSection>
 	);
 }
