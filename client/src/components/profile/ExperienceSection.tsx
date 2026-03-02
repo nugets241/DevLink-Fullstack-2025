@@ -11,8 +11,8 @@ import ConfirmModal from '../common/ConfirmModal';
 import Input from '../common/Input';
 import Textarea from '../common/Textarea';
 import EditableSection from './EditableSection';
-import { LuPencil, LuX } from 'react-icons/lu';
 import useEntrySectionController from './hooks/useEntrySectionController';
+import ProfileEntryItem from './ProfileEntryItem';
 
 type ExperienceFormValues = {
 	title: string;
@@ -186,54 +186,35 @@ function ExperienceSection() {
 									: formatDateLabel(experience.to);
 
 								return (
-									<article key={experienceId} className="experience-item">
-										<div className="experience-item-header">
-											<div>
-												<h3>{experience.title}</h3>
-												<p>{experience.company}</p>
-												{(fromLabel || toLabel) && (
-													<p className="experience-dates">
-														{fromLabel}
-														{fromLabel && toLabel ? ' - ' : ''}
-														{toLabel}
-													</p>
-												)}
-												{experience.location && (
-													<p className="experience-location">
-														{experience.location}
-													</p>
-												)}
-											</div>
-											<div>
-												<button
-													type="button"
-													className="icon-button"
-													onClick={() =>
-														openDeleteConfirmation(
-															experienceId,
-															experience.company,
-														)
-													}
-													aria-label={`Delete experience at ${experience.company}`}
-												>
-													<LuX aria-hidden="true" focusable="false" />
-												</button>
-												<button
-													type="button"
-													className="icon-button"
-													onClick={() => openEditExperienceModal(experience)}
-													aria-label={`Edit experience at ${experience.company}`}
-												>
-													<LuPencil aria-hidden="true" focusable="false" />
-												</button>
-											</div>
-										</div>
-										{experience.description && (
-											<p className="experience-description">
-												{experience.description}
-											</p>
-										)}
-									</article>
+									<ProfileEntryItem
+										key={experienceId}
+										variant="experience"
+										title={experience.title}
+										subtitle={experience.company}
+										dateText={
+											(fromLabel || toLabel) && (
+												<>
+													{fromLabel}
+													{fromLabel && toLabel ? ' - ' : ''}
+													{toLabel}
+												</>
+											)
+										}
+										extraText={
+											experience.location ? (
+												<p className="experience-location">
+													{experience.location}
+												</p>
+											) : undefined
+										}
+										description={experience.description}
+										onDelete={() =>
+											openDeleteConfirmation(experienceId, experience.company)
+										}
+										onEdit={() => openEditExperienceModal(experience)}
+										deleteAriaLabel={`Delete experience at ${experience.company}`}
+										editAriaLabel={`Edit experience at ${experience.company}`}
+									/>
 								);
 							})
 						)}
