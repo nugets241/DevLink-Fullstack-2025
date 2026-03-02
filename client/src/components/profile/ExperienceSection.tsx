@@ -281,6 +281,7 @@ function ExperienceSection() {
 				<Input
 					name="title"
 					label="Job title"
+					required
 					value={experienceFormValues.title}
 					onChange={handleExperienceInputChange}
 					error={profileFieldErrors.title}
@@ -288,6 +289,7 @@ function ExperienceSection() {
 				<Input
 					name="company"
 					label="Company"
+					required
 					value={experienceFormValues.company}
 					onChange={handleExperienceInputChange}
 					error={profileFieldErrors.company}
@@ -302,6 +304,7 @@ function ExperienceSection() {
 					name="from"
 					label="From"
 					type="date"
+					required
 					value={experienceFormValues.from}
 					onChange={handleExperienceInputChange}
 					error={profileFieldErrors.from}
@@ -310,9 +313,11 @@ function ExperienceSection() {
 					name="to"
 					label="To"
 					type="date"
+					required={!experienceFormValues.current}
 					value={experienceFormValues.to}
 					onChange={handleExperienceInputChange}
 					disabled={experienceFormValues.current}
+					hint="Required unless 'I currently work here' is checked."
 					error={profileFieldErrors.to}
 				/>
 				<label className="field experience-current-field">
