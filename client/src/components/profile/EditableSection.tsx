@@ -5,6 +5,33 @@ import Button from '../common/Button';
 import Modal from '../common/Modal';
 import clsx from 'clsx';
 
+function hasRequiredField(node: React.ReactNode): boolean {
+	let found = false;
+
+	const visit = (children: React.ReactNode) => {
+		React.Children.forEach(children, (child) => {
+			if (found || !React.isValidElement(child)) return;
+
+			const elementProps = child.props as {
+				required?: boolean;
+				children?: React.ReactNode;
+			};
+
+			if (elementProps.required) {
+				found = true;
+				return;
+			}
+
+			if (elementProps.children) {
+				visit(elementProps.children);
+			}
+		});
+	};
+
+	visit(node);
+	return found;
+}
+
 type EditableSectionProps = {
 	className: string;
 	headerContent: React.ReactNode;
@@ -49,6 +76,10 @@ function EditableSection({
 		) : (
 			<LuPencil aria-hidden="true" focusable="false" />
 		));
+	const showsRequiredHint = React.useMemo(
+		() => hasRequiredField(children),
+		[children],
+	);
 
 	return (
 		<>
@@ -81,7 +112,14 @@ function EditableSection({
 						</button>
 					</div>
 					<form className="form profile-edit-form" onSubmit={onSubmit}>
-						<div className="profile-edit-body">{children}</div>
+						<div className="profile-edit-body">
+							{showsRequiredHint && (
+								<p className="required-fields-note">
+									<span aria-hidden="true">*</span> Indicates required
+								</p>
+							)}
+							{children}
+						</div>
 						{errorMessage && <p className="error">{errorMessage}</p>}
 
 						<div className="profile-edit-footer">
