@@ -6,6 +6,7 @@ import Modal from '../common/Modal';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
+	clearAuthErrors,
 	clearAuthError,
 	clearFieldError,
 	registerUser,
@@ -28,6 +29,10 @@ function RegisterForm() {
 	);
 	const [isSubmitting, setIsSubmitting] = React.useState(false);
 	const [showSuccess, setShowSuccess] = React.useState(false);
+
+	React.useEffect(() => {
+		dispatch(clearAuthErrors());
+	}, [dispatch]);
 
 	React.useEffect(() => {
 		if (initialTokenRef.current) {
