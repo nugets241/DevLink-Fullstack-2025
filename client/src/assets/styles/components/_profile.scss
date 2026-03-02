@@ -202,10 +202,12 @@
 	}
 
 	.skill-item {
+		padding-bottom: 0.75rem;
 		border-bottom: 1px solid $border-default;
 
 		&:last-child {
 			border-bottom: none;
+			padding-bottom: 0;
 		}
 	}
 
