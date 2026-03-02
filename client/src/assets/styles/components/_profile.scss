@@ -90,6 +90,12 @@
 		flex-direction: column;
 		gap: 0.75rem;
 		padding: 0 1.5rem 0.5rem;
+
+		.required-fields-note {
+			margin: 0;
+			font-size: 0.85rem;
+			color: $text-muted;
+		}
 	}
 
 	.profile-edit-footer {
