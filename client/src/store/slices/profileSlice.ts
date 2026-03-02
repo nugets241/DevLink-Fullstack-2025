@@ -78,7 +78,7 @@ type UpsertProfilePayload = {
 	location?: string;
 	about?: string;
 	status: string;
-	skills: string | string[];
+	skills?: string | string[];
 	social?: ProfileSocial;
 };
 
@@ -108,6 +108,14 @@ type AddEducationPayload = {
 
 type UpdateEducationPayload = AddEducationPayload & {
 	educationId: string;
+};
+
+type AddSkillPayload = {
+	title: string;
+};
+
+type UpdateSkillPayload = AddSkillPayload & {
+	skillIndex: number;
 };
 
 const initialState: ProfileState = {
@@ -428,6 +436,121 @@ export const updateEducation = createAsyncThunk<
 	}
 });
 
+export const addSkill = createAsyncThunk<
+	Profile,
+	AddSkillPayload,
+	{ rejectValue: RejectValue }
+>('profile/addSkill', async (payload, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const response = await fetch(API_ENDPOINTS.profileSkills, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(payload),
+		});
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			const fieldErrors = data?.errors ? mapFieldErrors(data.errors) : {};
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to add skill.',
+				fieldErrors,
+			});
+		}
+
+		const data = (await response.json()) as Profile;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
+export const deleteSkill = createAsyncThunk<
+	Profile,
+	number,
+	{ rejectValue: RejectValue }
+>('profile/deleteSkill', async (skillIndex, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const response = await fetch(
+			API_ENDPOINTS.profileSkillsByIndex(skillIndex),
+			{
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+			},
+		);
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to delete skill.',
+			});
+		}
+
+		const data = (await response.json()) as Profile;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
+export const updateSkill = createAsyncThunk<
+	Profile,
+	UpdateSkillPayload,
+	{ rejectValue: RejectValue }
+>('profile/updateSkill', async (payload, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const { skillIndex, ...body } = payload;
+		const response = await fetch(
+			API_ENDPOINTS.profileSkillsByIndex(skillIndex),
+			{
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(body),
+			},
+		);
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			const fieldErrors = data?.errors ? mapFieldErrors(data.errors) : {};
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to update skill.',
+				fieldErrors,
+			});
+		}
+
+		const data = (await response.json()) as Profile;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
 const profileSlice = createSlice({
 	name: 'profile',
 	initialState,
@@ -556,6 +679,46 @@ const profileSlice = createSlice({
 			.addCase(updateEducation.rejected, (state, action) => {
 				state.status = 'failed';
 				state.error = action.payload?.message ?? 'Failed to update education.';
+				state.fieldErrors = action.payload?.fieldErrors ?? {};
+			})
+			.addCase(addSkill.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+				state.fieldErrors = {};
+			})
+			.addCase(addSkill.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.profile = action.payload;
+			})
+			.addCase(addSkill.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Failed to add skill.';
+				state.fieldErrors = action.payload?.fieldErrors ?? {};
+			})
+			.addCase(deleteSkill.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+			})
+			.addCase(deleteSkill.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.profile = action.payload;
+			})
+			.addCase(deleteSkill.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Failed to delete skill.';
+			})
+			.addCase(updateSkill.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+				state.fieldErrors = {};
+			})
+			.addCase(updateSkill.fulfilled, (state, action) => {
+				state.status = 'succeeded';
+				state.profile = action.payload;
+			})
+			.addCase(updateSkill.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = action.payload?.message ?? 'Failed to update skill.';
 				state.fieldErrors = action.payload?.fieldErrors ?? {};
 			});
 	},
