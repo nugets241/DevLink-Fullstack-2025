@@ -12,6 +12,7 @@ import Input from '../common/Input';
 import Textarea from '../common/Textarea';
 import EditableSection from './EditableSection';
 import { LuPencil, LuX } from 'react-icons/lu';
+import useEntrySectionController from './hooks/useEntrySectionController';
 
 type ExperienceFormValues = {
 	title: string;
@@ -56,40 +57,33 @@ function ExperienceSection() {
 		error: profileError,
 		fieldErrors: profileFieldErrors,
 	} = useAppSelector((state) => state.profile);
-
-	const [isExperienceModalOpen, setIsExperienceModalOpen] =
-		React.useState(false);
-	const [experienceFormValues, setExperienceFormValues] =
-		React.useState<ExperienceFormValues>(initialExperienceFormValues);
-	const [deletingExperienceId, setDeletingExperienceId] = React.useState<
-		string | null
-	>(null);
-	const [confirmingExperience, setConfirmingExperience] = React.useState<{
-		id: string;
-		company: string;
-	} | null>(null);
-	const [editingExperienceId, setEditingExperienceId] = React.useState<
-		string | null
-	>(null);
+	const {
+		isModalOpen: isExperienceModalOpen,
+		formValues: experienceFormValues,
+		setFormValues: setExperienceFormValues,
+		deletingItemId: deletingExperienceId,
+		confirmingItem: confirmingExperience,
+		editingItemId: editingExperienceId,
+		openCreateModal,
+		openEditModal,
+		closeModal: closeExperienceModal,
+		openDeleteConfirmation,
+		closeDeleteConfirmation,
+		startDeleting,
+		stopDeleting,
+		clearConfirmedItem,
+	} = useEntrySectionController<ExperienceFormValues>({
+		initialFormValues: initialExperienceFormValues,
+		clearErrors: () => dispatch(clearProfileErrors()),
+	});
 
 	const experiences = profile?.experience ?? [];
-
-	const openExperienceModal = () => {
-		dispatch(clearProfileErrors());
-		setEditingExperienceId(null);
-		setExperienceFormValues(initialExperienceFormValues);
-		setIsExperienceModalOpen(true);
-	};
 
 	const openEditExperienceModal = (
 		experience: (typeof experiences)[number],
 	) => {
 		const experienceId = experience._id || experience.id || null;
-		if (!experienceId) return;
-
-		dispatch(clearProfileErrors());
-		setEditingExperienceId(experienceId);
-		setExperienceFormValues({
+		openEditModal(experienceId, {
 			title: experience.title ?? '',
 			company: experience.company ?? '',
 			location: experience.location ?? '',
@@ -98,27 +92,6 @@ function ExperienceSection() {
 			current: Boolean(experience.current),
 			description: experience.description ?? '',
 		});
-		setIsExperienceModalOpen(true);
-	};
-
-	const closeExperienceModal = () => {
-		setIsExperienceModalOpen(false);
-		setEditingExperienceId(null);
-		dispatch(clearProfileErrors());
-	};
-
-	const openDeleteConfirmation = (experienceId: string, company?: string) => {
-		dispatch(clearProfileErrors());
-		setConfirmingExperience({
-			id: experienceId,
-			company: company || 'this company',
-		});
-	};
-
-	const closeDeleteConfirmation = () => {
-		if (deletingExperienceId) return;
-		setConfirmingExperience(null);
-		dispatch(clearProfileErrors());
 	};
 
 	const handleExperienceInputChange = (
@@ -179,14 +152,14 @@ function ExperienceSection() {
 	const handleDeleteExperience = async () => {
 		if (!confirmingExperience) return;
 		const experienceId = confirmingExperience.id;
-		setDeletingExperienceId(experienceId);
+		startDeleting(experienceId);
 		const result = await dispatch(deleteExperience(experienceId));
 		if (deleteExperience.fulfilled.match(result)) {
-			setDeletingExperienceId(null);
-			setConfirmingExperience(null);
+			stopDeleting();
+			clearConfirmedItem();
 			return;
 		}
-		setDeletingExperienceId(null);
+		stopDeleting();
 	};
 
 	return (
@@ -267,7 +240,7 @@ function ExperienceSection() {
 					</div>
 				}
 				isModalOpen={isExperienceModalOpen}
-				onOpen={openExperienceModal}
+				onOpen={openCreateModal}
 				onClose={closeExperienceModal}
 				modalTitle={editingExperienceId ? 'Edit experience' : 'Add experience'}
 				onSubmit={handleExperienceSubmit}
@@ -346,7 +319,7 @@ function ExperienceSection() {
 				description={
 					<>
 						This will remove your experience at{' '}
-						<strong>{confirmingExperience?.company}</strong>.
+						<strong>{confirmingExperience?.label}</strong>.
 					</>
 				}
 				details="This action cannot be undone."
