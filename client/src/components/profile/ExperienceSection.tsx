@@ -2,7 +2,7 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
 	addExperience,
-	clearProfileError,
+	clearProfileErrors,
 	clearProfileFieldError,
 	deleteExperience,
 	updateExperience,
@@ -75,7 +75,7 @@ function ExperienceSection() {
 	const experiences = profile?.experience ?? [];
 
 	const openExperienceModal = () => {
-		dispatch(clearProfileError());
+		dispatch(clearProfileErrors());
 		setEditingExperienceId(null);
 		setExperienceFormValues(initialExperienceFormValues);
 		setIsExperienceModalOpen(true);
@@ -87,7 +87,7 @@ function ExperienceSection() {
 		const experienceId = experience._id || experience.id || null;
 		if (!experienceId) return;
 
-		dispatch(clearProfileError());
+		dispatch(clearProfileErrors());
 		setEditingExperienceId(experienceId);
 		setExperienceFormValues({
 			title: experience.title ?? '',
@@ -104,11 +104,11 @@ function ExperienceSection() {
 	const closeExperienceModal = () => {
 		setIsExperienceModalOpen(false);
 		setEditingExperienceId(null);
-		dispatch(clearProfileError());
+		dispatch(clearProfileErrors());
 	};
 
 	const openDeleteConfirmation = (experienceId: string, company?: string) => {
-		dispatch(clearProfileError());
+		dispatch(clearProfileErrors());
 		setConfirmingExperience({
 			id: experienceId,
 			company: company || 'this company',
@@ -118,7 +118,7 @@ function ExperienceSection() {
 	const closeDeleteConfirmation = () => {
 		if (deletingExperienceId) return;
 		setConfirmingExperience(null);
-		dispatch(clearProfileError());
+		dispatch(clearProfileErrors());
 	};
 
 	const handleExperienceInputChange = (
