@@ -195,6 +195,42 @@
 	}
 }
 
+// Skills Section
+.skill-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+
+	.skill-empty {
+		color: $text-muted;
+	}
+
+	.skill-item {
+		border-bottom: 1px solid $border-default;
+		padding: 0.75rem 0;
+
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+
+	.skill-item-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 0.75rem;
+
+		h3 {
+			margin: 0;
+			font-size: 1rem;
+		}
+
+		button + button {
+			margin-left: 0.5rem;
+		}
+	}
+}
+
 .experience-current-field,
 .education-current-field {
 	display: flex;
