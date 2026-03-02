@@ -54,6 +54,15 @@ function SkillsSection() {
 	});
 
 	const skills = profile?.skills ?? [];
+	const sortedSkills = React.useMemo(
+		() =>
+			skills
+				.map((title, originalIndex) => ({ title, originalIndex }))
+				.sort((a, b) =>
+					a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }),
+				),
+		[skills],
+	);
 
 	const handleOpenCreateModal = () => {
 		setSkillTitleError(null);
@@ -144,29 +153,32 @@ function SkillsSection() {
 				triggerAriaLabel="Add skill"
 				content={
 					<div className="skill-list">
-						{skills.length === 0 ? (
+						{sortedSkills.length === 0 ? (
 							<p className="skill-empty">Add your skills.</p>
 						) : (
-							skills.map((skill, skillIndex) => (
-								<article key={`${skill}-${skillIndex}`} className="skill-item">
+								sortedSkills.map(({ title, originalIndex }) => (
+								<article
+									key={`${title}-${originalIndex}`}
+									className="skill-item"
+								>
 									<header className="skill-item-header">
-										<h3>{skill}</h3>
+										<h3>{title}</h3>
 										<div>
 											<Button
 												type="button"
 												variant="icon"
 												onClick={() =>
-													openDeleteConfirmation(String(skillIndex), skill)
+													openDeleteConfirmation(String(originalIndex), title)
 												}
-												aria-label={`Delete skill ${skill}`}
+												aria-label={`Delete skill ${title}`}
 											>
 												<LuX aria-hidden="true" focusable="false" />
 											</Button>
 											<Button
 												type="button"
 												variant="icon"
-												onClick={() => openEditSkillModal(skillIndex, skill)}
-												aria-label={`Edit skill ${skill}`}
+												onClick={() => openEditSkillModal(originalIndex, title)}
+												aria-label={`Edit skill ${title}`}
 											>
 												<LuPencil aria-hidden="true" focusable="false" />
 											</Button>
