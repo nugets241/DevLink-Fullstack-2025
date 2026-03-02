@@ -12,6 +12,7 @@ function Input({
 	label,
 	hint,
 	error,
+	required,
 	id,
 	className,
 	wrapperClassName,
@@ -28,6 +29,11 @@ function Input({
 			{label && (
 				<label className="label" htmlFor={inputId}>
 					{label}
+					{required && (
+						<span className="required-indicator" aria-hidden="true">
+							*
+						</span>
+					)}
 				</label>
 			)}
 			<input
@@ -35,6 +41,7 @@ function Input({
 				className={clsx('input', className)}
 				aria-describedby={describedBy}
 				aria-invalid={error ? true : undefined}
+				required={required}
 				{...props}
 			/>
 			{hint && (
