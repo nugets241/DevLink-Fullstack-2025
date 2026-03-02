@@ -8,7 +8,7 @@ import {
 	updateExperience,
 } from '../../store/slices/profileSlice';
 import Input from '../common/Input';
-import Button from '../common/Button';
+import Textarea from '../common/Textarea';
 import EditableSection from './EditableSection';
 import { LuPencil, LuX } from 'react-icons/lu';
 
@@ -200,7 +200,11 @@ function ExperienceSection() {
 													{toLabel}
 												</p>
 											)}
-											{experience.location && <p>{experience.location}</p>}
+											{experience.location && (
+												<p className="experience-location">
+													{experience.location}
+												</p>
+											)}
 										</div>
 										<div>
 											<button
@@ -288,19 +292,15 @@ function ExperienceSection() {
 				/>
 				<span className="label">I currently work here</span>
 			</label>
-			<div className="field">
-				<label className="label" htmlFor="experience-description">
-					Description
-				</label>
-				<textarea
-					id="experience-description"
-					className="input"
-					name="description"
-					rows={4}
-					value={experienceFormValues.description}
-					onChange={handleExperienceInputChange}
-				/>
-			</div>
+			<Textarea
+				id="experience-description"
+				label="Description"
+				name="description"
+				minRows={1}
+				value={experienceFormValues.description}
+				onChange={handleExperienceInputChange}
+				error={profileFieldErrors.description}
+			/>
 		</EditableSection>
 	);
 }
