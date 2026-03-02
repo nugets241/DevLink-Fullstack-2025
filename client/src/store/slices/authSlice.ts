@@ -224,6 +224,10 @@ const authSlice = createSlice({
 		clearAuthError: (state) => {
 			state.error = null;
 		},
+		clearAuthErrors: (state) => {
+			state.error = null;
+			state.fieldErrors = {};
+		},
 		clearFieldError: (state, action: PayloadAction<FieldErrorKey>) => {
 			delete state.fieldErrors[action.payload];
 		},
@@ -306,6 +310,7 @@ const authSlice = createSlice({
 	},
 });
 
-export const { clearAuthError, clearFieldError, logout } = authSlice.actions;
+export const { clearAuthError, clearAuthErrors, clearFieldError, logout } =
+	authSlice.actions;
 
 export default authSlice.reducer;
