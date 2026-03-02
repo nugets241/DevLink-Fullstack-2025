@@ -1,5 +1,6 @@
 import React from 'react';
 import { LuPencil, LuX } from 'react-icons/lu';
+import Button from '../common/Button';
 
 type ProfileEntryItemProps = {
 	variant: 'experience' | 'education';
@@ -41,22 +42,22 @@ function ProfileEntryItem({
 					{extraText}
 				</div>
 				<div>
-					<button
+					<Button
 						type="button"
-						className="icon-button"
+						variant="icon"
 						onClick={onDelete}
 						aria-label={deleteAriaLabel}
 					>
 						<LuX aria-hidden="true" focusable="false" />
-					</button>
-					<button
+					</Button>
+					<Button
 						type="button"
-						className="icon-button"
+						variant="icon"
 						onClick={onEdit}
 						aria-label={editAriaLabel}
 					>
 						<LuPencil aria-hidden="true" focusable="false" />
-					</button>
+					</Button>
 				</div>
 			</div>
 			{description && <p className={descriptionClassName}>{description}</p>}
