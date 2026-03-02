@@ -10,13 +10,41 @@ import { getUserData } from './store/slices/authSlice';
 
 function App() {
 	const dispatch = useAppDispatch();
-	const { token, user, status } = useAppSelector((state) => state.auth);
+	const { token } = useAppSelector((state) => state.auth);
+	const [isAuthBootstrapComplete, setIsAuthBootstrapComplete] =
+		React.useState(false);
 
 	React.useEffect(() => {
-		if (token && !user && status === 'idle') {
-			dispatch(getUserData());
+		let isMounted = true;
+
+		if (!token) {
+			setIsAuthBootstrapComplete(true);
+			return () => {
+				isMounted = false;
+			};
 		}
-	}, [token, user, status, dispatch]);
+
+		setIsAuthBootstrapComplete(false);
+		dispatch(getUserData()).finally(() => {
+			if (!isMounted) return;
+			setIsAuthBootstrapComplete(true);
+		});
+
+		return () => {
+			isMounted = false;
+		};
+	}, [dispatch, token]);
+
+	if (token && !isAuthBootstrapComplete) {
+		return (
+			<div className="container">
+				<div className="loading-modal">
+					<div className="spinner"></div>
+					<p>Loading your account...</p>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<>
