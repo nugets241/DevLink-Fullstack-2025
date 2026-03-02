@@ -107,6 +107,35 @@
 	}
 }
 
+.profile-delete-modal {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	min-width: min(420px, calc(100vw - 3rem));
+	padding: 1.25rem 1.5rem;
+
+	h3,
+	p {
+		margin: 0;
+	}
+
+	p {
+		color: $text-muted;
+	}
+
+	.profile-delete-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		padding-top: 0.5rem;
+
+		button {
+			border-radius: 9999px;
+			padding: 0.4rem 1rem;
+		}
+	}
+}
+
 // Icon Button Styles
 .profile-icon-button {
 	color: $text-secondary;
