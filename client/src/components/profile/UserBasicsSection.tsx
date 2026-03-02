@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
-	clearAuthError,
+	clearAuthErrors,
 	clearFieldError,
 	updateUser,
 } from '../../store/slices/authSlice';
@@ -34,11 +34,11 @@ function UserBasicsSection() {
 
 	const closeUserModal = () => {
 		setIsUserModalOpen(false);
-		dispatch(clearAuthError());
+		dispatch(clearAuthErrors());
 	};
 
 	const handleOpenUserModal = () => {
-		dispatch(clearAuthError());
+		dispatch(clearAuthErrors());
 		setIsUserModalOpen(true);
 	};
 
