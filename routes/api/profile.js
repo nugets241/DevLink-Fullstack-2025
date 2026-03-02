@@ -78,6 +78,11 @@ const skillValidators = [
 	check('title', 'Skill is a required field').trim().notEmpty(),
 ];
 
+const sortSkills = (skills) =>
+	[...skills].sort((a, b) =>
+		a.localeCompare(b, undefined, { sensitivity: 'base' }),
+	);
+
 // @route   GET api/profile/me
 // @desc    Get current user's profile
 // @access  Private
@@ -190,6 +195,10 @@ router.patch(
 					: Array.isArray(skills)
 						? skills.map((skill) => String(skill).trim())
 						: skills.split(',').map((skill) => skill.trim());
+			const sortedSkills =
+				normalizedSkills === undefined
+					? undefined
+					: sortSkills(normalizedSkills);
 
 			// Build profile object
 			const profileFields = {
@@ -198,7 +207,7 @@ router.patch(
 				website,
 				location,
 				about,
-				...(normalizedSkills !== undefined ? { skills: normalizedSkills } : {}),
+				...(sortedSkills !== undefined ? { skills: sortedSkills } : {}),
 				social,
 				experience,
 				education,
@@ -518,7 +527,7 @@ router.put('/skills', [auth, ...skillValidators], async (req, res) => {
 		}
 
 		profile.skills = profile.skills || [];
-		profile.skills.unshift(normalizedTitle);
+		profile.skills = sortSkills([...profile.skills, normalizedTitle]);
 		await profile.save();
 
 		res.json(profile);
@@ -560,6 +569,7 @@ router.patch(
 			}
 
 			profile.skills[skillIndex] = normalizedTitle;
+			profile.skills = sortSkills(profile.skills);
 			await profile.save();
 
 			res.json(profile);
