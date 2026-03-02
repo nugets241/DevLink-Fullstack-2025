@@ -12,18 +12,38 @@ function Profile() {
 	const { profile, status: profileStatus } = useAppSelector(
 		(state) => state.profile,
 	);
+	const [isProfileBootstrapComplete, setIsProfileBootstrapComplete] =
+		React.useState(false);
 
 	React.useEffect(() => {
-		if (token && profileStatus === 'idle') {
-			dispatch(getMyProfile());
+		let isMounted = true;
+
+		if (!token) {
+			setIsProfileBootstrapComplete(true);
+			return () => {
+				isMounted = false;
+			};
 		}
-	}, [dispatch, profileStatus, token]);
+
+		setIsProfileBootstrapComplete(false);
+		dispatch(getMyProfile()).finally(() => {
+			if (!isMounted) return;
+			setIsProfileBootstrapComplete(true);
+		});
+
+		return () => {
+			isMounted = false;
+		};
+	}, [dispatch, token]);
 
 	if (!token) {
 		return null;
 	}
 
-	if (profileStatus === 'loading' && !profile) {
+	if (
+		!isProfileBootstrapComplete ||
+		(profileStatus === 'loading' && !profile)
+	) {
 		return (
 			<div className="container">
 				<div className="loading-modal">
