@@ -359,7 +359,7 @@ function ExperienceSection() {
 						</Button>
 						<Button
 							type="button"
-							variant="secondary"
+							variant="primary"
 							onClick={handleDeleteExperience}
 							disabled={Boolean(deletingExperienceId)}
 						>
