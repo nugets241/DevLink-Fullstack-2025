@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
-	clearProfileError,
+	clearProfileErrors,
 	upsertProfile,
 } from '../../store/slices/profileSlice';
 import EditableSection from './EditableSection';
@@ -28,11 +28,11 @@ function AboutSection() {
 
 	const closeAboutModal = () => {
 		setIsAboutModalOpen(false);
-		dispatch(clearProfileError());
+		dispatch(clearProfileErrors());
 	};
 
 	const handleOpenAboutModal = () => {
-		dispatch(clearProfileError());
+		dispatch(clearProfileErrors());
 		setIsAboutModalOpen(true);
 	};
 
