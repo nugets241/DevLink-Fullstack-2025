@@ -6,6 +6,7 @@ import Button from '../common/Button';
 import Modal from '../common/Modal';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
+	clearAuthErrors,
 	clearAuthError,
 	clearFieldError,
 	loginUser,
@@ -21,6 +22,10 @@ function LoginForm() {
 	});
 	const [isSubmitting, setIsSubmitting] = React.useState(false);
 	const [showSuccess, setShowSuccess] = React.useState(false);
+
+	React.useEffect(() => {
+		dispatch(clearAuthErrors());
+	}, [dispatch]);
 
 	React.useEffect(() => {
 		if (!showSuccess) return;
