@@ -40,6 +40,40 @@ const experienceValidators = [
 	}),
 ];
 
+const educationValidators = [
+	check('school', 'School is required').not().isEmpty(),
+	check('degree', 'Degree is required').not().isEmpty(),
+	check('fieldofstudy', 'Field of study is required').not().isEmpty(),
+	check('from', 'From date is required').not().isEmpty(),
+	check('to').custom((value, { req }) => {
+		const isCurrent = req.body.current === true || req.body.current === 'true';
+
+		if (!isCurrent && !value) {
+			throw new Error('To date is required when education is not current');
+		}
+
+		return true;
+	}),
+	check('to').custom((value, { req }) => {
+		const isCurrent = req.body.current === true || req.body.current === 'true';
+
+		if (isCurrent || !value || !req.body.from) return true;
+
+		const fromDate = new Date(req.body.from);
+		const toDate = new Date(value);
+
+		if (Number.isNaN(fromDate.getTime()) || Number.isNaN(toDate.getTime())) {
+			throw new Error('From and To must be valid dates');
+		}
+
+		if (toDate < fromDate) {
+			throw new Error('To date must be on or after From date');
+		}
+
+		return true;
+	}),
+];
+
 // @route   GET api/profile/me
 // @desc    Get current user's profile
 // @access  Private
@@ -320,17 +354,47 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
 // @route   PUT api/profile/education
 // @desc    Add profile education
 // @access  Private
-router.put(
-	'/education',
-	[
-		auth,
-		[
-			check('school', 'School is required').not().isEmpty(),
-			check('degree', 'Degree is required').not().isEmpty(),
-			check('fieldofstudy', 'Field of study is required').not().isEmpty(),
-			check('from', 'From date is required').not().isEmpty(),
-		],
-	],
+router.put('/education', [auth, ...educationValidators], async (req, res) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+
+	const { school, degree, fieldofstudy, from, to, current, description } =
+		req.body;
+
+	const newEdu = {
+		school,
+		degree,
+		fieldofstudy,
+		from,
+		to,
+		current,
+		description,
+	};
+
+	try {
+		const profile = await Profile.findOne({ user: req.user.id });
+		if (!profile) {
+			return res.status(404).json({ msg: 'Profile not found' });
+		}
+
+		profile.education.unshift(newEdu);
+		await profile.save();
+
+		res.json(profile);
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).send('Server error');
+	}
+});
+
+// @route   PATCH api/profile/education/:edu_id
+// @desc    Update profile education
+// @access  Private
+router.patch(
+	'/education/:edu_id',
+	[auth, ...educationValidators],
 	async (req, res) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
@@ -340,23 +404,25 @@ router.put(
 		const { school, degree, fieldofstudy, from, to, current, description } =
 			req.body;
 
-		const newEdu = {
-			school,
-			degree,
-			fieldofstudy,
-			from,
-			to,
-			current,
-			description,
-		};
-
 		try {
 			const profile = await Profile.findOne({ user: req.user.id });
 			if (!profile) {
 				return res.status(404).json({ msg: 'Profile not found' });
 			}
 
-			profile.education.unshift(newEdu);
+			const education = profile.education.id(req.params.edu_id);
+			if (!education) {
+				return res.status(404).json({ msg: 'Education not found' });
+			}
+
+			education.school = school;
+			education.degree = degree;
+			education.fieldofstudy = fieldofstudy;
+			education.from = from;
+			education.to = current ? undefined : to;
+			education.current = current;
+			education.description = description;
+
 			await profile.save();
 
 			res.json(profile);
