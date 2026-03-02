@@ -38,7 +38,7 @@ function Input({
 			)}
 			<input
 				id={inputId}
-				className={clsx('input', className)}
+				className={className}
 				aria-describedby={describedBy}
 				aria-invalid={error ? true : undefined}
 				required={required}
