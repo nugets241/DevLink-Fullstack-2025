@@ -14,6 +14,9 @@ export const API_ENDPOINTS = {
 	profileExperience: `${API_BASE_URL}/api/profile/experience`,
 	profileExperienceById: (expId: string) =>
 		`${API_BASE_URL}/api/profile/experience/${expId}`,
+	profileEducation: `${API_BASE_URL}/api/profile/education`,
+	profileEducationById: (eduId: string) =>
+		`${API_BASE_URL}/api/profile/education/${eduId}`,
 
 	// Add more endpoints as needed
 } as const;
