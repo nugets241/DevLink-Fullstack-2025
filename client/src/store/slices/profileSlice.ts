@@ -46,7 +46,6 @@ type Education = {
 type Profile = {
 	_id?: string;
 	user?: ProfileUser;
-	company?: string;
 	website?: string;
 	location?: string;
 	about?: string;
@@ -73,7 +72,6 @@ type RejectValue = {
 };
 
 type UpsertProfilePayload = {
-	company?: string;
 	website?: string;
 	location?: string;
 	about?: string;

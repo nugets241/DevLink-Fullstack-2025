@@ -177,16 +177,8 @@ router.patch(
 			return res.status(400).json({ errors: errors.array() });
 		}
 
-		const {
-			company,
-			website,
-			location,
-			about,
-			skills,
-			social,
-			experience,
-			education,
-		} = req.body;
+		const { website, location, about, skills, social, experience, education } =
+			req.body;
 
 		try {
 			const normalizedSkills =
@@ -203,7 +195,6 @@ router.patch(
 			// Build profile object
 			const profileFields = {
 				user: req.user.id,
-				company,
 				website,
 				location,
 				about,

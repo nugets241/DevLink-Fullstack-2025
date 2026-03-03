@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 const ProfileSchema = new mongoose.Schema(
 	{
 		user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
-		company: { type: String, trim: true },
 		website: { type: String, trim: true },
 		about: { type: String, trim: true },
 		skills: {
