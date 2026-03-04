@@ -127,7 +127,7 @@ function Navbar() {
 
 										<div className="navbar-dropdown-actions">
 											<Button variant="primary" onClick={handleVisitProfile}>
-												Visit my profile
+												View profile
 											</Button>
 											<Button variant="tertiary" onClick={handleLogout}>
 												Log out
