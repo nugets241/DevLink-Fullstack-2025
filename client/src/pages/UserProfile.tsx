@@ -104,7 +104,7 @@ function UserProfile() {
 						/>
 					</header>
 
-					<div>
+					<div className="profile-contents profile-intro">
 						<h1 className="heading-xl">
 							{viewedProfile.user?.name ?? 'Developer'}
 						</h1>
