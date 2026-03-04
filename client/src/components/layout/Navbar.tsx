@@ -21,6 +21,9 @@ function Navbar() {
 				</Link>
 				{token && user && (
 					<div className="navbar-menu">
+						<Link className="navbar-link" to="/people">
+							People
+						</Link>
 						<Link className="navbar-link" to="/profile">
 							Profile
 						</Link>
