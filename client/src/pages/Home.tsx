@@ -56,7 +56,11 @@ function Home() {
 		<div className="container">
 			<div className="home-layout">
 				<aside className="card">
-					<Link to="/profile" aria-label="Go to your profile">
+					<Link
+						to="/profile"
+						aria-label="Go to your profile"
+						className="profile-link"
+					>
 						<img
 							src={avatarSrc}
 							alt="Avatar"
@@ -66,14 +70,14 @@ function Home() {
 								event.currentTarget.src = '/devlink.svg';
 							}}
 						/>
+						<h2>{user.name}</h2>
+						<p className="profile-headline">
+							{user?.headline || 'Add a headline'}
+						</p>
+						<p className="profile-location">
+							{user?.location || 'Add your location'}
+						</p>
 					</Link>
-					<h2>{user.name}</h2>
-					<p className="profile-headline">
-						{user?.headline || 'Add a headline'}
-					</p>
-					<p className="profile-location">
-						{user?.location || 'Add your location'}
-					</p>
 				</aside>
 				<main className="card">
 					<h2>Posts</h2>
