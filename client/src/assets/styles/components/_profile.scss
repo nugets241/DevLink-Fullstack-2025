@@ -118,6 +118,89 @@
 	}
 }
 
+// Contact Info Modal Styles
+
+.contact-info-trigger {
+	background: transparent;
+	border: 0;
+	padding: 0;
+	color: $color-dark-aqua-200;
+	text-decoration: underline;
+	cursor: pointer;
+	font: inherit;
+	font-weight: 700;
+
+	&:hover {
+		color: $color-dark-aqua-100;
+	}
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 3px rgba(37, 141, 155, 0.15);
+		border-radius: 2px;
+	}
+}
+
+.profile-contact-modal {
+	display: flex;
+	flex-direction: column;
+	min-width: min(780px, calc(100vw - 3rem));
+	max-height: calc(100vh - 3rem);
+	overflow: hidden;
+
+	.profile-modal-header {
+		display: flex;
+		justify-content: space-between;
+		border-bottom: 1px solid $border-default;
+		padding: 1rem 1.5rem 0.5rem;
+
+		h2 {
+			margin: 0;
+			font-size: 1.25rem;
+			align-self: center;
+		}
+	}
+
+	.profile-contact-modal-body {
+		padding: 0.5rem 1.5rem 1.5rem;
+		overflow-y: auto;
+	}
+}
+
+.contact-info-section {
+	padding: 0 !important;
+}
+
+.contact-info-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.contact-info-item {
+	display: flex;
+	gap: 0.75rem;
+	margin: 0;
+}
+
+.contact-info-label {
+	color: $text-muted;
+	min-width: 6rem;
+	font-weight: 600;
+}
+
+.contact-info-value {
+	word-break: break-all;
+
+	a {
+		text-decoration: underline;
+	}
+}
+
+.contact-info-empty {
+	color: $text-muted;
+}
+
 // Experience Section
 .experience-list {
 	display: flex;
