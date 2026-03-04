@@ -41,7 +41,6 @@ function AboutSection() {
 
 		const actionResult = await dispatch(
 			upsertProfile({
-				status: profile?.status?.trim() || 'Developer',
 				skills: profile?.skills,
 				about: aboutValue.trim(),
 				website: profile?.website,
