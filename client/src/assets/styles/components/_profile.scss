@@ -19,23 +19,6 @@
 	}
 }
 
-.public-profile-page {
-	.public-profile-header {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-
-		h1 {
-			margin: 0;
-		}
-
-		.profile-status {
-			margin-top: 0.35rem;
-			color: $text-secondary;
-		}
-	}
-}
-
 // Profile Section Styles
 .profile-section-card {
 	max-width: 100%;
@@ -55,6 +38,11 @@
 		color: $text-muted;
 		margin-top: 0.5rem;
 		font-size: 0.9rem;
+	}
+
+	.profile-headline {
+		margin-top: 0.35rem;
+		color: $text-secondary;
 	}
 
 	.profile-contents {
@@ -135,7 +123,7 @@
 	}
 }
 
-// Contact Info Modal Styles
+// Contact Info Styles
 
 .contact-info-trigger {
 	background: transparent;
@@ -185,7 +173,7 @@
 }
 
 .contact-info-section {
-	padding: 0 !important;
+	padding: 0;
 }
 
 .contact-info-list {
