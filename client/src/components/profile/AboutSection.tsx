@@ -44,7 +44,6 @@ function AboutSection() {
 				status: profile?.status?.trim() || 'Developer',
 				skills: profile?.skills,
 				about: aboutValue.trim(),
-				company: profile?.company,
 				website: profile?.website,
 				location: profile?.location,
 				social: profile?.social,
