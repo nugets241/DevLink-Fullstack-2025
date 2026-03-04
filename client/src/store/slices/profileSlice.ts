@@ -63,6 +63,9 @@ type ProfileState = {
 	status: 'idle' | 'loading' | 'succeeded' | 'failed';
 	error: string | null;
 	fieldErrors: FieldErrors;
+	viewedProfile: Profile | null;
+	viewedProfileStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+	viewedProfileError: string | null;
 };
 
 type RejectValue = {
@@ -121,6 +124,9 @@ const initialState: ProfileState = {
 	status: 'idle',
 	error: null,
 	fieldErrors: {},
+	viewedProfile: null,
+	viewedProfileStatus: 'idle',
+	viewedProfileError: null,
 };
 
 function mapFieldErrors(errors: Array<{ msg: string; path?: string }>) {
@@ -155,6 +161,35 @@ export const getMyProfile = createAsyncThunk<
 			const data = await response.json().catch(() => null);
 			return rejectWithValue({
 				message: data?.msg ?? 'Failed to fetch profile.',
+				status: response.status,
+			});
+		}
+
+		const data = (await response.json()) as Profile;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
+export const getProfileByUserId = createAsyncThunk<
+	Profile,
+	string,
+	{ rejectValue: RejectValue }
+>('profile/getProfileByUserId', async (userId, { rejectWithValue }) => {
+	try {
+		const response = await fetch(API_ENDPOINTS.profileByUserId(userId), {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (!response.ok) {
+			const data = await response.json().catch(() => null);
+			return rejectWithValue({
+				message: data?.msg ?? 'Failed to load user profile.',
 				status: response.status,
 			});
 		}
@@ -563,6 +598,11 @@ const profileSlice = createSlice({
 		clearProfileFieldError: (state, action: PayloadAction<string>) => {
 			delete state.fieldErrors[action.payload];
 		},
+		clearViewedProfile: (state) => {
+			state.viewedProfile = null;
+			state.viewedProfileStatus = 'idle';
+			state.viewedProfileError = null;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -584,6 +624,20 @@ const profileSlice = createSlice({
 				}
 				state.status = 'failed';
 				state.error = action.payload?.message ?? 'Failed to load profile.';
+			})
+			.addCase(getProfileByUserId.pending, (state) => {
+				state.viewedProfileStatus = 'loading';
+				state.viewedProfileError = null;
+			})
+			.addCase(getProfileByUserId.fulfilled, (state, action) => {
+				state.viewedProfileStatus = 'succeeded';
+				state.viewedProfile = action.payload;
+			})
+			.addCase(getProfileByUserId.rejected, (state, action) => {
+				state.viewedProfileStatus = 'failed';
+				state.viewedProfile = null;
+				state.viewedProfileError =
+					action.payload?.message ?? 'Failed to load user profile.';
 			})
 			.addCase(upsertProfile.pending, (state) => {
 				state.status = 'loading';
@@ -722,7 +776,11 @@ const profileSlice = createSlice({
 	},
 });
 
-export const { clearProfileError, clearProfileErrors, clearProfileFieldError } =
-	profileSlice.actions;
+export const {
+	clearProfileError,
+	clearProfileErrors,
+	clearProfileFieldError,
+	clearViewedProfile,
+} = profileSlice.actions;
 
 export default profileSlice.reducer;
