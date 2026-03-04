@@ -4,6 +4,7 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
+import People from './pages/People';
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from './store/hooks';
@@ -84,6 +85,10 @@ function App() {
 			<Routes>
 				<Route path="/" element={token ? <Home /> : <Landing />} />
 				<Route path="/register" element={<Register />} />
+				<Route
+					path="/people"
+					element={token ? <People /> : <Navigate to="/" replace />}
+				/>
 				<Route
 					path="/profiles/:userId"
 					element={
