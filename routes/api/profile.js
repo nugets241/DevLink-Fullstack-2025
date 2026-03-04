@@ -90,7 +90,7 @@ router.get('/me', auth, async (req, res) => {
 	try {
 		const profile = await Profile.findOne({ user: req.user.id }).populate(
 			'user',
-			['name', 'avatar'],
+			['name', 'avatar', 'headline'],
 		);
 		if (!profile) {
 			return res.status(404).json({ msg: 'Profile not found' });
@@ -110,7 +110,6 @@ router.patch(
 	[
 		auth,
 		[
-			check('status', 'Status is required').not().isEmpty(),
 			check('skills')
 				.optional({ nullable: true })
 				.custom((value) => {
@@ -209,7 +208,7 @@ router.patch(
 				{ user: req.user.id },
 				{ $set: profileFields },
 				{ new: true, upsert: true, setDefaultsOnInsert: true },
-			).populate('user', ['name', 'avatar', 'headline', 'location']);
+			).populate('user', ['name', 'avatar', 'headline']);
 
 			res.json(profile);
 		} catch (err) {
@@ -228,7 +227,6 @@ router.get('/', async (_req, res) => {
 			'name',
 			'avatar',
 			'headline',
-			'location',
 		]);
 		res.json(profiles);
 	} catch (err) {
@@ -244,7 +242,7 @@ router.get('/user/:user_id', async (_req, res) => {
 	try {
 		const profile = await Profile.findOne({
 			user: _req.params.user_id,
-		}).populate('user', ['name', 'avatar', 'headline', 'location']);
+		}).populate('user', ['name', 'avatar', 'headline']);
 		if (!profile) {
 			return res.status(404).json({ msg: 'Profile not found' });
 		}
