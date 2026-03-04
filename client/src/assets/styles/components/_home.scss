@@ -22,6 +22,11 @@
 	border: 2px solid $border-default;
 }
 
+.profile-location {
+	color: $text-muted;
+	font-size: 0.9rem;
+}
+
 .posts-empty {
 	color: $text-muted;
 	font-size: 0.95rem;
