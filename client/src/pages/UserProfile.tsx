@@ -109,7 +109,7 @@ function UserProfile() {
 							{viewedProfile.user?.name ?? 'Developer'}
 						</h1>
 						<p className="profile-headline">
-							{viewedProfile.status || 'Status not provided'}
+							{viewedProfile.user?.headline || 'No headline added yet.'}
 						</p>
 						<button
 							type="button"
