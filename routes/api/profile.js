@@ -209,7 +209,7 @@ router.patch(
 				{ user: req.user.id },
 				{ $set: profileFields },
 				{ new: true, upsert: true, setDefaultsOnInsert: true },
-			).populate('user', ['name', 'avatar']);
+			).populate('user', ['name', 'avatar', 'headline', 'location']);
 
 			res.json(profile);
 		} catch (err) {
@@ -224,7 +224,12 @@ router.patch(
 // @access  Public
 router.get('/', async (_req, res) => {
 	try {
-		const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+		const profiles = await Profile.find().populate('user', [
+			'name',
+			'avatar',
+			'headline',
+			'location',
+		]);
 		res.json(profiles);
 	} catch (err) {
 		console.error(err.message);
@@ -239,7 +244,7 @@ router.get('/user/:user_id', async (_req, res) => {
 	try {
 		const profile = await Profile.findOne({
 			user: _req.params.user_id,
-		}).populate('user', ['name', 'avatar']);
+		}).populate('user', ['name', 'avatar', 'headline', 'location']);
 		if (!profile) {
 			return res.status(404).json({ msg: 'Profile not found' });
 		}
