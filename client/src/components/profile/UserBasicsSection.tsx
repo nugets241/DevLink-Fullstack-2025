@@ -121,7 +121,6 @@ function UserBasicsSection() {
 								{user?.headline || 'Add a headline'}
 							</p>
 						</main>
-						<aside className="user-status"></aside>
 						<button
 							type="button"
 							onClick={openContactInfoModal}
