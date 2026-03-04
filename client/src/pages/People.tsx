@@ -96,7 +96,6 @@ function People() {
 
 	return (
 		<div className="container people-page">
-			<h1 className="heading-xl">People</h1>
 			{visibleProfiles.length === 0 ? (
 				<p className="people-empty">No other users found yet.</p>
 			) : (
