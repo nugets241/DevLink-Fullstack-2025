@@ -90,7 +90,6 @@ function ContactInfoSection() {
 
 		const actionResult = await dispatch(
 			upsertProfile({
-				status: profile?.status?.trim() || 'Developer',
 				skills: profile?.skills,
 				about: profile?.about,
 				location: profile?.location,
