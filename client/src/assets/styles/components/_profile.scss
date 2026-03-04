@@ -19,6 +19,23 @@
 	}
 }
 
+.public-profile-page {
+	.public-profile-header {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+
+		h1 {
+			margin: 0;
+		}
+
+		.profile-status {
+			margin-top: 0.35rem;
+			color: $text-secondary;
+		}
+	}
+}
+
 // Profile Section Styles
 .profile-section-card {
 	max-width: 100%;
