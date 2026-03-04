@@ -1,11 +1,15 @@
 import React from 'react';
+import { MdOutlineClose } from 'react-icons/md';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
 	clearAuthErrors,
 	clearFieldError,
 	updateUser,
 } from '../../store/slices/authSlice';
+import Button from '../common/Button';
 import Input from '../common/Input';
+import Modal from '../common/Modal';
+import ContactInfoSection from './ContactInfoSection';
 import EditableSection from './EditableSection';
 
 function UserBasicsSection() {
@@ -17,6 +21,8 @@ function UserBasicsSection() {
 		fieldErrors: authFieldErrors,
 	} = useAppSelector((state) => state.auth);
 	const [isUserModalOpen, setIsUserModalOpen] = React.useState(false);
+	const [isContactInfoModalOpen, setIsContactInfoModalOpen] =
+		React.useState(false);
 	const [userFormValues, setUserFormValues] = React.useState({
 		name: '',
 		headline: '',
@@ -40,6 +46,14 @@ function UserBasicsSection() {
 	const handleOpenUserModal = () => {
 		dispatch(clearAuthErrors());
 		setIsUserModalOpen(true);
+	};
+
+	const openContactInfoModal = () => {
+		setIsContactInfoModalOpen(true);
+	};
+
+	const closeContactInfoModal = () => {
+		setIsContactInfoModalOpen(false);
 	};
 
 	const handleUserInputChange = (
@@ -78,64 +92,92 @@ function UserBasicsSection() {
 	const avatarSrc = user?.avatar?.trim() || '/devlink.svg';
 
 	return (
-		<EditableSection
-			className="profile-intro card"
-			headerContent={
-				<img
-					src={avatarSrc}
-					alt="Avatar"
-					className="profile-avatar"
-					onError={(event) => {
-						event.currentTarget.onerror = null;
-						event.currentTarget.src = '/devlink.svg';
-					}}
-				/>
-			}
-			modalTitle="Edit introduction"
-			isModalOpen={isUserModalOpen}
-			onOpen={handleOpenUserModal}
-			onClose={closeUserModal}
-			onSubmit={handleUserFormSubmit}
-			isSubmitting={authStatus === 'loading'}
-			errorMessage={authError}
-			content={
-				<>
-					<main>
-						<h2 className="heading-xl">{user?.name ?? 'Developer'}</h2>
-						<p className="profile-headline">
-							{user?.headline || 'Add a headline'}
-						</p>
+		<>
+			<EditableSection
+				className="profile-intro card"
+				headerContent={
+					<img
+						src={avatarSrc}
+						alt="Avatar"
+						className="profile-avatar"
+						onError={(event) => {
+							event.currentTarget.onerror = null;
+							event.currentTarget.src = '/devlink.svg';
+						}}
+					/>
+				}
+				modalTitle="Edit introduction"
+				isModalOpen={isUserModalOpen}
+				onOpen={handleOpenUserModal}
+				onClose={closeUserModal}
+				onSubmit={handleUserFormSubmit}
+				isSubmitting={authStatus === 'loading'}
+				errorMessage={authError}
+				content={
+					<>
+						<main>
+							<h2 className="heading-xl">{user?.name ?? 'Developer'}</h2>
+							<p className="profile-headline">
+								{user?.headline || 'Add a headline'}
+							</p>
+						</main>
+						<aside className="user-status"></aside>
+						<button
+							type="button"
+							onClick={openContactInfoModal}
+							className="contact-info-trigger"
+						>
+							Contact info
+						</button>
 						<p className="profile-location">
 							{user?.location || 'Add your location'}
 						</p>
-					</main>
-					<aside className="user-status"></aside>
-				</>
-			}
-		>
-			<Input
-				name="name"
-				label="Name"
-				required
-				value={userFormValues.name}
-				onChange={handleUserInputChange}
-				error={authFieldErrors.name}
-			/>
-			<Input
-				name="headline"
-				label="Headline"
-				value={userFormValues.headline}
-				onChange={handleUserInputChange}
-				error={authFieldErrors.headline}
-			/>
-			<Input
-				name="location"
-				label="Location"
-				value={userFormValues.location}
-				onChange={handleUserInputChange}
-				error={authFieldErrors.location}
-			/>
-		</EditableSection>
+					</>
+				}
+			>
+				<Input
+					name="name"
+					label="Name"
+					required
+					value={userFormValues.name}
+					onChange={handleUserInputChange}
+					error={authFieldErrors.name}
+				/>
+				<Input
+					name="headline"
+					label="Headline"
+					value={userFormValues.headline}
+					onChange={handleUserInputChange}
+					error={authFieldErrors.headline}
+				/>
+				<Input
+					name="location"
+					label="Location"
+					value={userFormValues.location}
+					onChange={handleUserInputChange}
+					error={authFieldErrors.location}
+				/>
+			</EditableSection>
+
+			<Modal isOpen={isContactInfoModalOpen} preventClose>
+				<div className="profile-contact-modal">
+					<div className="profile-modal-header">
+						<h2>{user?.name}</h2>
+						<Button
+							type="button"
+							variant="icon"
+							onClick={closeContactInfoModal}
+							aria-label="Close contact info"
+						>
+							<MdOutlineClose aria-hidden="true" focusable="false" />
+						</Button>
+					</div>
+					<div className="profile-contact-modal-body">
+						<ContactInfoSection />
+					</div>
+				</div>
+			</Modal>
+		</>
 	);
 }
 
