@@ -7,6 +7,8 @@ type ProfileUser = {
 	_id?: string;
 	name?: string;
 	avatar?: string;
+	headline?: string;
+	location?: string;
 };
 
 type ProfileSocial = {
