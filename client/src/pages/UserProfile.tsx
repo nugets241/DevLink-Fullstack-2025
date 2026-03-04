@@ -1,6 +1,8 @@
 import React from 'react';
+import { MdOutlineClose } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import Button from '../components/common/Button';
+import Modal from '../components/common/Modal';
 import { formatDateLabel } from '../components/profile/utils/date';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
@@ -13,6 +15,8 @@ function UserProfile() {
 	const dispatch = useAppDispatch();
 	const { viewedProfile, viewedProfileStatus, viewedProfileError } =
 		useAppSelector((state) => state.profile);
+	const [isContactInfoModalOpen, setIsContactInfoModalOpen] =
+		React.useState(false);
 
 	React.useEffect(() => {
 		if (!userId) return;
@@ -76,28 +80,46 @@ function UserProfile() {
 	const educationEntries = viewedProfile.education ?? [];
 	const skills = viewedProfile.skills ?? [];
 
+	const openContactInfoModal = () => {
+		setIsContactInfoModalOpen(true);
+	};
+
+	const closeContactInfoModal = () => {
+		setIsContactInfoModalOpen(false);
+	};
+
 	return (
-		<div className="profile-page public-profile-page">
+		<div className="profile-page">
 			<div className="container">
-				<section className="profile-section-card card public-profile-header">
-					<img
-						src={avatarSrc}
-						alt="Avatar"
-						className="profile-avatar"
-						onError={(event) => {
-							event.currentTarget.onerror = null;
-							event.currentTarget.src = '/devlink.svg';
-						}}
-					/>
+				<section className="profile-section-card card ">
+					<header className="profile-section-header">
+						<img
+							src={avatarSrc}
+							alt="Avatar"
+							className="profile-avatar"
+							onError={(event) => {
+								event.currentTarget.onerror = null;
+								event.currentTarget.src = '/devlink.svg';
+							}}
+						/>
+					</header>
+
 					<div>
 						<h1 className="heading-xl">
 							{viewedProfile.user?.name ?? 'Developer'}
 						</h1>
+						<p className="profile-headline">
+							{viewedProfile.status || 'Status not provided'}
+						</p>
+						<button
+							type="button"
+							className="contact-info-trigger"
+							onClick={openContactInfoModal}
+						>
+							View contact info
+						</button>
 						<p className="profile-location">
 							{viewedProfile.location || 'Location not provided'}
-						</p>
-						<p className="profile-status">
-							{viewedProfile.status || 'Status not provided'}
 						</p>
 					</div>
 				</section>
@@ -110,53 +132,6 @@ function UserProfile() {
 						<p className="profile-about-text">
 							{viewedProfile.about || 'No bio added yet.'}
 						</p>
-					</div>
-				</section>
-
-				<section className="profile-section-card card">
-					<header className="profile-section-header">
-						<h2>Contact info</h2>
-					</header>
-					<div className="profile-contents">
-						<div className="contact-info-list">
-							<p className="contact-info-item">
-								<span className="contact-info-label">Website</span>
-								<span className="contact-info-value">
-									{viewedProfile.website ? (
-										<a
-											href={viewedProfile.website}
-											target="_blank"
-											rel="noreferrer noopener"
-										>
-											{viewedProfile.website}
-										</a>
-									) : (
-										<span className="contact-info-empty">Not provided</span>
-									)}
-								</span>
-							</p>
-							{socialEntries.length === 0 ? (
-								<p className="contact-info-item">
-									<span className="contact-info-label">Social</span>
-									<span className="contact-info-empty">Not provided</span>
-								</p>
-							) : (
-								socialEntries.map((entry) => (
-									<p className="contact-info-item" key={entry.label}>
-										<span className="contact-info-label">{entry.label}</span>
-										<span className="contact-info-value">
-											<a
-												href={entry.value}
-												target="_blank"
-												rel="noreferrer noopener"
-											>
-												{entry.value}
-											</a>
-										</span>
-									</p>
-								))
-							)}
-						</div>
 					</div>
 				</section>
 
@@ -290,6 +265,63 @@ function UserProfile() {
 						</div>
 					</div>
 				</section>
+
+				<Modal isOpen={isContactInfoModalOpen}>
+					<div className="profile-contact-modal">
+						<div className="profile-modal-header">
+							<h2>Contact info</h2>
+							<Button
+								type="button"
+								variant="icon"
+								onClick={closeContactInfoModal}
+								aria-label="Close contact info"
+							>
+								<MdOutlineClose aria-hidden="true" focusable="false" />
+							</Button>
+						</div>
+						<div className="profile-contact-modal-body">
+							<div className="contact-info-list">
+								<p className="contact-info-item">
+									<span className="contact-info-label">Website</span>
+									<span className="contact-info-value">
+										{viewedProfile.website ? (
+											<a
+												href={viewedProfile.website}
+												target="_blank"
+												rel="noreferrer noopener"
+											>
+												{viewedProfile.website}
+											</a>
+										) : (
+											<span className="contact-info-empty">Not provided</span>
+										)}
+									</span>
+								</p>
+								{socialEntries.length === 0 ? (
+									<p className="contact-info-item">
+										<span className="contact-info-label">Social</span>
+										<span className="contact-info-empty">Not provided</span>
+									</p>
+								) : (
+									socialEntries.map((entry) => (
+										<p className="contact-info-item" key={entry.label}>
+											<span className="contact-info-label">{entry.label}</span>
+											<span className="contact-info-value">
+												<a
+													href={entry.value}
+													target="_blank"
+													rel="noreferrer noopener"
+												>
+													{entry.value}
+												</a>
+											</span>
+										</p>
+									))
+								)}
+							</div>
+						</div>
+					</div>
+				</Modal>
 			</div>
 		</div>
 	);
