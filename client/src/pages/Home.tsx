@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { getUserData } from '../store/slices/authSlice';
 import Button from '../components/common/Button';
+import { Link } from 'react-router-dom';
 
 function Home() {
 	const dispatch = useAppDispatch();
@@ -55,17 +56,24 @@ function Home() {
 		<div className="container">
 			<div className="home-layout">
 				<aside className="card">
-					<img
-						src={avatarSrc}
-						alt="Avatar"
-						className="profile-avatar"
-						onError={(event) => {
-							event.currentTarget.onerror = null;
-							event.currentTarget.src = '/devlink.svg';
-						}}
-					/>
+					<Link to="/profile" aria-label="Go to your profile">
+						<img
+							src={avatarSrc}
+							alt="Avatar"
+							className="profile-avatar"
+							onError={(event) => {
+								event.currentTarget.onerror = null;
+								event.currentTarget.src = '/devlink.svg';
+							}}
+						/>
+					</Link>
 					<h2>{user.name}</h2>
-					<p>Email: {user.email}</p>
+					<p className="profile-headline">
+						{user?.headline || 'Add a headline'}
+					</p>
+					<p className="profile-location">
+						{user?.location || 'Add your location'}
+					</p>
 				</aside>
 				<main className="card">
 					<h2>Posts</h2>
