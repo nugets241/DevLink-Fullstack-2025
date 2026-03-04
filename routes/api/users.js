@@ -10,6 +10,11 @@ import auth from '../../middleware/auth.js';
 
 const router = Router();
 
+function normalizeSpacing(value) {
+	if (typeof value !== 'string') return value;
+	return value.trim().replace(/\s+/g, ' ');
+}
+
 function serializeUser(user) {
 	return {
 		id: user.id,
@@ -64,6 +69,7 @@ router.post('/', registerValidators, async (req, res) => {
 	}
 
 	const { name, email, password } = req.body;
+	const normalizedName = normalizeSpacing(name);
 
 	try {
 		// Check if user exists
@@ -82,7 +88,7 @@ router.post('/', registerValidators, async (req, res) => {
 
 		// Save user with hashed password
 		const user = new User({
-			name,
+			name: normalizedName,
 			email,
 			password: hashed,
 			avatar,
@@ -125,9 +131,9 @@ router.patch('/me', updateMeValidators, async (req, res) => {
 	}
 
 	const updates = {
-		name: req.body.name,
-		headline: req.body.headline,
-		location: req.body.location,
+		name: normalizeSpacing(req.body.name),
+		headline: normalizeSpacing(req.body.headline),
+		location: normalizeSpacing(req.body.location),
 	};
 
 	try {
