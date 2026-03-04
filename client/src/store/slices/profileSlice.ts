@@ -8,7 +8,6 @@ type ProfileUser = {
 	name?: string;
 	avatar?: string;
 	headline?: string;
-	location?: string;
 };
 
 type ProfileSocial = {
@@ -51,7 +50,6 @@ type Profile = {
 	website?: string;
 	location?: string;
 	about?: string;
-	status?: string;
 	skills?: string[];
 	social?: ProfileSocial;
 	experience?: Experience[];
@@ -80,7 +78,6 @@ type UpsertProfilePayload = {
 	website?: string;
 	location?: string;
 	about?: string;
-	status: string;
 	skills?: string | string[];
 	social?: ProfileSocial;
 };
