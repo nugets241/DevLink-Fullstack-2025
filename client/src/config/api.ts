@@ -22,6 +22,10 @@ export const API_ENDPOINTS = {
 	profileSkills: `${API_BASE_URL}/api/profile/skills`,
 	profileSkillsByIndex: (skillIndex: number) =>
 		`${API_BASE_URL}/api/profile/skills/${skillIndex}`,
+	posts: `${API_BASE_URL}/api/posts`,
+	postById: (postId: string) => `${API_BASE_URL}/api/posts/${postId}`,
+	postLike: (postId: string) => `${API_BASE_URL}/api/posts/${postId}/like`,
+	postUnlike: (postId: string) => `${API_BASE_URL}/api/posts/${postId}/unlike`,
 
 	// Add more endpoints as needed
 } as const;
