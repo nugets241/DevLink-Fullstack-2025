@@ -15,6 +15,18 @@
 		align-items: center;
 		gap: var(--space-12);
 
+		.landing-auth-panel {
+			width: 100%;
+			max-width: 400px;
+			margin-top: 2.5rem;
+		}
+
+		.landing-auth-note {
+			margin: 1.5rem auto 0;
+			width: 360px;
+			font-size: 0.9rem;
+		}
+
 		.landing-marketing {
 			padding-right: 32px;
 		}
@@ -33,7 +45,7 @@
 			color: $text-primary;
 		}
 
-		.login {
+		.auth-login-submit {
 			font-size: 1.2rem;
 		}
 	}
