@@ -18,10 +18,11 @@ const PostSchema = new mongoose.Schema(
 				name: { type: String, trim: true },
 				avatar: { type: String, trim: true },
 				date: { type: Date, default: Date.now },
+				editedAt: { type: Date },
 			},
 		],
 	},
-	{ timestamps: true }
+	{ timestamps: true },
 );
 
 // Performance indexes
