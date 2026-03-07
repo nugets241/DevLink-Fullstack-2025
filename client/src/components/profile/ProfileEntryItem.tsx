@@ -27,10 +27,10 @@ function ProfileEntryItem({
 	deleteAriaLabel,
 	editAriaLabel,
 }: ProfileEntryItemProps) {
-	const itemClassName = `${variant}-item`;
-	const headerClassName = `${variant}-item-header`;
-	const datesClassName = `${variant}-dates`;
-	const descriptionClassName = `${variant}-description`;
+	const itemClassName = `profile-${variant}-item`;
+	const headerClassName = `profile-${variant}-item-header`;
+	const datesClassName = `profile-${variant}-dates`;
+	const descriptionClassName = `profile-${variant}-description`;
 
 	return (
 		<article className={itemClassName}>
