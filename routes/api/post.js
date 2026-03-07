@@ -236,6 +236,7 @@ router.patch(
 		}
 
 		try {
+			const nextText = req.body.text.trim();
 			const post = await Post.findById(req.params.id);
 			if (!post) {
 				return res.status(404).json({ msg: 'Post not found' });
@@ -252,7 +253,10 @@ router.patch(
 					.json({ msg: 'Not authorized to update this comment' });
 			}
 
-			comment.text = req.body.text;
+			if (comment.text !== nextText) {
+				comment.text = nextText;
+				comment.editedAt = new Date();
+			}
 			await post.save();
 			res.json(post.comments);
 		} catch (error) {
