@@ -152,16 +152,16 @@ function SkillsSection() {
 				triggerVariant="add"
 				triggerAriaLabel="Add skill"
 				content={
-					<div className="skill-list">
+					<div className="profile-skill-list">
 						{sortedSkills.length === 0 ? (
-							<p className="skill-empty">Add your skills.</p>
+							<p className="profile-skill-empty">Add your skills.</p>
 						) : (
-								sortedSkills.map(({ title, originalIndex }) => (
+							sortedSkills.map(({ title, originalIndex }) => (
 								<article
 									key={`${title}-${originalIndex}`}
-									className="skill-item"
+									className="profile-skill-item"
 								>
-									<header className="skill-item-header">
+									<header className="profile-skill-item-header">
 										<h3>{title}</h3>
 										<div>
 											<Button
