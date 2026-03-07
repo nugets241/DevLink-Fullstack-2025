@@ -17,13 +17,13 @@
 	font-size: 0.95rem;
 }
 
-.post-composer {
+.post-feed-composer {
 	display: flex;
 	flex-direction: column;
 	gap: 0.75rem;
 }
 
-.post-composer-actions {
+.post-feed-composer-actions {
 	display: flex;
 	justify-content: flex-end;
 }
@@ -42,13 +42,13 @@
 	gap: 0.75rem;
 }
 
-.post-header {
+.post-item-header {
 	display: flex;
 	align-items: flex-start;
 	gap: 0.75rem;
 }
 
-.post-avatar {
+.post-item-avatar {
 	width: 44px;
 	height: 44px;
 	border-radius: 50%;
@@ -56,7 +56,7 @@
 	border: 1px solid $border-default;
 }
 
-.post-meta {
+.post-item-meta {
 	display: flex;
 	flex-direction: column;
 	gap: 0.15rem;
@@ -73,26 +73,26 @@
 	}
 }
 
-.post-delete {
+.post-item-delete {
 	margin-left: auto;
 	font-size: 0.85rem;
 	padding: 0.3rem 0.6rem;
 }
 
-.post-text {
+.post-item-text {
 	margin: 0.75rem 0;
 	color: $text-secondary;
 	white-space: pre-wrap;
 	word-break: break-word;
 }
 
-.post-actions {
+.post-item-actions {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
 }
 
-.post-comments {
+.post-item-comments {
 	margin-top: 0.75rem;
 	padding-top: 0.75rem;
 	border-top: 1px solid $border-default;
