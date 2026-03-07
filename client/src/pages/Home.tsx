@@ -7,6 +7,7 @@ import {
 	deletePost,
 	fetchPosts,
 	likePost,
+	updateComment,
 	unlikePost,
 	type PostComment,
 	type Post,
@@ -23,6 +24,10 @@ function getPostId(post: Pick<Post, 'id' | '_id'>) {
 
 function getCommentId(comment: Pick<PostComment, 'id' | '_id'>) {
 	return comment._id ?? comment.id ?? '';
+}
+
+function getCommentEditKey(postId: string, commentId: string) {
+	return `${postId}:${commentId}`;
 }
 
 function getPostOwnerId(post: Post) {
@@ -113,6 +118,10 @@ function Home() {
 	const [commentDraftByPostId, setCommentDraftByPostId] = React.useState<
 		Record<string, string>
 	>({});
+	const [editingCommentKey, setEditingCommentKey] = React.useState<
+		string | null
+	>(null);
+	const [editingCommentText, setEditingCommentText] = React.useState('');
 	const currentUserId =
 		user?.id ?? (user as ({ _id?: string } & typeof user) | null)?._id;
 
@@ -188,8 +197,53 @@ function Home() {
 	const handleDeleteComment = async (postId: string, commentId: string) => {
 		if (!postId || !commentId) return;
 
+		const commentEditKey = getCommentEditKey(postId, commentId);
+
 		try {
 			await dispatch(deleteComment({ postId, commentId })).unwrap();
+			if (editingCommentKey === commentEditKey) {
+				setEditingCommentKey(null);
+				setEditingCommentText('');
+			}
+		} catch (thunkError) {
+			console.error(thunkError);
+		}
+	};
+
+	const handleStartEditComment = (
+		postId: string,
+		commentId: string,
+		text: string,
+	) => {
+		setEditingCommentKey(getCommentEditKey(postId, commentId));
+		setEditingCommentText(text);
+	};
+
+	const handleCancelEditComment = () => {
+		setEditingCommentKey(null);
+		setEditingCommentText('');
+	};
+
+	const handleUpdateComment = async (
+		postId: string,
+		commentId: string,
+		event: React.FormEvent<HTMLFormElement>,
+	) => {
+		event.preventDefault();
+
+		const normalizedText = editingCommentText.trim();
+		if (!normalizedText) return;
+
+		try {
+			await dispatch(
+				updateComment({
+					postId,
+					commentId,
+					text: normalizedText,
+				}),
+			).unwrap();
+			setEditingCommentKey(null);
+			setEditingCommentText('');
 		} catch (thunkError) {
 			console.error(thunkError);
 		}
@@ -418,12 +472,22 @@ function Home() {
 														if (!commentId) return null;
 
 														const commentOwnerId = getCommentOwnerId(comment);
-														const canDeleteComment = currentUserId
+														const canManageComment = currentUserId
 															? commentOwnerId === currentUserId
 															: false;
+														const commentEditKey = getCommentEditKey(
+															postId,
+															commentId,
+														);
+														const isEditingComment =
+															editingCommentKey === commentEditKey;
 														const isCommentDeleteLoading =
 															actionStatusById[
 																`comment-delete:${postId}:${commentId}`
+															] === 'loading';
+														const isCommentUpdateLoading =
+															actionStatusById[
+																`comment-update:${postId}:${commentId}`
 															] === 'loading';
 														const commentAuthor = getCommentAuthor(comment);
 
@@ -447,23 +511,94 @@ function Home() {
 																			)}
 																		</span>
 																	</div>
-																	<p>{comment.text}</p>
+																	{isEditingComment ? (
+																		<form
+																			className="comment-edit-form"
+																			onSubmit={(event) =>
+																				handleUpdateComment(
+																					postId,
+																					commentId,
+																					event,
+																				)
+																			}
+																		>
+																			<Textarea
+																				value={editingCommentText}
+																				onChange={(event) =>
+																					setEditingCommentText(
+																						event.target.value,
+																					)
+																				}
+																				aria-label={`Edit comment by ${commentAuthor.name}`}
+																				minRows={1}
+																			/>
+																			<div className="comment-edit-actions">
+																				<Button
+																					type="submit"
+																					variant="tertiary"
+																					disabled={
+																						!editingCommentText.trim() ||
+																						isCommentUpdateLoading
+																					}
+																				>
+																					{isCommentUpdateLoading
+																						? 'Saving...'
+																						: 'Save'}
+																				</Button>
+																				<Button
+																					type="button"
+																					variant="tertiary"
+																					onClick={handleCancelEditComment}
+																					disabled={isCommentUpdateLoading}
+																				>
+																					Cancel
+																				</Button>
+																			</div>
+																		</form>
+																	) : (
+																		<p>{comment.text}</p>
+																	)}
 																</div>
-																{canDeleteComment && (
-																	<Button
-																		type="button"
-																		variant="icon"
-																		className="comment-delete"
-																		onClick={() =>
-																			handleDeleteComment(postId, commentId)
-																		}
-																		disabled={isCommentDeleteLoading}
-																	>
-																		<MdOutlineClose
-																			aria-hidden="true"
-																			focusable="false"
-																		/>
-																	</Button>
+																{canManageComment && (
+																	<div className="comment-item-actions">
+																		{!isEditingComment && (
+																			<Button
+																				type="button"
+																				variant="tertiary"
+																				className="comment-edit-trigger"
+																				onClick={() =>
+																					handleStartEditComment(
+																						postId,
+																						commentId,
+																						comment.text,
+																					)
+																				}
+																				disabled={
+																					isCommentDeleteLoading ||
+																					isCommentUpdateLoading
+																				}
+																			>
+																				Edit
+																			</Button>
+																		)}
+																		<Button
+																			type="button"
+																			variant="icon"
+																			className="comment-delete"
+																			onClick={() =>
+																				handleDeleteComment(postId, commentId)
+																			}
+																			disabled={
+																				isCommentDeleteLoading ||
+																				isCommentUpdateLoading
+																			}
+																		>
+																			<MdOutlineClose
+																				aria-hidden="true"
+																				focusable="false"
+																			/>
+																		</Button>
+																	</div>
 																)}
 															</article>
 														);
