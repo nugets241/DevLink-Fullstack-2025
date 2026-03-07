@@ -17,48 +17,179 @@
 			object-fit: cover;
 		}
 	}
-}
 
-// Profile Section Styles
-.profile-section-card {
-	max-width: 100%;
-	padding: 1.5rem;
+	// Profile Section Styles
+	.profile-section-card {
+		max-width: 100%;
+		padding: 1.5rem;
 
-	.profile-section-header {
-		display: flex;
-		justify-content: space-between;
-
-		h2 {
+		.profile-section-header {
 			display: flex;
-			align-items: center;
-			font-size: 1.25rem;
-			height: 2.5rem;
+			justify-content: space-between;
+
+			h2 {
+				display: flex;
+				align-items: center;
+				font-size: 1.25rem;
+				height: 2.5rem;
+			}
+		}
+
+		.profile-location {
+			color: $text-muted;
+			margin-top: 0.5rem;
+			font-size: 0.9rem;
+		}
+
+		.profile-headline {
+			margin-top: 0.35rem;
+			color: $text-secondary;
+		}
+
+		.profile-contents {
+			padding-top: 0.5rem;
+		}
+
+		.profile-about-text,
+		.experience-description,
+		.education-description {
+			white-space: pre-line;
+		}
+
+		button + button {
+			margin-left: 0.5rem;
 		}
 	}
 
-	.profile-location {
-		color: $text-muted;
-		margin-top: 0.5rem;
-		font-size: 0.9rem;
+	.contact-info-trigger {
+		background: transparent;
+		border: 0;
+		padding: 0;
+		color: $color-dark-aqua-200;
+		text-decoration: underline;
+		cursor: pointer;
+		font: inherit;
+		font-weight: 700;
+
+		&:hover {
+			color: $color-dark-aqua-100;
+		}
+
+		&:focus-visible {
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(37, 141, 155, 0.15);
+			border-radius: 2px;
+		}
 	}
 
-	.profile-headline {
-		margin-top: 0.35rem;
-		color: $text-secondary;
+	.contact-info-section {
+		padding: 0;
 	}
 
-	.profile-contents {
-		padding-top: 0.5rem;
+	// Experience Section
+	.experience-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+
+		.experience-empty,
+		.experience-location,
+		.experience-dates {
+			color: $text-muted;
+		}
+
+		.experience-item {
+			border-bottom: 1px solid $border-default;
+			padding: 0.75rem 0;
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+
+			&:last-child {
+				border-bottom: none;
+			}
+		}
+
+		.experience-item-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			gap: 0.75rem;
+
+			h3 {
+				margin: 0;
+				font-size: 1rem;
+			}
+		}
 	}
 
-	.profile-about-text,
-	.experience-description,
-	.education-description {
-		white-space: pre-line;
+	// Education Section
+	.education-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+
+		.education-empty,
+		.education-dates {
+			color: $text-muted;
+		}
+
+		.education-item {
+			border-bottom: 1px solid $border-default;
+			padding: 0.75rem 0;
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+
+			&:last-child {
+				border-bottom: none;
+			}
+		}
+
+		.education-item-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			gap: 0.75rem;
+
+			h3 {
+				margin: 0;
+				font-size: 1rem;
+			}
+		}
 	}
 
-	button + button {
-		margin-left: 0.5rem;
+	// Skills Section
+	.skill-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+
+		.skill-empty {
+			color: $text-muted;
+		}
+
+		.skill-item {
+			padding-bottom: 0.75rem;
+			border-bottom: 1px solid $border-default;
+
+			&:last-child {
+				border-bottom: none;
+				padding-bottom: 0;
+			}
+		}
+
+		.skill-item-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 0.75rem;
+
+			h3 {
+				margin: 0;
+				font-size: 1rem;
+			}
+		}
 	}
 }
 
@@ -123,28 +254,29 @@
 			padding: 0.4rem 1rem;
 		}
 	}
-}
 
-// Contact Info Styles
+	.experience-current-field,
+	.education-current-field {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 
-.contact-info-trigger {
-	background: transparent;
-	border: 0;
-	padding: 0;
-	color: $color-dark-aqua-200;
-	text-decoration: underline;
-	cursor: pointer;
-	font: inherit;
-	font-weight: 700;
+		input[type='checkbox'] {
+			width: auto;
+			height: 1rem;
+			accent-color: $color-primary;
+			cursor: pointer;
 
-	&:hover {
-		color: $color-dark-aqua-100;
-	}
+			&:focus-visible {
+				outline: none;
+				box-shadow: 0 0 0 3px rgba(37, 141, 155, 0.1);
+			}
+		}
 
-	&:focus-visible {
-		outline: none;
-		box-shadow: 0 0 0 3px rgba(37, 141, 155, 0.15);
-		border-radius: 2px;
+		.label {
+			margin: 0;
+			cursor: pointer;
+		}
 	}
 }
 
@@ -174,167 +306,36 @@
 	}
 }
 
-.contact-info-section {
-	padding: 0;
-}
-
-.contact-info-list {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-
-.contact-info-item {
-	display: flex;
-	gap: 0.75rem;
-	margin: 0;
-}
-
-.contact-info-label {
-	color: $text-muted;
-	min-width: 6rem;
-	font-weight: 600;
-}
-
-.contact-info-value {
-	word-break: break-all;
-
-	a {
-		text-decoration: underline;
-	}
-}
-
-.contact-info-empty {
-	color: $text-muted;
-}
-
-// Experience Section
-.experience-list {
-	display: flex;
-	flex-direction: column;
-	gap: 0.75rem;
-
-	.experience-empty,
-	.experience-location,
-	.experience-dates {
-		color: $text-muted;
-	}
-
-	.experience-item {
-		border-bottom: 1px solid $border-default;
-		padding: 0.75rem 0;
+.profile-page,
+.profile-contact-modal {
+	.contact-info-list {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
-
-		&:last-child {
-			border-bottom: none;
-		}
 	}
 
-	.experience-item-header {
+	.contact-info-item {
 		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
 		gap: 0.75rem;
-
-		h3 {
-			margin: 0;
-			font-size: 1rem;
-		}
-	}
-}
-
-// Education Section
-.education-list {
-	display: flex;
-	flex-direction: column;
-	gap: 0.75rem;
-
-	.education-empty,
-	.education-dates {
-		color: $text-muted;
-	}
-
-	.education-item {
-		border-bottom: 1px solid $border-default;
-		padding: 0.75rem 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-
-		&:last-child {
-			border-bottom: none;
-		}
-	}
-
-	.education-item-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		gap: 0.75rem;
-
-		h3 {
-			margin: 0;
-			font-size: 1rem;
-		}
-	}
-}
-
-// Skills Section
-.skill-list {
-	display: flex;
-	flex-direction: column;
-	gap: 0.75rem;
-
-	.skill-empty {
-		color: $text-muted;
-	}
-
-	.skill-item {
-		padding-bottom: 0.75rem;
-		border-bottom: 1px solid $border-default;
-
-		&:last-child {
-			border-bottom: none;
-			padding-bottom: 0;
-		}
-	}
-
-	.skill-item-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 0.75rem;
-
-		h3 {
-			margin: 0;
-			font-size: 1rem;
-		}
-	}
-}
-
-.experience-current-field,
-.education-current-field {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-
-	input[type='checkbox'] {
-		width: auto;
-		height: 1rem;
-		accent-color: $color-primary;
-		cursor: pointer;
-
-		&:focus-visible {
-			outline: none;
-			box-shadow: 0 0 0 3px rgba(37, 141, 155, 0.1);
-		}
-	}
-
-	.label {
 		margin: 0;
-		cursor: pointer;
+	}
+
+	.contact-info-label {
+		color: $text-muted;
+		min-width: 6rem;
+		font-weight: 600;
+	}
+
+	.contact-info-value {
+		word-break: break-all;
+
+		a {
+			text-decoration: underline;
+		}
+	}
+
+	.contact-info-empty {
+		color: $text-muted;
 	}
 }
 
