@@ -123,11 +123,11 @@ function RegisterForm() {
 			<Card>
 				<form className="form" onSubmit={handleSubmit}>
 					<div>
-						<h1 className="register-title">Create a New Account</h1>
-						<p className="register-subtitle">It's quick and easy.</p>
+						<h1 className="auth-register-title">Create a New Account</h1>
+						<p className="auth-register-subtitle">It's quick and easy.</p>
 						{error && <p className="error">{error}</p>}
 					</div>
-					<div className="divider signup-top" role="separator" />
+					<div className="divider auth-signup-top" role="separator" />
 					<Input
 						id="register-name"
 						name="name"
@@ -176,7 +176,7 @@ function RegisterForm() {
 					<Button
 						type="submit"
 						variant="secondary"
-						className="register"
+						className="auth-register-submit"
 						disabled={isSubmitting}
 					>
 						{isSubmitting ? 'Registering...' : 'Register'}
