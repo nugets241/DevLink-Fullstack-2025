@@ -115,17 +115,17 @@ function People() {
 								<img
 									src={avatarSrc}
 									alt={`${profile.user?.name ?? 'User'} avatar`}
-									className="profile-avatar"
+									className="people-avatar"
 									onError={(event) => {
 										event.currentTarget.onerror = null;
 										event.currentTarget.src = '/devlink.svg';
 									}}
 								/>
 								<h2>{profile.user?.name ?? 'Developer'}</h2>
-								<p className="profile-headline">
+								<p className="people-headline">
 									{profile.user?.headline || 'No headline added yet.'}
 								</p>
-								<p className="profile-location">
+								<p className="people-location">
 									{profile.location || 'Location not provided'}
 								</p>
 							</Link>
