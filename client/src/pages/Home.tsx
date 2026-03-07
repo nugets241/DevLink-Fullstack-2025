@@ -9,98 +9,18 @@ import {
 	likePost,
 	updateComment,
 	unlikePost,
-	type PostComment,
 	type Post,
 } from '../store/slices/postsSlice';
 import Button from '../components/common/Button';
-import Textarea from '../components/common/Textarea';
+import PostComposer from '../components/post/PostComposer';
+import PostItem from '../components/post/PostItem';
+import {
+	getCommentEditKey,
+	getLikeIds,
+	getPostId,
+} from '../components/post/postUtils';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { MdOutlineClose } from 'react-icons/md';
-
-function getPostId(post: Pick<Post, 'id' | '_id'>) {
-	return post._id ?? post.id ?? '';
-}
-
-function getCommentId(comment: Pick<PostComment, 'id' | '_id'>) {
-	return comment._id ?? comment.id ?? '';
-}
-
-function getCommentEditKey(postId: string, commentId: string) {
-	return `${postId}:${commentId}`;
-}
-
-function getPostOwnerId(post: Post) {
-	if (!post.user) return '';
-	if (typeof post.user === 'string') return post.user;
-	return post.user._id ?? post.user.id ?? '';
-}
-
-function getLikeIds(post: Post) {
-	return (post.likes ?? [])
-		.map((like) =>
-			typeof like === 'string' ? like : (like._id ?? like.id ?? ''),
-		)
-		.filter((value): value is string => Boolean(value));
-}
-
-function getCommentOwnerId(comment: PostComment) {
-	if (!comment.user) return '';
-	if (typeof comment.user === 'string') return comment.user;
-	return comment.user._id ?? comment.user.id ?? '';
-}
-
-function getPostAuthor(post: Post) {
-	const name =
-		post.name?.trim() ||
-		(typeof post.user === 'string' ? '' : post.user?.name) ||
-		'Unknown user';
-	const avatar =
-		post.avatar?.trim() ||
-		(typeof post.user === 'string' ? '' : (post.user?.avatar ?? '').trim()) ||
-		'/devlink.svg';
-
-	return { name, avatar };
-}
-
-function getCommentAuthor(comment: PostComment) {
-	const name =
-		comment.name?.trim() ||
-		(typeof comment.user === 'string' ? '' : comment.user?.name) ||
-		'Unknown user';
-	const avatar =
-		comment.avatar?.trim() ||
-		(typeof comment.user === 'string'
-			? ''
-			: (comment.user?.avatar ?? '').trim()) ||
-		'/devlink.svg';
-
-	return { name, avatar };
-}
-
-function formatPostDate(value?: string) {
-	if (!value) return 'Just now';
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) return 'Just now';
-	return date.toLocaleString(undefined, {
-		month: 'short',
-		day: 'numeric',
-		hour: 'numeric',
-		minute: '2-digit',
-	});
-}
-
-function formatCommentDate(value?: string) {
-	if (!value) return 'Just now';
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) return 'Just now';
-	return date.toLocaleString(undefined, {
-		month: 'short',
-		day: 'numeric',
-		hour: 'numeric',
-		minute: '2-digit',
-	});
-}
 
 function Home() {
 	const dispatch = useAppDispatch();
@@ -323,24 +243,12 @@ function Home() {
 				</aside>
 				<main className="posts-section">
 					<div className="card posts-card">
-						<form className="post-composer" onSubmit={handleCreatePost}>
-							<Textarea
-								value={postText}
-								onChange={(event) => setPostText(event.target.value)}
-								placeholder="Share something with your network..."
-								aria-label="Create a post"
-								minRows={3}
-							/>
-							<div className="post-composer-actions">
-								<Button
-									type="submit"
-									variant="primary"
-									disabled={!postText.trim() || createStatus === 'loading'}
-								>
-									{createStatus === 'loading' ? 'Posting...' : 'Post'}
-								</Button>
-							</div>
-						</form>
+						<PostComposer
+							value={postText}
+							onChange={setPostText}
+							onSubmit={handleCreatePost}
+							isSubmitting={createStatus === 'loading'}
+						/>
 
 						{createError && <p className="posts-error">{createError}</p>}
 						{postsError && <p className="posts-error">{postsError}</p>}
@@ -372,246 +280,39 @@ function Home() {
 								const postId = getPostId(post);
 								if (!postId) return null;
 
-								const ownerId = getPostOwnerId(post);
-								const likeIds = getLikeIds(post);
-								const isLiked = currentUserId
-									? likeIds.includes(currentUserId)
-									: false;
-								const isActionLoading = actionStatusById[postId] === 'loading';
-								const isOwner = currentUserId
-									? ownerId === currentUserId
-									: false;
-								const { name, avatar } = getPostAuthor(post);
-								const comments = post.comments ?? [];
-								const commentDraft = commentDraftByPostId[postId] ?? '';
-								const isCommentCreating =
-									actionStatusById[`comment-create:${postId}`] === 'loading';
-								const commentError = commentErrorByPostId[postId];
-
 								return (
-									<article className="card post-item" key={postId}>
-										<header className="post-header">
-											<img
-												src={avatar}
-												alt={`${name} avatar`}
-												className="post-avatar"
-												onError={(event) => {
-													event.currentTarget.onerror = null;
-													event.currentTarget.src = '/devlink.svg';
-												}}
-											/>
-											<div className="post-meta">
-												<h3>{name}</h3>
-												<p>{formatPostDate(post.createdAt)}</p>
-											</div>
-											{isOwner && (
-												<Button
-													type="button"
-													variant="icon"
-													className="post-delete"
-													onClick={() => handleDeletePost(post)}
-													disabled={isActionLoading}
-												>
-													<MdOutlineClose
-														aria-hidden="true"
-														focusable="false"
-													/>
-												</Button>
-											)}
-										</header>
-
-										<p className="post-text">{post.text}</p>
-
-										<div className="post-actions">
-											<Button
-												type="button"
-												variant="tertiary"
-												onClick={() => handleToggleLike(post)}
-												disabled={isActionLoading || !currentUserId}
-											>
-												{isLiked ? 'Unlike' : 'Like'} ({likeIds.length})
-											</Button>
-										</div>
-
-										<div className="post-comments">
-											<form
-												className="comment-composer"
-												onSubmit={(event) => handleCreateComment(postId, event)}
-											>
-												<Textarea
-													value={commentDraft}
-													onChange={(event) =>
-														setCommentDraftByPostId((previous) => ({
-															...previous,
-															[postId]: event.target.value,
-														}))
-													}
-													placeholder="Write a comment..."
-													aria-label={`Comment on ${name}'s post`}
-													minRows={1}
-												/>
-												<div className="comment-composer-actions">
-													<Button
-														type="submit"
-														variant="tertiary"
-														disabled={!commentDraft.trim() || isCommentCreating}
-													>
-														{isCommentCreating ? 'Commenting...' : 'Comment'}
-													</Button>
-												</div>
-											</form>
-
-											{commentError && (
-												<p className="posts-error">{commentError}</p>
-											)}
-
-											{comments.length > 0 && (
-												<div className="comment-list">
-													{comments.map((comment) => {
-														const commentId = getCommentId(comment);
-														if (!commentId) return null;
-
-														const commentOwnerId = getCommentOwnerId(comment);
-														const canManageComment = currentUserId
-															? commentOwnerId === currentUserId
-															: false;
-														const commentEditKey = getCommentEditKey(
-															postId,
-															commentId,
-														);
-														const isEditingComment =
-															editingCommentKey === commentEditKey;
-														const isCommentDeleteLoading =
-															actionStatusById[
-																`comment-delete:${postId}:${commentId}`
-															] === 'loading';
-														const isCommentUpdateLoading =
-															actionStatusById[
-																`comment-update:${postId}:${commentId}`
-															] === 'loading';
-														const commentAuthor = getCommentAuthor(comment);
-
-														return (
-															<article className="comment-item" key={commentId}>
-																<img
-																	src={commentAuthor.avatar}
-																	alt={`${commentAuthor.name} avatar`}
-																	className="comment-avatar"
-																	onError={(event) => {
-																		event.currentTarget.onerror = null;
-																		event.currentTarget.src = '/devlink.svg';
-																	}}
-																/>
-																<div className="comment-content">
-																	<div className="comment-meta">
-																		<strong>{commentAuthor.name}</strong>
-																		<span>
-																			{formatCommentDate(
-																				comment.date ?? comment.createdAt,
-																			)}
-																		</span>
-																		{comment.editedAt && (
-																			<span className="comment-edited">
-																				edited
-																			</span>
-																		)}
-																	</div>
-																	{isEditingComment ? (
-																		<form
-																			className="comment-edit-form"
-																			onSubmit={(event) =>
-																				handleUpdateComment(
-																					postId,
-																					commentId,
-																					event,
-																				)
-																			}
-																		>
-																			<Textarea
-																				value={editingCommentText}
-																				onChange={(event) =>
-																					setEditingCommentText(
-																						event.target.value,
-																					)
-																				}
-																				aria-label={`Edit comment by ${commentAuthor.name}`}
-																				minRows={1}
-																			/>
-																			<div className="comment-edit-actions">
-																				<Button
-																					type="submit"
-																					variant="tertiary"
-																					disabled={
-																						!editingCommentText.trim() ||
-																						isCommentUpdateLoading
-																					}
-																				>
-																					{isCommentUpdateLoading
-																						? 'Saving...'
-																						: 'Save'}
-																				</Button>
-																				<Button
-																					type="button"
-																					variant="tertiary"
-																					onClick={handleCancelEditComment}
-																					disabled={isCommentUpdateLoading}
-																				>
-																					Cancel
-																				</Button>
-																			</div>
-																		</form>
-																	) : (
-																		<p>{comment.text}</p>
-																	)}
-																</div>
-																{canManageComment && (
-																	<div className="comment-item-actions">
-																		{!isEditingComment && (
-																			<Button
-																				type="button"
-																				variant="tertiary"
-																				className="comment-edit-trigger"
-																				onClick={() =>
-																					handleStartEditComment(
-																						postId,
-																						commentId,
-																						comment.text,
-																					)
-																				}
-																				disabled={
-																					isCommentDeleteLoading ||
-																					isCommentUpdateLoading
-																				}
-																			>
-																				Edit
-																			</Button>
-																		)}
-																		<Button
-																			type="button"
-																			variant="icon"
-																			className="comment-delete"
-																			onClick={() =>
-																				handleDeleteComment(postId, commentId)
-																			}
-																			disabled={
-																				isCommentDeleteLoading ||
-																				isCommentUpdateLoading
-																			}
-																		>
-																			<MdOutlineClose
-																				aria-hidden="true"
-																				focusable="false"
-																			/>
-																		</Button>
-																	</div>
-																)}
-															</article>
-														);
-													})}
-												</div>
-											)}
-										</div>
-									</article>
+									<PostItem
+										key={postId}
+										post={post}
+										currentUserId={currentUserId}
+										actionStatusById={actionStatusById}
+										commentDraft={commentDraftByPostId[postId] ?? ''}
+										commentError={commentErrorByPostId[postId]}
+										editingCommentKey={editingCommentKey}
+										editingCommentText={editingCommentText}
+										onToggleLike={handleToggleLike}
+										onDeletePost={handleDeletePost}
+										onCommentDraftChange={(value) =>
+											setCommentDraftByPostId((previous) => ({
+												...previous,
+												[postId]: value,
+											}))
+										}
+										onCreateComment={(event) =>
+											handleCreateComment(postId, event)
+										}
+										onStartEditComment={(commentId, text) =>
+											handleStartEditComment(postId, commentId, text)
+										}
+										onCancelEditComment={handleCancelEditComment}
+										onEditingCommentTextChange={setEditingCommentText}
+										onUpdateComment={(commentId, event) =>
+											handleUpdateComment(postId, commentId, event)
+										}
+										onDeleteComment={(commentId) =>
+											handleDeleteComment(postId, commentId)
+										}
+									/>
 								);
 							})}
 						</>
