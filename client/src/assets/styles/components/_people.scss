@@ -5,48 +5,48 @@
 	.people-empty {
 		color: $text-muted;
 	}
-}
 
-.people-grid {
-	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 0.75rem;
-}
-
-.people-card {
-	display: block;
-	width: auto;
-	max-width: none;
-	text-decoration: none;
-	color: inherit;
-
-	.profile-avatar {
-		margin-bottom: 0.5rem;
+	.people-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.75rem;
 	}
 
-	h2 {
-		margin: 0;
-	}
+	.people-card {
+		display: block;
+		width: auto;
+		max-width: none;
+		text-decoration: none;
+		color: inherit;
 
-	.profile-headline {
-		margin-top: 0.35rem;
-		color: $text-secondary;
-	}
+		.profile-avatar {
+			margin-bottom: 0.5rem;
+		}
 
-	.profile-location {
-		margin-top: 0.35rem;
-		color: $text-muted;
+		h2 {
+			margin: 0;
+		}
+
+		.profile-headline {
+			margin-top: 0.35rem;
+			color: $text-secondary;
+		}
+
+		.profile-location {
+			margin-top: 0.35rem;
+			color: $text-muted;
+		}
 	}
 }
 
 @include respond(lg) {
-	.people-grid {
+	.people-page .people-grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 }
 
 @include respond(md) {
-	.people-grid {
+	.people-page .people-grid {
 		grid-template-columns: 1fr;
 	}
 }
