@@ -20,6 +20,7 @@ export type PostComment = {
 	name?: string;
 	avatar?: string;
 	date?: string;
+	editedAt?: string;
 	createdAt?: string;
 	updatedAt?: string;
 };
