@@ -56,6 +56,12 @@ type AddCommentPayload = {
 	text: string;
 };
 
+type UpdateCommentPayload = {
+	postId: string;
+	commentId: string;
+	text: string;
+};
+
 type DeleteCommentPayload = {
 	postId: string;
 	commentId: string;
@@ -127,6 +133,10 @@ function getCommentCreateActionKey(postId: string) {
 
 function getCommentDeleteActionKey(postId: string, commentId: string) {
 	return `comment-delete:${postId}:${commentId}`;
+}
+
+function getCommentUpdateActionKey(postId: string, commentId: string) {
+	return `comment-update:${postId}:${commentId}`;
 }
 
 export const fetchPosts = createAsyncThunk<
@@ -366,6 +376,55 @@ export const addComment = createAsyncThunk<
 	}
 });
 
+export const updateComment = createAsyncThunk<
+	{ postId: string; commentId: string; comments: PostComment[] },
+	UpdateCommentPayload,
+	{ rejectValue: RejectValue }
+>(
+	'posts/updateComment',
+	async ({ postId, commentId, text }, { rejectWithValue }) => {
+		try {
+			const token = localStorage.getItem('token');
+			if (!token) {
+				return rejectWithValue({ message: 'No token found.' });
+			}
+
+			const normalizedText = text.trim();
+			if (!normalizedText) {
+				return rejectWithValue({ message: 'Comment text is required.' });
+			}
+
+			const response = await fetch(
+				API_ENDPOINTS.postCommentById(postId, commentId),
+				{
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify({ text: normalizedText }),
+				},
+			);
+
+			if (!response.ok) {
+				const payload = (await response
+					.json()
+					.catch(() => null)) as ApiErrorPayload | null;
+				return rejectWithValue({
+					message: getErrorMessage(payload, 'Failed to update comment.'),
+					status: response.status,
+				});
+			}
+
+			const data = (await response.json()) as PostComment[];
+			return { postId, commentId, comments: data };
+		} catch (error) {
+			console.error(error);
+			return rejectWithValue({ message: 'Network error. Please try again.' });
+		}
+	},
+);
+
 export const deleteComment = createAsyncThunk<
 	{ postId: string; commentId: string; comments: PostComment[] },
 	DeleteCommentPayload,
@@ -529,6 +588,28 @@ const postsSlice = createSlice({
 				delete state.actionStatusById[getCommentCreateActionKey(postId)];
 				state.commentErrorByPostId[postId] =
 					action.payload?.message ?? 'Failed to add comment.';
+			})
+			.addCase(updateComment.pending, (state, action) => {
+				const { postId, commentId } = action.meta.arg;
+				state.actionStatusById[getCommentUpdateActionKey(postId, commentId)] =
+					'loading';
+				delete state.commentErrorByPostId[postId];
+			})
+			.addCase(updateComment.fulfilled, (state, action) => {
+				const { postId, commentId, comments } = action.payload;
+				delete state.actionStatusById[
+					getCommentUpdateActionKey(postId, commentId)
+				];
+				delete state.commentErrorByPostId[postId];
+				setPostComments(state, postId, comments);
+			})
+			.addCase(updateComment.rejected, (state, action) => {
+				const { postId, commentId } = action.meta.arg;
+				delete state.actionStatusById[
+					getCommentUpdateActionKey(postId, commentId)
+				];
+				state.commentErrorByPostId[postId] =
+					action.payload?.message ?? 'Failed to update comment.';
 			})
 			.addCase(deleteComment.pending, (state, action) => {
 				const { postId, commentId } = action.meta.arg;
