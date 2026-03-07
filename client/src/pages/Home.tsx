@@ -54,13 +54,15 @@ function Home() {
 		event.preventDefault();
 
 		const normalizedText = postText.trim();
-		if (!normalizedText) return;
+		if (!normalizedText) return false;
 
 		try {
 			await dispatch(createPost(normalizedText)).unwrap();
 			setPostText('');
+			return true;
 		} catch (thunkError) {
 			console.error(thunkError);
+			return false;
 		}
 	};
 
@@ -244,6 +246,8 @@ function Home() {
 				<main className="post-feed-section">
 					<div className="card">
 						<PostComposer
+							avatarSrc={avatarSrc}
+							avatarAlt={`${user.name} avatar`}
 							value={postText}
 							onChange={setPostText}
 							onSubmit={handleCreatePost}
