@@ -156,9 +156,11 @@ function EducationSection() {
 				triggerVariant="add"
 				triggerAriaLabel="Add education"
 				content={
-					<div className="education-list">
+					<div className="profile-education-list">
 						{educationEntries.length === 0 ? (
-							<p className="education-empty">Add your education history.</p>
+							<p className="profile-education-empty">
+								Add your education history.
+							</p>
 						) : (
 							educationEntries.map((education) => {
 								const educationId = education._id || education.id || '';
@@ -258,7 +260,7 @@ function EducationSection() {
 					hint="Required unless 'I currently study here' is checked."
 					error={profileFieldErrors.to}
 				/>
-				<label className="field education-current-field">
+				<label className="field profile-education-current-field">
 					<input
 						type="checkbox"
 						name="current"
