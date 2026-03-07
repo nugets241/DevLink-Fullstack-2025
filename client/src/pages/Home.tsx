@@ -241,8 +241,8 @@ function Home() {
 						</p>
 					</Link>
 				</aside>
-				<main className="posts-section">
-					<div className="card posts-card">
+				<main className="post-feed-section">
+					<div className="card">
 						<PostComposer
 							value={postText}
 							onChange={setPostText}
@@ -250,16 +250,16 @@ function Home() {
 							isSubmitting={createStatus === 'loading'}
 						/>
 
-						{createError && <p className="posts-error">{createError}</p>}
-						{postsError && <p className="posts-error">{postsError}</p>}
+						{createError && <p className="post-feed-error">{createError}</p>}
+						{postsError && <p className="post-feed-error">{postsError}</p>}
 
 						{postsStatus === 'loading' && posts.length === 0 ? (
-							<p className="posts-empty">Loading posts...</p>
+							<p className="post-feed-empty">Loading posts...</p>
 						) : null}
 
 						{postsStatus === 'failed' && posts.length === 0 ? (
-							<div className="posts-empty-state">
-								<p className="posts-empty">Could not load posts.</p>
+							<div className="post-feed-empty-state">
+								<p className="post-feed-empty">Could not load posts.</p>
 								<Button
 									type="button"
 									variant="tertiary"
@@ -270,7 +270,7 @@ function Home() {
 							</div>
 						) : null}
 						{postsStatus !== 'loading' && posts.length === 0 ? (
-							<p className="posts-empty">No posts yet.</p>
+							<p className="post-feed-empty">No posts yet.</p>
 						) : null}
 					</div>
 
