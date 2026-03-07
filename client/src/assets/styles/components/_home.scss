@@ -126,6 +126,87 @@
 	gap: 0.5rem;
 }
 
+.post-comments {
+	margin-top: 0.75rem;
+	padding-top: 0.75rem;
+	border-top: 1px solid $border-default;
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+}
+
+.comment-composer {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+
+	textarea {
+		min-height: 2.6rem;
+	}
+}
+
+.comment-composer-actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.comment-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.comment-item {
+	display: flex;
+	gap: 0.6rem;
+	align-items: flex-start;
+	background: $card-bg;
+	border: 1px solid $border-default;
+	border-radius: 8px;
+	padding: 0.55rem;
+}
+
+.comment-avatar {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 1px solid $border-default;
+}
+
+.comment-content {
+	flex: 1;
+	min-width: 0;
+
+	p {
+		margin: 0.15rem 0 0;
+		color: $text-secondary;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+}
+
+.comment-meta {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+
+	strong {
+		font-size: 0.85rem;
+	}
+
+	span {
+		font-size: 0.75rem;
+		color: $text-muted;
+	}
+}
+
+.comment-delete {
+	width: 28px;
+	height: 28px;
+	padding: 5px;
+}
+
 @include respond(md) {
 	.home-layout {
 		grid-template-columns: 1fr;
