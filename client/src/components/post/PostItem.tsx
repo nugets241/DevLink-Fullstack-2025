@@ -112,7 +112,7 @@ function PostItem({
 			</div>
 
 			<div className="post-comments">
-				<form className="comment-composer" onSubmit={onCreateComment}>
+				<form className="post-comment-composer" onSubmit={onCreateComment}>
 					<Textarea
 						value={commentDraft}
 						onChange={(event) => onCommentDraftChange(event.target.value)}
@@ -120,7 +120,7 @@ function PostItem({
 						aria-label={`Comment on ${name}'s post`}
 						minRows={1}
 					/>
-					<div className="comment-composer-actions">
+					<div className="post-comment-composer-actions">
 						<Button
 							type="submit"
 							variant="tertiary"
@@ -131,10 +131,10 @@ function PostItem({
 					</div>
 				</form>
 
-				{commentError && <p className="posts-error">{commentError}</p>}
+				{commentError && <p className="post-feed-error">{commentError}</p>}
 
 				{comments.length > 0 && (
-					<div className="comment-list">
+					<div className="post-comment-list">
 						{comments.map((comment) => {
 							const commentId = getCommentId(comment);
 							if (!commentId) return null;
