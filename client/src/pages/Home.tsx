@@ -1,11 +1,14 @@
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { getUserData } from '../store/slices/authSlice';
 import {
+	addComment,
 	createPost,
+	deleteComment,
 	deletePost,
 	fetchPosts,
 	likePost,
 	unlikePost,
+	type PostComment,
 	type Post,
 } from '../store/slices/postsSlice';
 import Button from '../components/common/Button';
@@ -16,6 +19,10 @@ import { MdOutlineClose } from 'react-icons/md';
 
 function getPostId(post: Pick<Post, 'id' | '_id'>) {
 	return post._id ?? post.id ?? '';
+}
+
+function getCommentId(comment: Pick<PostComment, 'id' | '_id'>) {
+	return comment._id ?? comment.id ?? '';
 }
 
 function getPostOwnerId(post: Post) {
@@ -32,6 +39,12 @@ function getLikeIds(post: Post) {
 		.filter((value): value is string => Boolean(value));
 }
 
+function getCommentOwnerId(comment: PostComment) {
+	if (!comment.user) return '';
+	if (typeof comment.user === 'string') return comment.user;
+	return comment.user._id ?? comment.user.id ?? '';
+}
+
 function getPostAuthor(post: Post) {
 	const name =
 		post.name?.trim() ||
@@ -45,7 +58,34 @@ function getPostAuthor(post: Post) {
 	return { name, avatar };
 }
 
+function getCommentAuthor(comment: PostComment) {
+	const name =
+		comment.name?.trim() ||
+		(typeof comment.user === 'string' ? '' : comment.user?.name) ||
+		'Unknown user';
+	const avatar =
+		comment.avatar?.trim() ||
+		(typeof comment.user === 'string'
+			? ''
+			: (comment.user?.avatar ?? '').trim()) ||
+		'/devlink.svg';
+
+	return { name, avatar };
+}
+
 function formatPostDate(value?: string) {
+	if (!value) return 'Just now';
+	const date = new Date(value);
+	if (Number.isNaN(date.getTime())) return 'Just now';
+	return date.toLocaleString(undefined, {
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: '2-digit',
+	});
+}
+
+function formatCommentDate(value?: string) {
 	if (!value) return 'Just now';
 	const date = new Date(value);
 	if (Number.isNaN(date.getTime())) return 'Just now';
@@ -67,8 +107,12 @@ function Home() {
 		createStatus,
 		createError,
 		actionStatusById,
+		commentErrorByPostId,
 	} = useAppSelector((state) => state.posts);
 	const [postText, setPostText] = React.useState('');
+	const [commentDraftByPostId, setCommentDraftByPostId] = React.useState<
+		Record<string, string>
+	>({});
 	const currentUserId =
 		user?.id ?? (user as ({ _id?: string } & typeof user) | null)?._id;
 
@@ -116,6 +160,36 @@ function Home() {
 
 		try {
 			await dispatch(deletePost(postId)).unwrap();
+		} catch (thunkError) {
+			console.error(thunkError);
+		}
+	};
+
+	const handleCreateComment = async (
+		postId: string,
+		event: React.FormEvent<HTMLFormElement>,
+	) => {
+		event.preventDefault();
+
+		const normalizedText = (commentDraftByPostId[postId] ?? '').trim();
+		if (!normalizedText) return;
+
+		try {
+			await dispatch(addComment({ postId, text: normalizedText })).unwrap();
+			setCommentDraftByPostId((previous) => ({
+				...previous,
+				[postId]: '',
+			}));
+		} catch (thunkError) {
+			console.error(thunkError);
+		}
+	};
+
+	const handleDeleteComment = async (postId: string, commentId: string) => {
+		if (!postId || !commentId) return;
+
+		try {
+			await dispatch(deleteComment({ postId, commentId })).unwrap();
 		} catch (thunkError) {
 			console.error(thunkError);
 		}
@@ -254,6 +328,11 @@ function Home() {
 									? ownerId === currentUserId
 									: false;
 								const { name, avatar } = getPostAuthor(post);
+								const comments = post.comments ?? [];
+								const commentDraft = commentDraftByPostId[postId] ?? '';
+								const isCommentCreating =
+									actionStatusById[`comment-create:${postId}`] === 'loading';
+								const commentError = commentErrorByPostId[postId];
 
 								return (
 									<article className="post-item" key={postId}>
@@ -298,6 +377,99 @@ function Home() {
 											>
 												{isLiked ? 'Unlike' : 'Like'} ({likeIds.length})
 											</Button>
+										</div>
+
+										<div className="post-comments">
+											<form
+												className="comment-composer"
+												onSubmit={(event) => handleCreateComment(postId, event)}
+											>
+												<Textarea
+													value={commentDraft}
+													onChange={(event) =>
+														setCommentDraftByPostId((previous) => ({
+															...previous,
+															[postId]: event.target.value,
+														}))
+													}
+													placeholder="Write a comment..."
+													aria-label={`Comment on ${name}'s post`}
+													minRows={1}
+												/>
+												<div className="comment-composer-actions">
+													<Button
+														type="submit"
+														variant="tertiary"
+														disabled={!commentDraft.trim() || isCommentCreating}
+													>
+														{isCommentCreating ? 'Commenting...' : 'Comment'}
+													</Button>
+												</div>
+											</form>
+
+											{commentError && (
+												<p className="posts-error">{commentError}</p>
+											)}
+
+											{comments.length > 0 && (
+												<div className="comment-list">
+													{comments.map((comment) => {
+														const commentId = getCommentId(comment);
+														if (!commentId) return null;
+
+														const commentOwnerId = getCommentOwnerId(comment);
+														const canDeleteComment = currentUserId
+															? commentOwnerId === currentUserId
+															: false;
+														const isCommentDeleteLoading =
+															actionStatusById[
+																`comment-delete:${postId}:${commentId}`
+															] === 'loading';
+														const commentAuthor = getCommentAuthor(comment);
+
+														return (
+															<article className="comment-item" key={commentId}>
+																<img
+																	src={commentAuthor.avatar}
+																	alt={`${commentAuthor.name} avatar`}
+																	className="comment-avatar"
+																	onError={(event) => {
+																		event.currentTarget.onerror = null;
+																		event.currentTarget.src = '/devlink.svg';
+																	}}
+																/>
+																<div className="comment-content">
+																	<div className="comment-meta">
+																		<strong>{commentAuthor.name}</strong>
+																		<span>
+																			{formatCommentDate(
+																				comment.date ?? comment.createdAt,
+																			)}
+																		</span>
+																	</div>
+																	<p>{comment.text}</p>
+																</div>
+																{canDeleteComment && (
+																	<Button
+																		type="button"
+																		variant="icon"
+																		className="comment-delete"
+																		onClick={() =>
+																			handleDeleteComment(postId, commentId)
+																		}
+																		disabled={isCommentDeleteLoading}
+																	>
+																		<MdOutlineClose
+																			aria-hidden="true"
+																			focusable="false"
+																		/>
+																	</Button>
+																)}
+															</article>
+														);
+													})}
+												</div>
+											)}
 										</div>
 									</article>
 								);
