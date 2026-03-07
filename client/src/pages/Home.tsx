@@ -217,26 +217,26 @@ function Home() {
 	return (
 		<div className="container">
 			<div className="home-layout">
-				<aside className="card profile-summary">
+				<aside className="card home-profile-summary">
 					<Link
 						to="/profile"
 						aria-label="Go to your profile"
-						className="profile-link"
+						className="home-profile-link"
 					>
 						<img
 							src={avatarSrc}
 							alt="Avatar"
-							className="profile-avatar"
+							className="home-profile-avatar"
 							onError={(event) => {
 								event.currentTarget.onerror = null;
 								event.currentTarget.src = '/devlink.svg';
 							}}
 						/>
 						<h2>{user.name}</h2>
-						<p className="profile-headline">
+						<p className="home-profile-headline">
 							{user?.headline || 'Add a headline'}
 						</p>
-						<p className="profile-location">
+						<p className="home-profile-location">
 							{user?.location || 'Add your location'}
 						</p>
 					</Link>
