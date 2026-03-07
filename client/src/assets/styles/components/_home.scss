@@ -8,10 +8,16 @@
 	align-items: start;
 }
 
-.home-layout > .card {
-	width: auto;
-	max-width: none;
-	border-radius: 12px;
+.posts-section {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+
+	& > .card {
+		width: auto;
+		max-width: inherit;
+		border-radius: 12px;
+	}
 }
 
 .profile-link {
@@ -45,20 +51,10 @@
 	font-size: 0.95rem;
 }
 
-.posts-card {
-	h2 {
-		margin-bottom: 0.75rem;
-	}
-}
-
 .post-composer {
 	display: flex;
 	flex-direction: column;
 	gap: 0.75rem;
-
-	textarea {
-		min-height: 5.5rem;
-	}
 }
 
 .post-composer-actions {
@@ -78,20 +74,6 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: 0.75rem;
-}
-
-.post-list {
-	margin-top: 1rem;
-	display: flex;
-	flex-direction: column;
-	gap: 0.75rem;
-}
-
-.post-item {
-	background: $bg-surface;
-	border: 1px solid $border-default;
-	border-radius: 8px;
-	padding: 0.75rem;
 }
 
 .post-header {
@@ -147,5 +129,9 @@
 @include respond(md) {
 	.home-layout {
 		grid-template-columns: 1fr;
+	}
+
+	.profile-summary {
+		display: none;
 	}
 }
