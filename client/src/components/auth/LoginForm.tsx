@@ -125,7 +125,7 @@ function LoginForm() {
 					<Button
 						type="submit"
 						variant="primary"
-						className="login"
+						className="auth-login-submit"
 						disabled={isSubmitting}
 					>
 						{isSubmitting ? 'Logging in...' : 'Log In'}
@@ -133,7 +133,10 @@ function LoginForm() {
 
 					<div className="divider" role="separator" />
 
-					<Link className="button button-secondary login-signup" to="/register">
+					<Link
+						className="button button-secondary auth-login-signup"
+						to="/register"
+					>
 						Create new account
 					</Link>
 				</form>
