@@ -201,6 +201,13 @@
 	}
 }
 
+.comment-edited {
+	font-size: 0.72rem;
+	color: $text-muted;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+}
+
 .comment-edit-form {
 	margin-top: 0.25rem;
 	display: flex;
