@@ -12,6 +12,18 @@ type PostUser = {
 
 type PostLike = string | { id?: string; _id?: string };
 
+export type PostComment = {
+	id?: string;
+	_id?: string;
+	user?: string | PostUser;
+	text: string;
+	name?: string;
+	avatar?: string;
+	date?: string;
+	createdAt?: string;
+	updatedAt?: string;
+};
+
 export type Post = {
 	id?: string;
 	_id?: string;
@@ -20,6 +32,7 @@ export type Post = {
 	name?: string;
 	avatar?: string;
 	likes?: PostLike[];
+	comments?: PostComment[];
 	createdAt?: string;
 	updatedAt?: string;
 };
@@ -38,6 +51,16 @@ type FetchPostsParams = {
 	limit?: number;
 };
 
+type AddCommentPayload = {
+	postId: string;
+	text: string;
+};
+
+type DeleteCommentPayload = {
+	postId: string;
+	commentId: string;
+};
+
 type RejectValue = {
 	message: string;
 	status?: number;
@@ -51,6 +74,7 @@ type PostsState = {
 	createStatus: AsyncStatus;
 	createError: string | null;
 	actionStatusById: Record<string, 'idle' | 'loading'>;
+	commentErrorByPostId: Record<string, string>;
 };
 
 type ApiValidationError = {
@@ -76,6 +100,7 @@ const initialState: PostsState = {
 	createStatus: 'idle',
 	createError: null,
 	actionStatusById: {},
+	commentErrorByPostId: {},
 };
 
 function getErrorMessage(payload: ApiErrorPayload | null, fallback: string) {
@@ -94,6 +119,14 @@ function normalizeLikeIds(values: PostLike[]) {
 			typeof value === 'string' ? value : (value.id ?? value._id ?? ''),
 		)
 		.filter((value): value is string => Boolean(value));
+}
+
+function getCommentCreateActionKey(postId: string) {
+	return `comment-create:${postId}`;
+}
+
+function getCommentDeleteActionKey(postId: string, commentId: string) {
+	return `comment-delete:${postId}:${commentId}`;
 }
 
 export const fetchPosts = createAsyncThunk<
@@ -290,6 +323,89 @@ export const unlikePost = createAsyncThunk<
 	}
 });
 
+export const addComment = createAsyncThunk<
+	{ postId: string; comments: PostComment[] },
+	AddCommentPayload,
+	{ rejectValue: RejectValue }
+>('posts/addComment', async ({ postId, text }, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const normalizedText = text.trim();
+		if (!normalizedText) {
+			return rejectWithValue({ message: 'Comment text is required.' });
+		}
+
+		const response = await fetch(API_ENDPOINTS.postComments(postId), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ text: normalizedText }),
+		});
+
+		if (!response.ok) {
+			const payload = (await response
+				.json()
+				.catch(() => null)) as ApiErrorPayload | null;
+			return rejectWithValue({
+				message: getErrorMessage(payload, 'Failed to add comment.'),
+				status: response.status,
+			});
+		}
+
+		const data = (await response.json()) as PostComment[];
+		return { postId, comments: data };
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
+export const deleteComment = createAsyncThunk<
+	{ postId: string; commentId: string; comments: PostComment[] },
+	DeleteCommentPayload,
+	{ rejectValue: RejectValue }
+>('posts/deleteComment', async ({ postId, commentId }, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const response = await fetch(
+			API_ENDPOINTS.postCommentById(postId, commentId),
+			{
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+			},
+		);
+
+		if (!response.ok) {
+			const payload = (await response
+				.json()
+				.catch(() => null)) as ApiErrorPayload | null;
+			return rejectWithValue({
+				message: getErrorMessage(payload, 'Failed to delete comment.'),
+				status: response.status,
+			});
+		}
+
+		const data = (await response.json()) as PostComment[];
+		return { postId, commentId, comments: data };
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
 const postsSlice = createSlice({
 	name: 'posts',
 	initialState,
@@ -300,8 +416,22 @@ const postsSlice = createSlice({
 		clearCreatePostError: (state) => {
 			state.createError = null;
 		},
+		clearCommentError: (state, action: { payload: string }) => {
+			delete state.commentErrorByPostId[action.payload];
+		},
 	},
 	extraReducers: (builder) => {
+		const setPostComments = (
+			state: PostsState,
+			postId: string,
+			comments: PostComment[],
+		) => {
+			const post = state.items.find((item) => getPostId(item) === postId);
+			if (post) {
+				post.comments = comments;
+			}
+		};
+
 		builder
 			.addCase(fetchPosts.pending, (state) => {
 				state.status = 'loading';
@@ -382,10 +512,48 @@ const postsSlice = createSlice({
 			.addCase(unlikePost.rejected, (state, action) => {
 				delete state.actionStatusById[action.meta.arg];
 				state.error = action.payload?.message ?? 'Failed to unlike post.';
+			})
+			.addCase(addComment.pending, (state, action) => {
+				const postId = action.meta.arg.postId;
+				state.actionStatusById[getCommentCreateActionKey(postId)] = 'loading';
+				delete state.commentErrorByPostId[postId];
+			})
+			.addCase(addComment.fulfilled, (state, action) => {
+				const { postId, comments } = action.payload;
+				delete state.actionStatusById[getCommentCreateActionKey(postId)];
+				delete state.commentErrorByPostId[postId];
+				setPostComments(state, postId, comments);
+			})
+			.addCase(addComment.rejected, (state, action) => {
+				const postId = action.meta.arg.postId;
+				delete state.actionStatusById[getCommentCreateActionKey(postId)];
+				state.commentErrorByPostId[postId] =
+					action.payload?.message ?? 'Failed to add comment.';
+			})
+			.addCase(deleteComment.pending, (state, action) => {
+				const { postId, commentId } = action.meta.arg;
+				state.actionStatusById[getCommentDeleteActionKey(postId, commentId)] =
+					'loading';
+			})
+			.addCase(deleteComment.fulfilled, (state, action) => {
+				const { postId, commentId, comments } = action.payload;
+				delete state.actionStatusById[
+					getCommentDeleteActionKey(postId, commentId)
+				];
+				setPostComments(state, postId, comments);
+			})
+			.addCase(deleteComment.rejected, (state, action) => {
+				const { postId, commentId } = action.meta.arg;
+				delete state.actionStatusById[
+					getCommentDeleteActionKey(postId, commentId)
+				];
+				state.commentErrorByPostId[postId] =
+					action.payload?.message ?? 'Failed to delete comment.';
 			});
 	},
 });
 
-export const { clearPostsError, clearCreatePostError } = postsSlice.actions;
+export const { clearPostsError, clearCreatePostError, clearCommentError } =
+	postsSlice.actions;
 
 export default postsSlice.reducer;
