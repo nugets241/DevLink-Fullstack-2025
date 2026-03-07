@@ -12,6 +12,7 @@ import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
 import { Link } from 'react-router-dom';
 import React from 'react';
+import { MdOutlineClose } from 'react-icons/md';
 
 function getPostId(post: Pick<Post, 'id' | '_id'>) {
 	return post._id ?? post.id ?? '';
@@ -168,7 +169,7 @@ function Home() {
 	return (
 		<div className="container">
 			<div className="home-layout">
-				<aside className="card">
+				<aside className="card profile-summary">
 					<Link
 						to="/profile"
 						aria-label="Go to your profile"
@@ -192,53 +193,53 @@ function Home() {
 						</p>
 					</Link>
 				</aside>
-				<main className="card posts-card">
-					<h2>Posts</h2>
-					<form className="post-composer" onSubmit={handleCreatePost}>
-						<Textarea
-							value={postText}
-							onChange={(event) => setPostText(event.target.value)}
-							placeholder="Share something with your network..."
-							aria-label="Create a post"
-							minRows={3}
-						/>
-						<div className="post-composer-actions">
-							<Button
-								type="submit"
-								variant="primary"
-								disabled={!postText.trim() || createStatus === 'loading'}
-							>
-								{createStatus === 'loading' ? 'Posting...' : 'Post'}
-							</Button>
-						</div>
-					</form>
+				<main className="posts-section">
+					<div className="card posts-card">
+						<form className="post-composer" onSubmit={handleCreatePost}>
+							<Textarea
+								value={postText}
+								onChange={(event) => setPostText(event.target.value)}
+								placeholder="Share something with your network..."
+								aria-label="Create a post"
+								minRows={3}
+							/>
+							<div className="post-composer-actions">
+								<Button
+									type="submit"
+									variant="primary"
+									disabled={!postText.trim() || createStatus === 'loading'}
+								>
+									{createStatus === 'loading' ? 'Posting...' : 'Post'}
+								</Button>
+							</div>
+						</form>
 
-					{createError && <p className="posts-error">{createError}</p>}
-					{postsError && <p className="posts-error">{postsError}</p>}
+						{createError && <p className="posts-error">{createError}</p>}
+						{postsError && <p className="posts-error">{postsError}</p>}
 
-					{postsStatus === 'loading' && posts.length === 0 ? (
-						<p className="posts-empty">Loading posts...</p>
-					) : null}
+						{postsStatus === 'loading' && posts.length === 0 ? (
+							<p className="posts-empty">Loading posts...</p>
+						) : null}
 
-					{postsStatus === 'failed' && posts.length === 0 ? (
-						<div className="posts-empty-state">
-							<p className="posts-empty">Could not load posts.</p>
-							<Button
-								type="button"
-								variant="tertiary"
-								onClick={() => dispatch(fetchPosts({ page: 1, limit: 20 }))}
-							>
-								Try Again
-							</Button>
-						</div>
-					) : null}
-
-					{postsStatus !== 'loading' && posts.length === 0 ? (
-						<p className="posts-empty">No posts yet.</p>
-					) : null}
+						{postsStatus === 'failed' && posts.length === 0 ? (
+							<div className="posts-empty-state">
+								<p className="posts-empty">Could not load posts.</p>
+								<Button
+									type="button"
+									variant="tertiary"
+									onClick={() => dispatch(fetchPosts({ page: 1, limit: 20 }))}
+								>
+									Try Again
+								</Button>
+							</div>
+						) : null}
+						{postsStatus !== 'loading' && posts.length === 0 ? (
+							<p className="posts-empty">No posts yet.</p>
+						) : null}
+					</div>
 
 					{posts.length > 0 && (
-						<div className="post-list">
+						<div className="card post-list">
 							{posts.map((post) => {
 								const postId = getPostId(post);
 								if (!postId) return null;
@@ -273,12 +274,15 @@ function Home() {
 											{isOwner && (
 												<Button
 													type="button"
-													variant="tertiary"
+													variant="icon"
 													className="post-delete"
 													onClick={() => handleDeletePost(post)}
 													disabled={isActionLoading}
 												>
-													Delete
+													<MdOutlineClose
+														aria-hidden="true"
+														focusable="false"
+													/>
 												</Button>
 											)}
 										</header>
