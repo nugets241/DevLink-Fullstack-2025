@@ -11,9 +11,9 @@ function Landing() {
 						your network.
 					</h1>
 				</section>
-				<section aria-label="Login" className="form-container">
+				<section aria-label="Login" className="landing-auth-panel">
 					<LoginForm />
-					<p className="below">
+					<p className="landing-auth-note">
 						<strong>Create a Developer Profile</strong> to showcase your
 						projects and skills.
 					</p>
