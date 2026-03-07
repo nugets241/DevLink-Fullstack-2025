@@ -367,7 +367,7 @@ function Home() {
 					</div>
 
 					{posts.length > 0 && (
-						<div className="card post-list">
+						<>
 							{posts.map((post) => {
 								const postId = getPostId(post);
 								if (!postId) return null;
@@ -389,7 +389,7 @@ function Home() {
 								const commentError = commentErrorByPostId[postId];
 
 								return (
-									<article className="post-item" key={postId}>
+									<article className="card post-item" key={postId}>
 										<header className="post-header">
 											<img
 												src={avatar}
@@ -510,6 +510,11 @@ function Home() {
 																				comment.date ?? comment.createdAt,
 																			)}
 																		</span>
+																		{comment.editedAt && (
+																			<span className="comment-edited">
+																				edited
+																			</span>
+																		)}
 																	</div>
 																	{isEditingComment ? (
 																		<form
@@ -609,7 +614,7 @@ function Home() {
 									</article>
 								);
 							})}
-						</div>
+						</>
 					)}
 				</main>
 			</div>
