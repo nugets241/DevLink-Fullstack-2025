@@ -1,6 +1,6 @@
 @use '../abstracts/variables' as *;
 
-.posts-section {
+.post-feed-section {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
@@ -12,7 +12,7 @@
 	}
 }
 
-.posts-empty {
+.post-feed-empty {
 	color: $text-muted;
 	font-size: 0.95rem;
 }
@@ -28,13 +28,13 @@
 	justify-content: flex-end;
 }
 
-.posts-error {
+.post-feed-error {
 	margin-top: 0.75rem;
 	color: $error;
 	font-size: 0.9rem;
 }
 
-.posts-empty-state {
+.post-feed-empty-state {
 	margin-top: 1rem;
 	display: flex;
 	align-items: center;
@@ -101,7 +101,7 @@
 	gap: 0.6rem;
 }
 
-.comment-composer {
+.post-comment-composer {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
@@ -111,18 +111,18 @@
 	}
 }
 
-.comment-composer-actions {
+.post-comment-composer-actions {
 	display: flex;
 	justify-content: flex-end;
 }
 
-.comment-list {
+.post-comment-list {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
 }
 
-.comment-item {
+.post-comment-item {
 	display: flex;
 	gap: 0.6rem;
 	align-items: flex-start;
@@ -132,7 +132,7 @@
 	padding: 0.55rem;
 }
 
-.comment-avatar {
+.post-comment-avatar {
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
@@ -140,7 +140,7 @@
 	border: 1px solid $border-default;
 }
 
-.comment-content {
+.post-comment-content {
 	flex: 1;
 	min-width: 0;
 
@@ -152,7 +152,7 @@
 	}
 }
 
-.comment-meta {
+.post-comment-meta {
 	display: flex;
 	align-items: center;
 	gap: 0.45rem;
@@ -167,14 +167,14 @@
 	}
 }
 
-.comment-edited {
+.post-comment-edited {
 	font-size: 0.72rem;
 	color: $text-muted;
 	text-transform: uppercase;
 	letter-spacing: 0.02em;
 }
 
-.comment-edit-form {
+.post-comment-edit-form {
 	margin-top: 0.25rem;
 	display: flex;
 	flex-direction: column;
@@ -185,25 +185,25 @@
 	}
 }
 
-.comment-edit-actions {
+.post-comment-edit-actions {
 	display: flex;
 	justify-content: flex-end;
 	gap: 0.4rem;
 }
 
-.comment-item-actions {
+.post-comment-item-actions {
 	margin-left: auto;
 	display: flex;
 	align-items: center;
 	gap: 0.35rem;
 }
 
-.comment-edit-trigger {
+.post-comment-edit-trigger {
 	font-size: 0.8rem;
 	padding: 0.25rem 0.5rem;
 }
 
-.comment-delete {
+.post-comment-delete {
 	width: 28px;
 	height: 28px;
 	padding: 5px;
