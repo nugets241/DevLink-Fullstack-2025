@@ -26,6 +26,10 @@ export const API_ENDPOINTS = {
 	postById: (postId: string) => `${API_BASE_URL}/api/posts/${postId}`,
 	postLike: (postId: string) => `${API_BASE_URL}/api/posts/${postId}/like`,
 	postUnlike: (postId: string) => `${API_BASE_URL}/api/posts/${postId}/unlike`,
+	postComments: (postId: string) =>
+		`${API_BASE_URL}/api/posts/${postId}/comments`,
+	postCommentById: (postId: string, commentId: string) =>
+		`${API_BASE_URL}/api/posts/${postId}/comments/${commentId}`,
 
 	// Add more endpoints as needed
 } as const;
