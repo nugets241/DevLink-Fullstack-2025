@@ -38,24 +38,26 @@ function CommentItem({
 	onDeleteComment,
 }: CommentItemProps) {
 	return (
-		<article className="comment-item">
+		<article className="post-comment-item">
 			<img
 				src={commentAuthor.avatar}
 				alt={`${commentAuthor.name} avatar`}
-				className="comment-avatar"
+				className="post-comment-avatar"
 				onError={(event) => {
 					event.currentTarget.onerror = null;
 					event.currentTarget.src = '/devlink.svg';
 				}}
 			/>
-			<div className="comment-content">
-				<div className="comment-meta">
+			<div className="post-comment-content">
+				<div className="post-comment-meta">
 					<strong>{commentAuthor.name}</strong>
 					<span>{formatCommentDate(comment.date ?? comment.createdAt)}</span>
-					{comment.editedAt && <span className="comment-edited">edited</span>}
+					{comment.editedAt && (
+						<span className="post-comment-edited">edited</span>
+					)}
 				</div>
 				{isEditingComment ? (
-					<form className="comment-edit-form" onSubmit={onUpdateComment}>
+					<form className="post-comment-edit-form" onSubmit={onUpdateComment}>
 						<Textarea
 							value={editingCommentText}
 							onChange={(event) =>
@@ -64,7 +66,7 @@ function CommentItem({
 							aria-label={`Edit comment by ${commentAuthor.name}`}
 							minRows={1}
 						/>
-						<div className="comment-edit-actions">
+						<div className="post-comment-edit-actions">
 							<Button
 								type="submit"
 								variant="tertiary"
@@ -87,12 +89,12 @@ function CommentItem({
 				)}
 			</div>
 			{canManageComment && (
-				<div className="comment-item-actions">
+				<div className="post-comment-item-actions">
 					{!isEditingComment && (
 						<Button
 							type="button"
 							variant="tertiary"
-							className="comment-edit-trigger"
+							className="post-comment-edit-trigger"
 							onClick={onStartEditComment}
 							disabled={isCommentDeleteLoading || isCommentUpdateLoading}
 						>
@@ -102,7 +104,7 @@ function CommentItem({
 					<Button
 						type="button"
 						variant="icon"
-						className="comment-delete"
+						className="post-comment-delete"
 						onClick={onDeleteComment}
 						disabled={isCommentDeleteLoading || isCommentUpdateLoading}
 					>
