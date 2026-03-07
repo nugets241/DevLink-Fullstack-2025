@@ -133,10 +133,7 @@ function LoginForm() {
 
 					<div className="divider" role="separator" />
 
-					<Link
-						className="button button-secondary auth-login-signup"
-						to="/register"
-					>
+					<Link className="button button-secondary" to="/register">
 						Create new account
 					</Link>
 				</form>
