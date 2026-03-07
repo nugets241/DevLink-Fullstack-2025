@@ -156,11 +156,9 @@ function ExperienceSection() {
 				triggerVariant="add"
 				triggerAriaLabel="Add experience"
 				content={
-					<div className="experience-list">
+					<div className="profile-experience-list">
 						{experiences.length === 0 ? (
-							<p className="experience-empty">
-								Add your experience experience.
-							</p>
+							<p className="profile-experience-empty">Add your experience.</p>
 						) : (
 							experiences.map((experience) => {
 								const experienceId = experience._id || experience.id || '';
@@ -188,7 +186,7 @@ function ExperienceSection() {
 										}
 										extraText={
 											experience.location ? (
-												<p className="experience-location">
+												<p className="profile-experience-location">
 													{experience.location}
 												</p>
 											) : undefined
@@ -260,7 +258,7 @@ function ExperienceSection() {
 					hint="Required unless 'I currently work here' is checked."
 					error={profileFieldErrors.to}
 				/>
-				<label className="field experience-current-field">
+				<label className="field profile-experience-current-field">
 					<input
 						type="checkbox"
 						name="current"
