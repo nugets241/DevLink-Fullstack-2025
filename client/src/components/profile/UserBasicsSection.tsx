@@ -124,7 +124,7 @@ function UserBasicsSection() {
 						<button
 							type="button"
 							onClick={openContactInfoModal}
-							className="contact-info-trigger"
+							className="profile-contact-trigger"
 						>
 							Contact info
 						</button>
