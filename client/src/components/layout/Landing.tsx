@@ -3,10 +3,10 @@ import LoginForm from '../auth/LoginForm';
 function Landing() {
 	return (
 		<div className="landing">
-			<div className="container">
-				<section aria-label="Marketing" className="marketing">
-					<img src="/devlink.svg" alt="DevLink Logo" className="logo" />
-					<h1 className="tagline">
+			<div className="container landing-container">
+				<section aria-label="Marketing" className="landing-marketing">
+					<img src="/devlink.svg" alt="DevLink Logo" className="landing-logo" />
+					<h1 className="landing-tagline">
 						Connect with other developers, collaborate on projects, and grow
 						your network.
 					</h1>
