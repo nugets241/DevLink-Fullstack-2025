@@ -114,7 +114,7 @@ function ContactInfoSection() {
 		const trimmedValue = value?.trim();
 
 		if (!trimmedValue) {
-			return <span className="contact-info-empty">Not provided</span>;
+			return <span className="profile-contact-empty">Not provided</span>;
 		}
 
 		return (
@@ -126,55 +126,55 @@ function ContactInfoSection() {
 
 	return (
 		<EditableSection
-			className="contact-info-section"
+			className="profile-contact-section"
 			headerContent={<h2>Contact info</h2>}
 			content={
-				<div className="contact-info-list">
-					<p className="contact-info-item">
-						<span className="contact-info-label">Email</span>
-						<span className="contact-info-value">
+				<div className="profile-contact-list">
+					<p className="profile-contact-item">
+						<span className="profile-contact-label">Email</span>
+						<span className="profile-contact-value">
 							{user?.email || 'Not available'}
 						</span>
 					</p>
-					<p className="contact-info-item">
-						<span className="contact-info-label">Website</span>
-						<span className="contact-info-value">
+					<p className="profile-contact-item">
+						<span className="profile-contact-label">Website</span>
+						<span className="profile-contact-value">
 							{renderUrlValue(profile?.website)}
 						</span>
 					</p>
-					<p className="contact-info-item">
-						<span className="contact-info-label">LinkedIn</span>
-						<span className="contact-info-value">
+					<p className="profile-contact-item">
+						<span className="profile-contact-label">LinkedIn</span>
+						<span className="profile-contact-value">
 							{renderUrlValue(profile?.social?.linkedin)}
 						</span>
 					</p>
-					<p className="contact-info-item">
-						<span className="contact-info-label">GitHub</span>
-						<span className="contact-info-value">
+					<p className="profile-contact-item">
+						<span className="profile-contact-label">GitHub</span>
+						<span className="profile-contact-value">
 							{renderUrlValue(profile?.social?.github)}
 						</span>
 					</p>
-					<p className="contact-info-item">
-						<span className="contact-info-label">X</span>
-						<span className="contact-info-value">
+					<p className="profile-contact-item">
+						<span className="profile-contact-label">X</span>
+						<span className="profile-contact-value">
 							{renderUrlValue(profile?.social?.x)}
 						</span>
 					</p>
-					<p className="contact-info-item">
-						<span className="contact-info-label">Facebook</span>
-						<span className="contact-info-value">
+					<p className="profile-contact-item">
+						<span className="profile-contact-label">Facebook</span>
+						<span className="profile-contact-value">
 							{renderUrlValue(profile?.social?.facebook)}
 						</span>
 					</p>
-					<p className="contact-info-item">
-						<span className="contact-info-label">YouTube</span>
-						<span className="contact-info-value">
+					<p className="profile-contact-item">
+						<span className="profile-contact-label">YouTube</span>
+						<span className="profile-contact-value">
 							{renderUrlValue(profile?.social?.youtube)}
 						</span>
 					</p>
-					<p className="contact-info-item">
-						<span className="contact-info-label">Instagram</span>
-						<span className="contact-info-value">
+					<p className="profile-contact-item">
+						<span className="profile-contact-label">Instagram</span>
+						<span className="profile-contact-value">
 							{renderUrlValue(profile?.social?.instagram)}
 						</span>
 					</p>
