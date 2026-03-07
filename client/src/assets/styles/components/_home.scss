@@ -201,6 +201,35 @@
 	}
 }
 
+.comment-edit-form {
+	margin-top: 0.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+
+	textarea {
+		min-height: 2.5rem;
+	}
+}
+
+.comment-edit-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.4rem;
+}
+
+.comment-item-actions {
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+}
+
+.comment-edit-trigger {
+	font-size: 0.8rem;
+	padding: 0.25rem 0.5rem;
+}
+
 .comment-delete {
 	width: 28px;
 	height: 28px;
