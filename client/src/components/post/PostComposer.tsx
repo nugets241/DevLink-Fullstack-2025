@@ -16,7 +16,7 @@ function PostComposer({
 	isSubmitting,
 }: PostComposerProps) {
 	return (
-		<form className="post-composer" onSubmit={onSubmit}>
+		<form className="post-feed-composer" onSubmit={onSubmit}>
 			<Textarea
 				value={value}
 				onChange={(event) => onChange(event.target.value)}
@@ -24,7 +24,7 @@ function PostComposer({
 				aria-label="Create a post"
 				minRows={3}
 			/>
-			<div className="post-composer-actions">
+			<div className="post-feed-composer-actions">
 				<Button
 					type="submit"
 					variant="primary"
