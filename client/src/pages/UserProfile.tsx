@@ -91,7 +91,7 @@ function UserProfile() {
 	return (
 		<div className="profile-page">
 			<div className="container">
-				<section className="profile-section-card card ">
+				<section className="profile-section-card card">
 					<header className="profile-section-header">
 						<img
 							src={avatarSrc}
@@ -113,7 +113,7 @@ function UserProfile() {
 						</p>
 						<button
 							type="button"
-							className="contact-info-trigger"
+							className="profile-contact-trigger"
 							onClick={openContactInfoModal}
 						>
 							View contact info
@@ -140,9 +140,11 @@ function UserProfile() {
 						<h2>Experience</h2>
 					</header>
 					<div className="profile-contents">
-						<div className="experience-list">
+						<div className="profile-experience-list">
 							{experiences.length === 0 ? (
-								<p className="experience-empty">No experience listed yet.</p>
+								<p className="profile-experience-empty">
+									No experience listed yet.
+								</p>
 							) : (
 								experiences.map((experience, index) => {
 									const fromLabel = formatDateLabel(experience.from);
@@ -157,28 +159,28 @@ function UserProfile() {
 												experience.id ||
 												`${experience.company}-${index}`
 											}
-											className="experience-item"
+											className="profile-experience-item"
 										>
-											<header className="experience-item-header">
+											<header className="profile-experience-item-header">
 												<div>
 													<h3>{experience.title}</h3>
 													<p>{experience.company}</p>
 												</div>
 											</header>
 											{(fromLabel || toLabel) && (
-												<p className="experience-dates">
+												<p className="profile-experience-dates">
 													{fromLabel}
 													{fromLabel && toLabel ? ' - ' : ''}
 													{toLabel}
 												</p>
 											)}
 											{experience.location && (
-												<p className="experience-location">
+												<p className="profile-experience-location">
 													{experience.location}
 												</p>
 											)}
 											{experience.description && (
-												<p className="experience-description">
+												<p className="profile-experience-description">
 													{experience.description}
 												</p>
 											)}
@@ -195,9 +197,11 @@ function UserProfile() {
 						<h2>Education</h2>
 					</header>
 					<div className="profile-contents">
-						<div className="education-list">
+						<div className="profile-education-list">
 							{educationEntries.length === 0 ? (
-								<p className="education-empty">No education listed yet.</p>
+								<p className="profile-education-empty">
+									No education listed yet.
+								</p>
 							) : (
 								educationEntries.map((education, index) => {
 									const fromLabel = formatDateLabel(education.from);
@@ -212,9 +216,9 @@ function UserProfile() {
 												education.id ||
 												`${education.school}-${index}`
 											}
-											className="education-item"
+											className="profile-education-item"
 										>
-											<header className="education-item-header">
+											<header className="profile-education-item-header">
 												<div>
 													<h3>{education.school}</h3>
 													<p>
@@ -226,14 +230,14 @@ function UserProfile() {
 												</div>
 											</header>
 											{(fromLabel || toLabel) && (
-												<p className="education-dates">
+												<p className="profile-education-dates">
 													{fromLabel}
 													{fromLabel && toLabel ? ' - ' : ''}
 													{toLabel}
 												</p>
 											)}
 											{education.description && (
-												<p className="education-description">
+												<p className="profile-education-description">
 													{education.description}
 												</p>
 											)}
@@ -250,13 +254,16 @@ function UserProfile() {
 						<h2>Skills</h2>
 					</header>
 					<div className="profile-contents">
-						<div className="skill-list">
+						<div className="profile-skill-list">
 							{skills.length === 0 ? (
-								<p className="skill-empty">No skills added yet.</p>
+								<p className="profile-skill-empty">No skills added yet.</p>
 							) : (
 								skills.map((skill, index) => (
-									<article className="skill-item" key={`${skill}-${index}`}>
-										<header className="skill-item-header">
+									<article
+										className="profile-skill-item"
+										key={`${skill}-${index}`}
+									>
+										<header className="profile-skill-item-header">
 											<h3>{skill}</h3>
 										</header>
 									</article>
@@ -280,10 +287,10 @@ function UserProfile() {
 							</Button>
 						</div>
 						<div className="profile-contact-modal-body">
-							<div className="contact-info-list">
-								<p className="contact-info-item">
-									<span className="contact-info-label">Website</span>
-									<span className="contact-info-value">
+							<div className="profile-contact-list">
+								<p className="profile-contact-item">
+									<span className="profile-contact-label">Website</span>
+									<span className="profile-contact-value">
 										{viewedProfile.website ? (
 											<a
 												href={viewedProfile.website}
@@ -293,20 +300,24 @@ function UserProfile() {
 												{viewedProfile.website}
 											</a>
 										) : (
-											<span className="contact-info-empty">Not provided</span>
+											<span className="profile-contact-empty">
+												Not provided
+											</span>
 										)}
 									</span>
 								</p>
 								{socialEntries.length === 0 ? (
-									<p className="contact-info-item">
-										<span className="contact-info-label">Social</span>
-										<span className="contact-info-empty">Not provided</span>
+									<p className="profile-contact-item">
+										<span className="profile-contact-label">Social</span>
+										<span className="profile-contact-empty">Not provided</span>
 									</p>
 								) : (
 									socialEntries.map((entry) => (
-										<p className="contact-info-item" key={entry.label}>
-											<span className="contact-info-label">{entry.label}</span>
-											<span className="contact-info-value">
+										<p className="profile-contact-item" key={entry.label}>
+											<span className="profile-contact-label">
+												{entry.label}
+											</span>
+											<span className="profile-contact-value">
 												<a
 													href={entry.value}
 													target="_blank"
