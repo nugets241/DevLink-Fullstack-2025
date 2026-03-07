@@ -71,17 +71,17 @@ function PostItem({
 
 	return (
 		<article className="card post-item">
-			<header className="post-header">
+			<header className="post-item-header">
 				<img
 					src={avatar}
 					alt={`${name} avatar`}
-					className="post-avatar"
+					className="post-item-avatar"
 					onError={(event) => {
 						event.currentTarget.onerror = null;
 						event.currentTarget.src = '/devlink.svg';
 					}}
 				/>
-				<div className="post-meta">
+				<div className="post-item-meta">
 					<h3>{name}</h3>
 					<p>{formatPostDate(post.createdAt)}</p>
 				</div>
@@ -89,7 +89,7 @@ function PostItem({
 					<Button
 						type="button"
 						variant="icon"
-						className="post-delete"
+						className="post-item-delete"
 						onClick={() => onDeletePost(post)}
 						disabled={isActionLoading}
 					>
@@ -98,9 +98,9 @@ function PostItem({
 				)}
 			</header>
 
-			<p className="post-text">{post.text}</p>
+			<p className="post-item-text">{post.text}</p>
 
-			<div className="post-actions">
+			<div className="post-item-actions">
 				<Button
 					type="button"
 					variant="tertiary"
@@ -111,7 +111,7 @@ function PostItem({
 				</Button>
 			</div>
 
-			<div className="post-comments">
+			<div className="post-item-comments">
 				<form className="post-comment-composer" onSubmit={onCreateComment}>
 					<Textarea
 						value={commentDraft}
