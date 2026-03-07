@@ -51,8 +51,8 @@
 		}
 
 		.profile-about-text,
-		.experience-description,
-		.education-description {
+		.profile-experience-description,
+		.profile-education-description {
 			white-space: pre-line;
 		}
 
@@ -61,7 +61,7 @@
 		}
 	}
 
-	.contact-info-trigger {
+	.profile-contact-trigger {
 		background: transparent;
 		border: 0;
 		padding: 0;
@@ -82,23 +82,23 @@
 		}
 	}
 
-	.contact-info-section {
+	.profile-contact-section {
 		padding: 0;
 	}
 
 	// Experience Section
-	.experience-list {
+	.profile-experience-list {
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
 
-		.experience-empty,
-		.experience-location,
-		.experience-dates {
+		.profile-experience-empty,
+		.profile-experience-location,
+		.profile-experience-dates {
 			color: $text-muted;
 		}
 
-		.experience-item {
+		.profile-experience-item {
 			border-bottom: 1px solid $border-default;
 			padding: 0.75rem 0;
 			display: flex;
@@ -110,7 +110,7 @@
 			}
 		}
 
-		.experience-item-header {
+		.profile-experience-item-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: flex-start;
@@ -124,17 +124,17 @@
 	}
 
 	// Education Section
-	.education-list {
+	.profile-education-list {
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
 
-		.education-empty,
-		.education-dates {
+		.profile-education-empty,
+		.profile-education-dates {
 			color: $text-muted;
 		}
 
-		.education-item {
+		.profile-education-item {
 			border-bottom: 1px solid $border-default;
 			padding: 0.75rem 0;
 			display: flex;
@@ -146,7 +146,7 @@
 			}
 		}
 
-		.education-item-header {
+		.profile-education-item-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: flex-start;
@@ -160,16 +160,16 @@
 	}
 
 	// Skills Section
-	.skill-list {
+	.profile-skill-list {
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
 
-		.skill-empty {
+		.profile-skill-empty {
 			color: $text-muted;
 		}
 
-		.skill-item {
+		.profile-skill-item {
 			padding-bottom: 0.75rem;
 			border-bottom: 1px solid $border-default;
 
@@ -179,7 +179,7 @@
 			}
 		}
 
-		.skill-item-header {
+		.profile-skill-item-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
@@ -255,8 +255,8 @@
 		}
 	}
 
-	.experience-current-field,
-	.education-current-field {
+	.profile-experience-current-field,
+	.profile-education-current-field {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
@@ -308,25 +308,25 @@
 
 .profile-page,
 .profile-contact-modal {
-	.contact-info-list {
+	.profile-contact-list {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
 	}
 
-	.contact-info-item {
+	.profile-contact-item {
 		display: flex;
 		gap: 0.75rem;
 		margin: 0;
 	}
 
-	.contact-info-label {
+	.profile-contact-label {
 		color: $text-muted;
 		min-width: 6rem;
 		font-weight: 600;
 	}
 
-	.contact-info-value {
+	.profile-contact-value {
 		word-break: break-all;
 
 		a {
@@ -334,7 +334,7 @@
 		}
 	}
 
-	.contact-info-empty {
+	.profile-contact-empty {
 		color: $text-muted;
 	}
 }
