@@ -68,6 +68,7 @@ function PostItem({
 	const comments = post.comments ?? [];
 	const isCommentCreating =
 		actionStatusById[`comment-create:${postId}`] === 'loading';
+	const postImageSource = post.imageDataUrl?.trim();
 
 	return (
 		<article className="card post-item">
@@ -98,7 +99,18 @@ function PostItem({
 				)}
 			</header>
 
-			<p className="post-item-text">{post.text}</p>
+			{post.text?.trim() ? <p className="post-item-text">{post.text}</p> : null}
+			{postImageSource ? (
+				<img
+					src={postImageSource}
+					alt="Post attachment"
+					className="post-item-image"
+					onError={(event) => {
+						event.currentTarget.onerror = null;
+						event.currentTarget.style.display = 'none';
+					}}
+				/>
+			) : null}
 
 			<div className="post-item-actions">
 				<Button
