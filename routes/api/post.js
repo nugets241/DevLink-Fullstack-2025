@@ -1,10 +1,91 @@
 import { Router } from 'express';
 import auth from '../../middleware/auth.js';
-import { check, validationResult } from 'express-validator';
+import { body, check, validationResult } from 'express-validator';
 import User from '../../models/User.js';
 import Post from '../../models/Post.js';
 
 const router = Router();
+const MAX_POST_IMAGE_BYTES = 2 * 1024 * 1024;
+const ALLOWED_POST_IMAGE_TYPES = new Set([
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+	'image/gif',
+]);
+
+function parsePostImageDataUrl(imageDataUrl) {
+	const match = imageDataUrl.match(
+		/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/,
+	);
+	if (!match) {
+		throw new Error('Image must be a valid base64 data URL');
+	}
+
+	const contentType = match[1].toLowerCase();
+	if (!ALLOWED_POST_IMAGE_TYPES.has(contentType)) {
+		throw new Error('Only JPEG, PNG, WEBP, or GIF images are supported');
+	}
+
+	const buffer = Buffer.from(match[2], 'base64');
+	if (!buffer.length) {
+		throw new Error('Image is empty');
+	}
+
+	if (buffer.length > MAX_POST_IMAGE_BYTES) {
+		throw new Error('Image must be 2MB or smaller');
+	}
+
+	return { buffer, contentType };
+}
+
+function getPostImageBuffer(rawImageData) {
+	if (!rawImageData) return null;
+
+	if (Buffer.isBuffer(rawImageData)) {
+		return rawImageData;
+	}
+
+	if (Array.isArray(rawImageData)) {
+		return Buffer.from(rawImageData);
+	}
+
+	if (rawImageData?.type === 'Buffer' && Array.isArray(rawImageData?.data)) {
+		return Buffer.from(rawImageData.data);
+	}
+
+	if (Array.isArray(rawImageData?.data)) {
+		return Buffer.from(rawImageData.data);
+	}
+
+	if (rawImageData?._bsontype === 'Binary' && rawImageData?.buffer) {
+		return Buffer.from(rawImageData.buffer);
+	}
+
+	if (rawImageData?.buffer) {
+		return Buffer.from(rawImageData.buffer);
+	}
+
+	return null;
+}
+
+function mapPostForClient(post) {
+	const source = typeof post?.toObject === 'function' ? post.toObject() : post;
+	if (!source) return source;
+
+	let imageDataUrl;
+	if (source.image?.data && source.image?.contentType) {
+		const imageBuffer = getPostImageBuffer(source.image.data);
+		if (imageBuffer && imageBuffer.length) {
+			imageDataUrl = `data:${source.image.contentType};base64,${imageBuffer.toString('base64')}`;
+		}
+	}
+
+	const { image, ...rest } = source;
+	return {
+		...rest,
+		imageDataUrl,
+	};
+}
 
 // @route   GET api/posts
 // @desc    Get all posts (paginated)
@@ -27,8 +108,10 @@ router.get('/', auth, async (req, res) => {
 			Post.countDocuments(),
 		]);
 
+		const mappedPosts = posts.map(mapPostForClient);
+
 		res.json({
-			posts,
+			posts: mappedPosts,
 			pagination: {
 				currentPage: page,
 				totalPages: Math.ceil(totalPosts / limit),
@@ -49,7 +132,29 @@ router.get('/', auth, async (req, res) => {
 // @access  Private
 router.post(
 	'/',
-	[auth, [check('text', 'Text is required').not().isEmpty()]],
+	[
+		auth,
+		[
+			body('text')
+				.optional({ checkFalsy: true })
+				.isString()
+				.withMessage('Text must be a string'),
+			body('imageDataUrl')
+				.optional({ checkFalsy: true })
+				.isString()
+				.withMessage('Image data is invalid'),
+			body().custom((payload) => {
+				const normalizedText = payload?.text?.trim?.() ?? '';
+				const normalizedImageDataUrl = payload?.imageDataUrl?.trim?.() ?? '';
+
+				if (!normalizedText && !normalizedImageDataUrl) {
+					throw new Error('Post text or image is required');
+				}
+
+				return true;
+			}),
+		],
+	],
 	async (req, res) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
@@ -62,15 +167,36 @@ router.post(
 				return res.status(404).json({ msg: 'User not found' });
 			}
 
+			const normalizedText = req.body.text?.trim() || undefined;
+			const normalizedImageDataUrl = req.body.imageDataUrl?.trim() || '';
+			let parsedImage;
+
+			if (normalizedImageDataUrl) {
+				try {
+					parsedImage = parsePostImageDataUrl(normalizedImageDataUrl);
+				} catch (parseError) {
+					return res.status(400).json({
+						errors: [{ msg: parseError.message, path: 'imageDataUrl' }],
+					});
+				}
+			}
+
 			const newPost = new Post({
-				text: req.body.text,
+				text: normalizedText,
+				image:
+					parsedImage && parsedImage.buffer.length
+						? {
+								data: parsedImage.buffer,
+								contentType: parsedImage.contentType,
+							}
+						: undefined,
 				name: user.name,
 				avatar: user.avatar,
 				user: req.user.id,
 			});
 
 			const post = await newPost.save();
-			res.json(post);
+			res.json(mapPostForClient(post));
 		} catch (error) {
 			console.error(error.message);
 			res.status(500).send('Server error');
@@ -90,7 +216,7 @@ router.get('/:id', auth, async (req, res) => {
 		if (!post) {
 			return res.status(404).json({ msg: 'Post not found' });
 		}
-		res.json(post);
+		res.json(mapPostForClient(post));
 	} catch (error) {
 		console.error(error.message);
 		if (error.kind === 'ObjectId') {
