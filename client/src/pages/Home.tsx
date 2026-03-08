@@ -35,6 +35,7 @@ function Home() {
 		commentErrorByPostId,
 	} = useAppSelector((state) => state.posts);
 	const [postText, setPostText] = React.useState('');
+	const [postImageDataUrl, setPostImageDataUrl] = React.useState('');
 	const [commentDraftByPostId, setCommentDraftByPostId] = React.useState<
 		Record<string, string>
 	>({});
@@ -54,11 +55,18 @@ function Home() {
 		event.preventDefault();
 
 		const normalizedText = postText.trim();
-		if (!normalizedText) return false;
+		const normalizedImageDataUrl = postImageDataUrl.trim();
+		if (!normalizedText && !normalizedImageDataUrl) return false;
 
 		try {
-			await dispatch(createPost(normalizedText)).unwrap();
+			await dispatch(
+				createPost({
+					text: normalizedText,
+					imageDataUrl: normalizedImageDataUrl,
+				}),
+			).unwrap();
 			setPostText('');
+			setPostImageDataUrl('');
 			return true;
 		} catch (thunkError) {
 			console.error(thunkError);
@@ -249,7 +257,9 @@ function Home() {
 							avatarSrc={avatarSrc}
 							avatarAlt={`${user.name} avatar`}
 							value={postText}
+							imageDataUrl={postImageDataUrl}
 							onChange={setPostText}
+							onImageDataUrlChange={setPostImageDataUrl}
 							onSubmit={handleCreatePost}
 							isSubmitting={createStatus === 'loading'}
 						/>
