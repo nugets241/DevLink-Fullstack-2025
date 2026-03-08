@@ -28,7 +28,8 @@ export type PostComment = {
 export type Post = {
 	id?: string;
 	_id?: string;
-	text: string;
+	text?: string;
+	imageDataUrl?: string;
 	user?: string | PostUser;
 	name?: string;
 	avatar?: string;
@@ -50,6 +51,11 @@ type PostsPagination = {
 type FetchPostsParams = {
 	page?: number;
 	limit?: number;
+};
+
+type CreatePostPayload = {
+	text?: string;
+	imageDataUrl?: string;
 };
 
 type AddCommentPayload = {
@@ -183,18 +189,19 @@ export const fetchPosts = createAsyncThunk<
 
 export const createPost = createAsyncThunk<
 	Post,
-	string,
+	CreatePostPayload,
 	{ rejectValue: RejectValue }
->('posts/createPost', async (text, { rejectWithValue }) => {
+>('posts/createPost', async ({ text, imageDataUrl }, { rejectWithValue }) => {
 	try {
 		const token = localStorage.getItem('token');
 		if (!token) {
 			return rejectWithValue({ message: 'No token found.' });
 		}
 
-		const normalizedText = text.trim();
-		if (!normalizedText) {
-			return rejectWithValue({ message: 'Post text is required.' });
+		const normalizedText = text?.trim() ?? '';
+		const normalizedImageDataUrl = imageDataUrl?.trim() ?? '';
+		if (!normalizedText && !normalizedImageDataUrl) {
+			return rejectWithValue({ message: 'Post text or image is required.' });
 		}
 
 		const response = await fetch(API_ENDPOINTS.posts, {
@@ -203,7 +210,10 @@ export const createPost = createAsyncThunk<
 				'Content-Type': 'application/json',
 				Authorization: `Bearer ${token}`,
 			},
-			body: JSON.stringify({ text: normalizedText }),
+			body: JSON.stringify({
+				text: normalizedText || undefined,
+				imageDataUrl: normalizedImageDataUrl || undefined,
+			}),
 		});
 
 		if (!response.ok) {
