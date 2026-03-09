@@ -5,7 +5,7 @@ import User from '../../models/User.js';
 import Post from '../../models/Post.js';
 
 const router = Router();
-const MAX_POST_IMAGE_BYTES = 2 * 1024 * 1024;
+const MAX_POST_IMAGE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_POST_IMAGE_TYPES = new Set([
 	'image/jpeg',
 	'image/png',
@@ -32,7 +32,7 @@ function parsePostImageDataUrl(imageDataUrl) {
 	}
 
 	if (buffer.length > MAX_POST_IMAGE_BYTES) {
-		throw new Error('Image must be 2MB or smaller');
+		throw new Error('Image must be 5MB or smaller');
 	}
 
 	return { buffer, contentType };

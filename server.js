@@ -24,8 +24,8 @@ app.use(helmet());
 // CORS - allow all by default during development; lock down in production
 app.use(cors());
 // Body parsers with size limits to avoid large payload DoS
-app.use(express.json({ limit: '5mb' })); // Parses JSON bodies (application/json)
-app.use(express.urlencoded({ extended: false, limit: '5mb' })); // Parses urlencoded bodies (form submissions)
+app.use(express.json({ limit: '10mb' })); // Parses JSON bodies (application/json)
+app.use(express.urlencoded({ extended: false, limit: '10mb' })); // Parses urlencoded bodies (form submissions)
 
 app.get('/', (_req, res) => {
 	res.send('API is running...');

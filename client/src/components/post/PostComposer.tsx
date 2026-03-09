@@ -6,7 +6,7 @@ import Modal from '../common/Modal';
 import Textarea from '../common/Textarea';
 import { Link } from 'react-router-dom';
 
-const MAX_POST_IMAGE_SIZE_BYTES = 2 * 1024 * 1024;
+const MAX_POST_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 
 type PostComposerProps = {
 	avatarSrc: string;
@@ -62,18 +62,19 @@ function PostComposer({
 	const handleImageFileChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
-		const file = event.target.files?.[0];
+		const input = event.currentTarget;
+		const file = input.files?.[0];
 		if (!file) return;
 
 		if (!file.type.startsWith('image/')) {
 			setImageError('Please select an image file.');
-			event.target.value = '';
+			input.value = '';
 			return;
 		}
 
 		if (file.size > MAX_POST_IMAGE_SIZE_BYTES) {
-			setImageError('Image must be 2MB or smaller.');
-			event.target.value = '';
+			setImageError('Image must be 5MB or smaller.');
+			input.value = '';
 			return;
 		}
 
@@ -88,7 +89,7 @@ function PostComposer({
 			setImageError('Failed to read image. Please try another file.');
 		};
 		reader.readAsDataURL(file);
-		event.target.value = '';
+		input.value = '';
 	};
 
 	const handleRemoveImage = () => {
@@ -189,12 +190,13 @@ function PostComposer({
 									className="post-compose-image-trigger"
 									onClick={handleChooseImageInModal}
 									title="Choose image"
+									aria-label="Choose image"
 									disabled={isSubmitting}
 								>
 									<HiPhoto aria-hidden="true" focusable="false" />
 									<span>Add image</span>
 								</button>
-								<p className="hint">Optional. Max size: 2MB.</p>
+								<p className="hint">Max size: 5MB.</p>
 								{imageError ? <p className="error">{imageError}</p> : null}
 							</div>
 							{imageDataUrl ? (
