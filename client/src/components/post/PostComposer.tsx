@@ -1,5 +1,6 @@
 import React from 'react';
 import { MdOutlineClose } from 'react-icons/md';
+import { HiPhoto } from 'react-icons/hi2';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import Textarea from '../common/Textarea';
@@ -32,6 +33,17 @@ function PostComposer({
 }: PostComposerProps) {
 	const [isModalOpen, setIsModalOpen] = React.useState(false);
 	const [imageError, setImageError] = React.useState<string | null>(null);
+	const imageInputRef = React.useRef<HTMLInputElement | null>(null);
+	const shouldOpenImagePickerRef = React.useRef(false);
+
+	React.useEffect(() => {
+		if (!isModalOpen || !shouldOpenImagePickerRef.current) return;
+
+		shouldOpenImagePickerRef.current = false;
+		window.setTimeout(() => {
+			imageInputRef.current?.click();
+		}, 0);
+	}, [isModalOpen]);
 
 	const handleCloseModal = () => {
 		if (isSubmitting) return;
@@ -84,6 +96,21 @@ function PostComposer({
 		setImageError(null);
 	};
 
+	const handleOpenComposer = () => {
+		setIsModalOpen(true);
+	};
+
+	const handleOpenComposerForImage = () => {
+		if (isSubmitting) return;
+		shouldOpenImagePickerRef.current = true;
+		setIsModalOpen(true);
+	};
+
+	const handleChooseImageInModal = () => {
+		if (isSubmitting) return;
+		imageInputRef.current?.click();
+	};
+
 	return (
 		<>
 			<div className="post-feed-composer-shell">
@@ -105,9 +132,19 @@ function PostComposer({
 				<button
 					type="button"
 					className="post-feed-composer-open"
-					onClick={() => setIsModalOpen(true)}
+					onClick={handleOpenComposer}
 				>
 					Start a post
+				</button>
+				<button
+					type="button"
+					className="post-feed-composer-image-trigger"
+					onClick={handleOpenComposerForImage}
+					aria-label="Start a post with an image"
+					title="Choose image to post"
+					disabled={isSubmitting}
+				>
+					<HiPhoto aria-hidden="true" focusable="false" />
 				</button>
 			</div>
 
@@ -138,9 +175,6 @@ function PostComposer({
 								minRows={4}
 							/>
 							<div className="field post-compose-image-field">
-								<label className="label" htmlFor="post-image-file">
-									Image
-								</label>
 								<input
 									id="post-image-file"
 									className="post-compose-image-input"
@@ -148,7 +182,18 @@ function PostComposer({
 									accept="image/png,image/jpeg,image/webp,image/gif"
 									onChange={handleImageFileChange}
 									disabled={isSubmitting}
+									ref={imageInputRef}
 								/>
+								<button
+									type="button"
+									className="post-compose-image-trigger"
+									onClick={handleChooseImageInModal}
+									title="Choose image"
+									disabled={isSubmitting}
+								>
+									<HiPhoto aria-hidden="true" focusable="false" />
+									<span>Add image</span>
+								</button>
 								<p className="hint">Optional. Max size: 2MB.</p>
 								{imageError ? <p className="error">{imageError}</p> : null}
 							</div>
