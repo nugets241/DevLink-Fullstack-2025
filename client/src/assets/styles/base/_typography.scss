@@ -15,6 +15,23 @@ body {
 	line-height: 1.6;
 	color: $text-primary;
 	background-color: $bg-main;
+	background-image:
+		radial-gradient(
+			1200px circle at 12% 8%,
+			rgba($color-dark-aqua-300, 0.24),
+			transparent 60%
+		),
+		radial-gradient(
+			900px circle at 88% 0%,
+			rgba($color-lime-green-300, 0.12),
+			transparent 52%
+		),
+		linear-gradient(rgba($bg-main, 0.86), rgba($bg-main, 0.86)),
+		url('/backgrounds/devlink-bg-hero.png');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 }
 
 h1,
