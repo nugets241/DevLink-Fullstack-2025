@@ -21,6 +21,14 @@
 		gap: 0.75rem;
 	}
 
+	.post-avatar-link {
+		display: inline-flex;
+		line-height: 0;
+		text-decoration: none;
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
 	.post-feed-composer-avatar {
 		width: 44px;
 		height: 44px;
@@ -85,6 +93,15 @@
 		display: flex;
 		align-items: flex-start;
 		gap: 0.75rem;
+	}
+
+	.post-item-author-link {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		text-decoration: none;
+		color: inherit;
+		min-width: 0;
 	}
 
 	.post-item-avatar {
@@ -187,6 +204,19 @@
 		border-radius: 50%;
 		object-fit: cover;
 		border: 1px solid $border-default;
+	}
+
+	.post-comment-author-link,
+	.post-comment-author-row {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-width: 0;
+	}
+
+	.post-comment-author-link {
+		text-decoration: none;
+		color: inherit;
 	}
 
 	.post-comment-content {
