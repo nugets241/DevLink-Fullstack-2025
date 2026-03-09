@@ -7,6 +7,12 @@
 	gap: 1rem;
 	align-items: start;
 
+	.home-profile-summary {
+		position: sticky;
+		top: 5.25rem;
+		align-self: start;
+	}
+
 	.home-profile-link {
 		color: inherit;
 		text-decoration: none;
