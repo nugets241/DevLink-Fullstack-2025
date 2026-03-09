@@ -4,6 +4,7 @@ import type { PostComment } from '../../store/slices/postsSlice';
 import Button from '../common/Button';
 import Textarea from '../common/Textarea';
 import { formatCommentDate } from './postUtils';
+import { Link } from 'react-router-dom';
 
 type CommentItemProps = {
 	comment: PostComment;
@@ -11,6 +12,7 @@ type CommentItemProps = {
 		name: string;
 		avatar: string;
 	};
+	commentOwnerId?: string;
 	canManageComment: boolean;
 	isEditingComment: boolean;
 	isCommentDeleteLoading: boolean;
@@ -26,6 +28,7 @@ type CommentItemProps = {
 function CommentItem({
 	comment,
 	commentAuthor,
+	commentOwnerId,
 	canManageComment,
 	isEditingComment,
 	isCommentDeleteLoading,
@@ -39,23 +42,54 @@ function CommentItem({
 }: CommentItemProps) {
 	return (
 		<article className="post-comment-item">
-			<img
-				src={commentAuthor.avatar}
-				alt={`${commentAuthor.name} avatar`}
-				className="post-comment-avatar"
-				onError={(event) => {
-					event.currentTarget.onerror = null;
-					event.currentTarget.src = '/devlink.svg';
-				}}
-			/>
 			<div className="post-comment-content">
-				<div className="post-comment-meta">
-					<strong>{commentAuthor.name}</strong>
-					<span>{formatCommentDate(comment.date ?? comment.createdAt)}</span>
-					{comment.editedAt && (
-						<span className="post-comment-edited">edited</span>
-					)}
-				</div>
+				{commentOwnerId ? (
+					<Link
+						to={`/profiles/${commentOwnerId}`}
+						className="post-comment-author-link"
+						aria-label={`Go to ${commentAuthor.name}'s profile`}
+					>
+						<img
+							src={commentAuthor.avatar}
+							alt={`${commentAuthor.name} avatar`}
+							className="post-comment-avatar"
+							onError={(event) => {
+								event.currentTarget.onerror = null;
+								event.currentTarget.src = '/devlink.svg';
+							}}
+						/>
+						<div className="post-comment-meta">
+							<strong>{commentAuthor.name}</strong>
+							<span>
+								{formatCommentDate(comment.date ?? comment.createdAt)}
+							</span>
+							{comment.editedAt && (
+								<span className="post-comment-edited">edited</span>
+							)}
+						</div>
+					</Link>
+				) : (
+					<div className="post-comment-author-row">
+						<img
+							src={commentAuthor.avatar}
+							alt={`${commentAuthor.name} avatar`}
+							className="post-comment-avatar"
+							onError={(event) => {
+								event.currentTarget.onerror = null;
+								event.currentTarget.src = '/devlink.svg';
+							}}
+						/>
+						<div className="post-comment-meta">
+							<strong>{commentAuthor.name}</strong>
+							<span>
+								{formatCommentDate(comment.date ?? comment.createdAt)}
+							</span>
+							{comment.editedAt && (
+								<span className="post-comment-edited">edited</span>
+							)}
+						</div>
+					</div>
+				)}
 				{isEditingComment ? (
 					<form className="post-comment-edit-form" onSubmit={onUpdateComment}>
 						<Textarea
