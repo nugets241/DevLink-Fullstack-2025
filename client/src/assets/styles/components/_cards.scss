@@ -1,11 +1,12 @@
 @use '../abstracts/variables' as *;
 
 .card {
-	background-color: $card-bg;
+	background-color: rgba($card-bg, 0.82);
 	border: 1px solid $border-default;
 	border-radius: 8px;
 	width: 100%;
 	max-width: 400px;
 	padding: 1rem;
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+	backdrop-filter: blur(6px);
 }

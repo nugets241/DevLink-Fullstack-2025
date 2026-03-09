@@ -1,13 +1,13 @@
 @use '../abstracts/variables' as *;
 
 .navbar {
-	background: $bg-surface;
+	background: rgba($bg-surface, 0.82);
 	border-bottom: 1px solid $border-default;
 	padding: 0 1rem;
 	position: sticky;
 	top: 0;
 	z-index: 100;
-	backdrop-filter: blur(10px);
+	backdrop-filter: blur(12px);
 
 	.navbar-container {
 		max-width: 1000px;
