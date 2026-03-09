@@ -15,6 +15,7 @@ import {
 	getPostId,
 	getPostOwnerId,
 } from './postUtils';
+import { Link } from 'react-router-dom';
 
 type PostItemProps = {
 	post: Post;
@@ -73,19 +74,43 @@ function PostItem({
 	return (
 		<article className="card post-item">
 			<header className="post-item-header">
-				<img
-					src={avatar}
-					alt={`${name} avatar`}
-					className="post-item-avatar"
-					onError={(event) => {
-						event.currentTarget.onerror = null;
-						event.currentTarget.src = '/devlink.svg';
-					}}
-				/>
-				<div className="post-item-meta">
-					<h3>{name}</h3>
-					<p>{formatPostDate(post.createdAt)}</p>
-				</div>
+				{ownerId ? (
+					<Link
+						to={`/profiles/${ownerId}`}
+						className="post-item-author-link"
+						aria-label={`Go to ${name}'s profile`}
+					>
+						<img
+							src={avatar}
+							alt={`${name} avatar`}
+							className="post-item-avatar"
+							onError={(event) => {
+								event.currentTarget.onerror = null;
+								event.currentTarget.src = '/devlink.svg';
+							}}
+						/>
+						<div className="post-item-meta">
+							<h3>{name}</h3>
+							<p>{formatPostDate(post.createdAt)}</p>
+						</div>
+					</Link>
+				) : (
+					<>
+						<img
+							src={avatar}
+							alt={`${name} avatar`}
+							className="post-item-avatar"
+							onError={(event) => {
+								event.currentTarget.onerror = null;
+								event.currentTarget.src = '/devlink.svg';
+							}}
+						/>
+						<div className="post-item-meta">
+							<h3>{name}</h3>
+							<p>{formatPostDate(post.createdAt)}</p>
+						</div>
+					</>
+				)}
 				{isOwner && (
 					<Button
 						type="button"
@@ -170,6 +195,7 @@ function PostItem({
 									key={commentId}
 									comment={comment}
 									commentAuthor={commentAuthor}
+									commentOwnerId={commentOwnerId}
 									canManageComment={canManageComment}
 									isEditingComment={isEditingComment}
 									isCommentDeleteLoading={isCommentDeleteLoading}
