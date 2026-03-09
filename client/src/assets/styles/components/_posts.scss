@@ -65,26 +65,12 @@
 	}
 
 	.post-feed-composer-image-trigger {
-		display: inline-flex;
-		align-items: center;
-		flex-shrink: 0;
 		padding: 0.5rem;
-		border: none;
-		background: none;
 		color: $color-lime-green-200;
-		cursor: pointer;
-		transition:
-			border-color 0.2s ease,
-			box-shadow 0.2s ease,
-			color 0.2s ease;
 
 		svg {
 			width: 24px;
 			height: 24px;
-		}
-
-		&:hover {
-			color: $color-lime-green-100;
 		}
 	}
 

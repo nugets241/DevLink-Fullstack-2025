@@ -137,16 +137,18 @@ function PostComposer({
 				>
 					Start a post
 				</button>
-				<button
+				<Button
 					type="button"
 					className="post-feed-composer-image-trigger"
+					variant="tertiary"
 					onClick={handleOpenComposerForImage}
+					disabled={isSubmitting}
 					aria-label="Start a post with an image"
 					title="Choose image to post"
 					disabled={isSubmitting}
 				>
 					<HiPhoto aria-hidden="true" focusable="false" />
-				</button>
+				</Button>
 			</div>
 
 			<Modal isOpen={isModalOpen} preventClose={isSubmitting}>
