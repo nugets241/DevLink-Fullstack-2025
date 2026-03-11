@@ -203,7 +203,6 @@ function PostItem({
 								placeholder="Add a comment..."
 								aria-label={`Comment on ${name}'s post`}
 								minRows={1}
-								adaptivePill
 								wrapperClassName="post-comment-composer-field"
 							/>
 							<div className="post-comment-composer-actions">
