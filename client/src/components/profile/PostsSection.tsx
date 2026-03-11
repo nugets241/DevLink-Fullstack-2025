@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchPosts } from '../../store/slices/postsSlice';
-import Button from '../common/Button';
-import { formatPostDate, getPostId, getPostOwnerId } from '../post/postUtils';
+import { getPostOwnerId } from '../post/postUtils';
+import ProfilePostsSection from './ProfilePostsSection';
+import { PROFILE_POSTS_FETCH_PARAMS } from './profilePostsConfig';
 
 function PostsSection() {
 	const dispatch = useAppDispatch();
@@ -18,7 +18,7 @@ function PostsSection() {
 
 	React.useEffect(() => {
 		if (!token || postsStatus !== 'idle') return;
-		dispatch(fetchPosts({ page: 1, limit: 50 }));
+		dispatch(fetchPosts(PROFILE_POSTS_FETCH_PARAMS));
 	}, [dispatch, postsStatus, token]);
 
 	const createdPosts = React.useMemo(() => {
@@ -29,88 +29,16 @@ function PostsSection() {
 	const isInitialLoading = postsStatus === 'loading' && posts.length === 0;
 
 	return (
-		<section className="profile-section-card card">
-			<header className="profile-section-header">
-				<h2>Posts</h2>
-			</header>
-			<div className="profile-contents">
-				{isInitialLoading && (
-					<p className="profile-post-empty">Loading your posts...</p>
-				)}
-
-				{!isInitialLoading && postsStatus === 'failed' && (
-					<div className="profile-post-empty-state">
-						<p className="profile-post-empty">
-							{postsError ?? 'Could not load your posts.'}
-						</p>
-						<Button
-							type="button"
-							variant="tertiary"
-							onClick={() => dispatch(fetchPosts({ page: 1, limit: 50 }))}
-						>
-							Try Again
-						</Button>
-					</div>
-				)}
-
-				{!isInitialLoading &&
-					postsStatus !== 'failed' &&
-					createdPosts.length === 0 && (
-						<p className="profile-post-empty">
-							You have not created any posts yet.
-						</p>
-					)}
-
-				{!isInitialLoading &&
-					postsStatus !== 'failed' &&
-					createdPosts.length > 0 && (
-						<div className="profile-post-list">
-							{createdPosts.map((post) => {
-								const postId = getPostId(post);
-								if (!postId) return null;
-
-								const likesCount = post.likes?.length ?? 0;
-								const commentsCount = post.comments?.length ?? 0;
-								const postImageSource = post.imageDataUrl?.trim();
-
-								return (
-									<Link
-										key={postId}
-										to={`/posts/${postId}`}
-										className="profile-post-link"
-										aria-label={`Open post from ${formatPostDate(post.createdAt)}`}
-									>
-										<article className="profile-post-item">
-											<p className="profile-post-item-date">
-												{formatPostDate(post.createdAt)}
-											</p>
-											{post.text?.trim() ? (
-												<p className="profile-post-item-text">{post.text}</p>
-											) : null}
-											{postImageSource ? (
-												<img
-													src={postImageSource}
-													alt="Post attachment"
-													className="profile-post-item-image"
-													onError={(event) => {
-														event.currentTarget.onerror = null;
-														event.currentTarget.style.display = 'none';
-													}}
-												/>
-											) : null}
-											<p className="profile-post-item-stats">
-												{likesCount} {likesCount === 1 ? 'like' : 'likes'} •{' '}
-												{commentsCount}{' '}
-												{commentsCount === 1 ? 'comment' : 'comments'}
-											</p>
-										</article>
-									</Link>
-								);
-							})}
-						</div>
-					)}
-			</div>
-		</section>
+		<ProfilePostsSection
+			posts={createdPosts}
+			isLoading={isInitialLoading}
+			hasError={postsStatus === 'failed'}
+			errorMessage={postsError}
+			emptyMessage="You have not created any posts yet."
+			loadingMessage="Loading your posts..."
+			errorFallbackMessage="Could not load your posts."
+			onRetry={() => dispatch(fetchPosts(PROFILE_POSTS_FETCH_PARAMS))}
+		/>
 	);
 }
 
