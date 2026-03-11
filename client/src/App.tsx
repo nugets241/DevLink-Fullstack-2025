@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
 import People from './pages/People';
+import PostDetails from './pages/PostDetails';
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from './store/hooks';
@@ -88,6 +89,10 @@ function App() {
 				<Route
 					path="/people"
 					element={token ? <People /> : <Navigate to="/" replace />}
+				/>
+				<Route
+					path="/posts/:postId"
+					element={token ? <PostDetails /> : <Navigate to="/" replace />}
 				/>
 				<Route
 					path="/profiles/:userId"
