@@ -162,6 +162,25 @@
 		margin: 0.25rem 0 0.75rem;
 	}
 
+	.post-item-stats {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin: 0.25rem 0 0.5rem;
+		color: $text-muted;
+		font-size: 0.875rem;
+
+		.post-item-likes {
+			display: flex;
+			align-items: center;
+			gap: 0.25rem;
+		}
+
+		.post-item-comments-count {
+			margin-left: auto;
+		}
+	}
+
 	.post-item-actions {
 		display: flex;
 		align-items: center;
