@@ -1,24 +1,9 @@
 import { Router } from 'express';
 import auth from '../../middleware/auth.js';
-import { body, validationResult } from 'express-validator';
-import User from '../../models/User.js';
-import argon2 from 'argon2';
-import { generateToken } from '../../utils/jwt.js';
+import { body } from 'express-validator';
+import { getAuthUser, loginUser } from '../../controllers/authController.js';
 
 const router = Router();
-
-// @route   GET api/auth
-// @desc    Test route
-// @access  Private
-router.get('/', auth, async (req, res) => {
-	try {
-		const user = await User.findById(req.user.id).select('-password');
-		res.json(user);
-	} catch (error) {
-		console.error(error.message);
-		res.status(500).send('Server error');
-	}
-});
 
 const loginValidators = [
 	body('email')
@@ -29,48 +14,9 @@ const loginValidators = [
 	body('password').notEmpty().withMessage('Password is required'),
 ];
 
-// @route   POST api/auth
-// @desc    Authenticate user & get token
-// @access  Public
-router.post('/', loginValidators, async (req, res) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({ errors: errors.array() });
-	}
-
-	const { email, password } = req.body;
-
-	try {
-		// Check if user exists
-		const user = await User.findOne({ email });
-		if (!user) return res.status(401).json({ msg: 'Invalid Credentials' });
-
-		// Verify password
-		const isPasswordValid = await argon2.verify(user.password, password);
-		if (!isPasswordValid)
-			return res.status(401).json({ msg: 'Invalid Credentials' });
-
-		try {
-			const token = await generateToken(user.id);
-			return res.status(200).json({
-				token,
-				user: {
-					id: user.id,
-					name: user.name,
-					email: user.email,
-					headline: user.headline,
-					location: user.location,
-					avatar: user.avatar,
-				},
-			});
-		} catch (err) {
-			console.error(err);
-			return res.status(500).send('Server error');
-		}
-	} catch (err) {
-		console.error(err.message);
-		return res.status(500).send('Server error');
-	}
-});
+// @route   GET  api/auth       – get current user
+// @route   POST api/auth       – login
+router.get('/', auth, getAuthUser);
+router.post('/', loginValidators, loginUser);
 
 export default router;
