@@ -145,7 +145,6 @@ function PostComposer({
 					disabled={isSubmitting}
 					aria-label="Start a post with an image"
 					title="Choose image to post"
-					disabled={isSubmitting}
 				>
 					<HiPhoto aria-hidden="true" focusable="false" />
 				</Button>
