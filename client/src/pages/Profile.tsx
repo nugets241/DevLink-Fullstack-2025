@@ -6,6 +6,7 @@ import AboutSection from '../components/profile/AboutSection';
 import ExperienceSection from '../components/profile/ExperienceSection';
 import EducationSection from '../components/profile/EducationSection';
 import SkillsSection from '../components/profile/SkillsSection';
+import PostsSection from '../components/profile/PostsSection';
 
 function Profile() {
 	const dispatch = useAppDispatch();
@@ -60,6 +61,7 @@ function Profile() {
 			<div className="container">
 				<UserBasicsSection />
 				<AboutSection />
+				<PostsSection />
 				<ExperienceSection />
 				<EducationSection />
 				<SkillsSection />
