@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchPosts } from '../../store/slices/postsSlice';
 import Button from '../common/Button';
@@ -73,30 +74,37 @@ function PostsSection() {
 								const postImageSource = post.imageDataUrl?.trim();
 
 								return (
-									<article key={postId} className="profile-post-item">
-										<p className="profile-post-item-date">
-											{formatPostDate(post.createdAt)}
-										</p>
-										{post.text?.trim() ? (
-											<p className="profile-post-item-text">{post.text}</p>
-										) : null}
-										{postImageSource ? (
-											<img
-												src={postImageSource}
-												alt="Post attachment"
-												className="profile-post-item-image"
-												onError={(event) => {
-													event.currentTarget.onerror = null;
-													event.currentTarget.style.display = 'none';
-												}}
-											/>
-										) : null}
-										<p className="profile-post-item-stats">
-											{likesCount} {likesCount === 1 ? 'like' : 'likes'} •{' '}
-											{commentsCount}{' '}
-											{commentsCount === 1 ? 'comment' : 'comments'}
-										</p>
-									</article>
+									<Link
+										key={postId}
+										to={`/posts/${postId}`}
+										className="profile-post-link"
+										aria-label={`Open post from ${formatPostDate(post.createdAt)}`}
+									>
+										<article className="profile-post-item">
+											<p className="profile-post-item-date">
+												{formatPostDate(post.createdAt)}
+											</p>
+											{post.text?.trim() ? (
+												<p className="profile-post-item-text">{post.text}</p>
+											) : null}
+											{postImageSource ? (
+												<img
+													src={postImageSource}
+													alt="Post attachment"
+													className="profile-post-item-image"
+													onError={(event) => {
+														event.currentTarget.onerror = null;
+														event.currentTarget.style.display = 'none';
+													}}
+												/>
+											) : null}
+											<p className="profile-post-item-stats">
+												{likesCount} {likesCount === 1 ? 'like' : 'likes'} •{' '}
+												{commentsCount}{' '}
+												{commentsCount === 1 ? 'comment' : 'comments'}
+											</p>
+										</article>
+									</Link>
 								);
 							})}
 						</div>
