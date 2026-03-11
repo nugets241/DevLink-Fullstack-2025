@@ -299,6 +299,7 @@ function Home() {
 										key={postId}
 										post={post}
 										currentUserId={currentUserId}
+										currentUserAvatarSrc={avatarSrc}
 										actionStatusById={actionStatusById}
 										commentDraft={commentDraftByPostId[postId] ?? ''}
 										commentError={commentErrorByPostId[postId]}
