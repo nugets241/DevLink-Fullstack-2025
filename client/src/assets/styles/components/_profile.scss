@@ -191,6 +191,60 @@
 			}
 		}
 	}
+
+	.profile-post-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.profile-post-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.75rem 0;
+		border-bottom: 1px solid $border-default;
+
+		&:last-child {
+			border-bottom: 0;
+			padding-bottom: 0;
+		}
+	}
+
+	.profile-post-item-date,
+	.profile-post-item-stats,
+	.profile-post-empty {
+		margin: 0;
+		color: $text-muted;
+	}
+
+	.profile-post-item-date,
+	.profile-post-item-stats {
+		font-size: 0.8rem;
+	}
+
+	.profile-post-item-text {
+		margin: 0;
+		color: $text-secondary;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	.profile-post-item-image {
+		display: block;
+		max-width: 100%;
+		max-height: 360px;
+		object-fit: cover;
+		border-radius: 10px;
+		border: 1px solid $border-default;
+	}
+
+	.profile-post-empty-state {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+	}
 }
 
 // Profile Edit Modal Styles
