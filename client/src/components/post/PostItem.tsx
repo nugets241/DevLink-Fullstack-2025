@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 type PostItemProps = {
 	post: Post;
 	currentUserId?: string;
+	currentUserAvatarSrc?: string;
 	actionStatusById: Record<string, 'idle' | 'loading'>;
 	commentDraft: string;
 	commentError?: string;
@@ -44,6 +45,7 @@ type PostItemProps = {
 function PostItem({
 	post,
 	currentUserId,
+	currentUserAvatarSrc,
 	actionStatusById,
 	commentDraft,
 	commentError,
@@ -147,11 +149,17 @@ function PostItem({
 						</p>
 					)}
 					{comments.length > 0 && (
-						<p className="post-item-comments-count">
+						<button
+							type="button"
+							className="post-item-comments-count"
+							onClick={() => setIsCommentsOpen(true)}
+							aria-expanded={isCommentsOpen}
+							aria-controls={`post-comments-${postId}`}
+						>
 							{comments.length === 1
 								? '1 comment'
 								: `${comments.length} comments`}
-						</p>
+						</button>
 					)}
 				</div>
 			)}
@@ -159,6 +167,7 @@ function PostItem({
 				<Button
 					type="button"
 					variant="tertiary"
+					className={isLiked ? 'post-action-active' : undefined}
 					onClick={() => onToggleLike(post)}
 					disabled={isActionLoading || !currentUserId}
 				>
@@ -167,6 +176,7 @@ function PostItem({
 				<Button
 					type="button"
 					variant="tertiary"
+					className={isCommentsOpen ? 'post-action-active' : undefined}
 					onClick={() => setIsCommentsOpen((previous) => !previous)}
 					aria-expanded={isCommentsOpen}
 					aria-controls={`post-comments-${postId}`}
@@ -177,21 +187,34 @@ function PostItem({
 			{isCommentsOpen && (
 				<div className="post-item-comments" id={`post-comments-${postId}`}>
 					<form className="post-comment-composer" onSubmit={onCreateComment}>
-						<Textarea
-							value={commentDraft}
-							onChange={(event) => onCommentDraftChange(event.target.value)}
-							placeholder="Write a comment..."
-							aria-label={`Comment on ${name}'s post`}
-							minRows={1}
+						<img
+							src={currentUserAvatarSrc || '/devlink.svg'}
+							alt="Your avatar"
+							className="post-comment-composer-avatar"
+							onError={(event) => {
+								event.currentTarget.onerror = null;
+								event.currentTarget.src = '/devlink.svg';
+							}}
 						/>
-						<div className="post-comment-composer-actions">
-							<Button
-								type="submit"
-								variant="tertiary"
-								disabled={!commentDraft.trim() || isCommentCreating}
-							>
-								{isCommentCreating ? 'Commenting...' : 'Comment'}
-							</Button>
+						<div className="post-comment-composer-body">
+							<Textarea
+								value={commentDraft}
+								onChange={(event) => onCommentDraftChange(event.target.value)}
+								placeholder="Add a comment..."
+								aria-label={`Comment on ${name}'s post`}
+								minRows={1}
+								adaptivePill
+								wrapperClassName="post-comment-composer-field"
+							/>
+							<div className="post-comment-composer-actions">
+								<Button
+									type="submit"
+									variant="primary"
+									disabled={!commentDraft.trim() || isCommentCreating}
+								>
+									{isCommentCreating ? 'Commenting...' : 'Comment'}
+								</Button>
+							</div>
 						</div>
 					</form>
 
