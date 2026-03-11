@@ -1,10 +1,16 @@
 import React from 'react';
 import { MdOutlineClose } from 'react-icons/md';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Button from '../components/common/Button';
 import Modal from '../components/common/Modal';
+import {
+	formatPostDate,
+	getPostId,
+	getPostOwnerId,
+} from '../components/post/postUtils';
 import { formatDateLabel } from '../components/profile/utils/date';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { fetchPosts } from '../store/slices/postsSlice';
 import {
 	clearViewedProfile,
 	getProfileByUserId,
@@ -13,8 +19,14 @@ import {
 function UserProfile() {
 	const { userId } = useParams<{ userId: string }>();
 	const dispatch = useAppDispatch();
+	const { token } = useAppSelector((state) => state.auth);
 	const { viewedProfile, viewedProfileStatus, viewedProfileError } =
 		useAppSelector((state) => state.profile);
+	const {
+		items: posts,
+		status: postsStatus,
+		error: postsError,
+	} = useAppSelector((state) => state.posts);
 	const [isContactInfoModalOpen, setIsContactInfoModalOpen] =
 		React.useState(false);
 
@@ -27,6 +39,11 @@ function UserProfile() {
 			dispatch(clearViewedProfile());
 		};
 	}, [dispatch, userId]);
+
+	React.useEffect(() => {
+		if (!token || postsStatus !== 'idle') return;
+		dispatch(fetchPosts({ page: 1, limit: 50 }));
+	}, [dispatch, postsStatus, token]);
 
 	if (!userId) {
 		return (
@@ -65,6 +82,11 @@ function UserProfile() {
 			</div>
 		);
 	}
+
+	const viewedUserPosts = posts.filter(
+		(post) => getPostOwnerId(post) === userId,
+	);
+	const isPostsLoading = postsStatus === 'loading' && posts.length === 0;
 
 	const avatarSrc = viewedProfile.user?.avatar?.trim() || '/devlink.svg';
 	const socialEntries = [
@@ -132,6 +154,89 @@ function UserProfile() {
 						<p className="profile-about-text">
 							{viewedProfile.about || 'No bio added yet.'}
 						</p>
+					</div>
+				</section>
+
+				<section className="profile-section-card card">
+					<header className="profile-section-header">
+						<h2>Posts</h2>
+					</header>
+					<div className="profile-contents">
+						{isPostsLoading && (
+							<p className="profile-post-empty">Loading posts...</p>
+						)}
+
+						{!isPostsLoading && postsStatus === 'failed' && (
+							<div className="profile-post-empty-state">
+								<p className="profile-post-empty">
+									{postsError ?? 'Could not load posts.'}
+								</p>
+								<Button
+									type="button"
+									variant="tertiary"
+									onClick={() => dispatch(fetchPosts({ page: 1, limit: 50 }))}
+								>
+									Try Again
+								</Button>
+							</div>
+						)}
+
+						{!isPostsLoading &&
+							postsStatus !== 'failed' &&
+							viewedUserPosts.length === 0 && (
+								<p className="profile-post-empty">No posts yet.</p>
+							)}
+
+						{!isPostsLoading &&
+							postsStatus !== 'failed' &&
+							viewedUserPosts.length > 0 && (
+								<div className="profile-post-list">
+									{viewedUserPosts.map((post) => {
+										const postId = getPostId(post);
+										if (!postId) return null;
+
+										const likesCount = post.likes?.length ?? 0;
+										const commentsCount = post.comments?.length ?? 0;
+										const postImageSource = post.imageDataUrl?.trim();
+
+										return (
+											<Link
+												key={postId}
+												to={`/posts/${postId}`}
+												className="profile-post-link"
+												aria-label={`Open post from ${formatPostDate(post.createdAt)}`}
+											>
+												<article className="profile-post-item">
+													<p className="profile-post-item-date">
+														{formatPostDate(post.createdAt)}
+													</p>
+													{post.text?.trim() ? (
+														<p className="profile-post-item-text">
+															{post.text}
+														</p>
+													) : null}
+													{postImageSource ? (
+														<img
+															src={postImageSource}
+															alt="Post attachment"
+															className="profile-post-item-image"
+															onError={(event) => {
+																event.currentTarget.onerror = null;
+																event.currentTarget.style.display = 'none';
+															}}
+														/>
+													) : null}
+													<p className="profile-post-item-stats">
+														{likesCount} {likesCount === 1 ? 'like' : 'likes'} •{' '}
+														{commentsCount}{' '}
+														{commentsCount === 1 ? 'comment' : 'comments'}
+													</p>
+												</article>
+											</Link>
+										);
+									})}
+								</div>
+							)}
 					</div>
 				</section>
 
