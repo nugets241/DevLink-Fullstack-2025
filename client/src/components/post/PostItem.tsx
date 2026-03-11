@@ -1,5 +1,7 @@
 import React from 'react';
 import { MdOutlineClose } from 'react-icons/md';
+import { BiLike, BiSolidLike } from 'react-icons/bi';
+import { FaRegCommentDots, FaCommentDots } from 'react-icons/fa6';
 import type { Post } from '../../store/slices/postsSlice';
 import Button from '../common/Button';
 import Textarea from '../common/Textarea';
@@ -67,6 +69,7 @@ function PostItem({
 	const isOwner = currentUserId ? ownerId === currentUserId : false;
 	const { name, avatar } = getPostAuthor(post);
 	const comments = post.comments ?? [];
+	const [isCommentsOpen, setIsCommentsOpen] = React.useState(false);
 	const isCommentCreating =
 		actionStatusById[`comment-create:${postId}`] === 'loading';
 	const postImageSource = post.imageDataUrl?.trim();
@@ -123,7 +126,6 @@ function PostItem({
 					</Button>
 				)}
 			</header>
-
 			{post.text?.trim() ? <p className="post-item-text">{post.text}</p> : null}
 			{postImageSource ? (
 				<img
@@ -136,7 +138,23 @@ function PostItem({
 					}}
 				/>
 			) : null}
-
+			{(likeIds.length > 0 || comments.length > 0) && (
+				<div className="post-item-stats">
+					{likeIds.length > 0 && (
+						<p className="post-item-likes">
+							<BiSolidLike />
+							{likeIds.length}
+						</p>
+					)}
+					{comments.length > 0 && (
+						<p className="post-item-comments-count">
+							{comments.length === 1
+								? '1 comment'
+								: `${comments.length} comments`}
+						</p>
+					)}
+				</div>
+			)}
 			<div className="post-item-actions">
 				<Button
 					type="button"
@@ -144,76 +162,88 @@ function PostItem({
 					onClick={() => onToggleLike(post)}
 					disabled={isActionLoading || !currentUserId}
 				>
-					{isLiked ? 'Unlike' : 'Like'} ({likeIds.length})
+					{isLiked ? <BiSolidLike /> : <BiLike />} Like
+				</Button>
+				<Button
+					type="button"
+					variant="tertiary"
+					onClick={() => setIsCommentsOpen((previous) => !previous)}
+					aria-expanded={isCommentsOpen}
+					aria-controls={`post-comments-${postId}`}
+				>
+					{isCommentsOpen ? <FaCommentDots /> : <FaRegCommentDots />} Comment
 				</Button>
 			</div>
+			{isCommentsOpen && (
+				<div className="post-item-comments" id={`post-comments-${postId}`}>
+					<form className="post-comment-composer" onSubmit={onCreateComment}>
+						<Textarea
+							value={commentDraft}
+							onChange={(event) => onCommentDraftChange(event.target.value)}
+							placeholder="Write a comment..."
+							aria-label={`Comment on ${name}'s post`}
+							minRows={1}
+						/>
+						<div className="post-comment-composer-actions">
+							<Button
+								type="submit"
+								variant="tertiary"
+								disabled={!commentDraft.trim() || isCommentCreating}
+							>
+								{isCommentCreating ? 'Commenting...' : 'Comment'}
+							</Button>
+						</div>
+					</form>
 
-			<div className="post-item-comments">
-				<form className="post-comment-composer" onSubmit={onCreateComment}>
-					<Textarea
-						value={commentDraft}
-						onChange={(event) => onCommentDraftChange(event.target.value)}
-						placeholder="Write a comment..."
-						aria-label={`Comment on ${name}'s post`}
-						minRows={1}
-					/>
-					<div className="post-comment-composer-actions">
-						<Button
-							type="submit"
-							variant="tertiary"
-							disabled={!commentDraft.trim() || isCommentCreating}
-						>
-							{isCommentCreating ? 'Commenting...' : 'Comment'}
-						</Button>
-					</div>
-				</form>
+					{commentError && <p className="post-feed-error">{commentError}</p>}
 
-				{commentError && <p className="post-feed-error">{commentError}</p>}
+					{comments.length > 0 && (
+						<div className="post-comment-list">
+							{comments.map((comment) => {
+								const commentId = getCommentId(comment);
+								if (!commentId) return null;
 
-				{comments.length > 0 && (
-					<div className="post-comment-list">
-						{comments.map((comment) => {
-							const commentId = getCommentId(comment);
-							if (!commentId) return null;
+								const commentOwnerId = getCommentOwnerId(comment);
+								const canManageComment = currentUserId
+									? commentOwnerId === currentUserId
+									: false;
+								const commentEditKey = getCommentEditKey(postId, commentId);
+								const isEditingComment = editingCommentKey === commentEditKey;
+								const isCommentDeleteLoading =
+									actionStatusById[`comment-delete:${postId}:${commentId}`] ===
+									'loading';
+								const isCommentUpdateLoading =
+									actionStatusById[`comment-update:${postId}:${commentId}`] ===
+									'loading';
+								const commentAuthor = getCommentAuthor(comment);
 
-							const commentOwnerId = getCommentOwnerId(comment);
-							const canManageComment = currentUserId
-								? commentOwnerId === currentUserId
-								: false;
-							const commentEditKey = getCommentEditKey(postId, commentId);
-							const isEditingComment = editingCommentKey === commentEditKey;
-							const isCommentDeleteLoading =
-								actionStatusById[`comment-delete:${postId}:${commentId}`] ===
-								'loading';
-							const isCommentUpdateLoading =
-								actionStatusById[`comment-update:${postId}:${commentId}`] ===
-								'loading';
-							const commentAuthor = getCommentAuthor(comment);
-
-							return (
-								<CommentItem
-									key={commentId}
-									comment={comment}
-									commentAuthor={commentAuthor}
-									commentOwnerId={commentOwnerId}
-									canManageComment={canManageComment}
-									isEditingComment={isEditingComment}
-									isCommentDeleteLoading={isCommentDeleteLoading}
-									isCommentUpdateLoading={isCommentUpdateLoading}
-									editingCommentText={editingCommentText}
-									onStartEditComment={() =>
-										onStartEditComment(commentId, comment.text)
-									}
-									onCancelEditComment={onCancelEditComment}
-									onEditingCommentTextChange={onEditingCommentTextChange}
-									onUpdateComment={(event) => onUpdateComment(commentId, event)}
-									onDeleteComment={() => onDeleteComment(commentId)}
-								/>
-							);
-						})}
-					</div>
-				)}
-			</div>
+								return (
+									<CommentItem
+										key={commentId}
+										comment={comment}
+										commentAuthor={commentAuthor}
+										commentOwnerId={commentOwnerId}
+										canManageComment={canManageComment}
+										isEditingComment={isEditingComment}
+										isCommentDeleteLoading={isCommentDeleteLoading}
+										isCommentUpdateLoading={isCommentUpdateLoading}
+										editingCommentText={editingCommentText}
+										onStartEditComment={() =>
+											onStartEditComment(commentId, comment.text)
+										}
+										onCancelEditComment={onCancelEditComment}
+										onEditingCommentTextChange={onEditingCommentTextChange}
+										onUpdateComment={(event) =>
+											onUpdateComment(commentId, event)
+										}
+										onDeleteComment={() => onDeleteComment(commentId)}
+									/>
+								);
+							})}
+						</div>
+					)}
+				</div>
+			)}
 		</article>
 	);
 }
