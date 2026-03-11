@@ -187,6 +187,43 @@ export const fetchPosts = createAsyncThunk<
 	}
 });
 
+export const fetchPostById = createAsyncThunk<
+	Post,
+	string,
+	{ rejectValue: RejectValue }
+>('posts/fetchPostById', async (postId, { rejectWithValue }) => {
+	try {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			return rejectWithValue({ message: 'No token found.' });
+		}
+
+		const response = await fetch(API_ENDPOINTS.postById(postId), {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		if (!response.ok) {
+			const payload = (await response
+				.json()
+				.catch(() => null)) as ApiErrorPayload | null;
+			return rejectWithValue({
+				message: getErrorMessage(payload, 'Failed to load post.'),
+				status: response.status,
+			});
+		}
+
+		const data = (await response.json()) as Post;
+		return data;
+	} catch (error) {
+		console.error(error);
+		return rejectWithValue({ message: 'Network error. Please try again.' });
+	}
+});
+
 export const createPost = createAsyncThunk<
 	Post,
 	CreatePostPayload,
@@ -515,6 +552,27 @@ const postsSlice = createSlice({
 			.addCase(fetchPosts.rejected, (state, action) => {
 				state.status = 'failed';
 				state.error = action.payload?.message ?? 'Failed to load posts.';
+			})
+			.addCase(fetchPostById.pending, (state) => {
+				state.error = null;
+			})
+			.addCase(fetchPostById.fulfilled, (state, action) => {
+				const fetchedPostId = getPostId(action.payload);
+				if (!fetchedPostId) return;
+
+				const existingIndex = state.items.findIndex(
+					(post) => getPostId(post) === fetchedPostId,
+				);
+
+				if (existingIndex >= 0) {
+					state.items[existingIndex] = action.payload;
+					return;
+				}
+
+				state.items.unshift(action.payload);
+			})
+			.addCase(fetchPostById.rejected, (state, action) => {
+				state.error = action.payload?.message ?? 'Failed to load post.';
 			})
 			.addCase(createPost.pending, (state) => {
 				state.createStatus = 'loading';
