@@ -121,13 +121,15 @@ function People() {
 										event.currentTarget.src = '/devlink.svg';
 									}}
 								/>
-								<h2>{profile.user?.name ?? 'Developer'}</h2>
-								<p className="people-headline">
-									{profile.user?.headline || 'No headline added yet.'}
-								</p>
-								<p className="people-location">
-									{profile.location || 'Location not provided'}
-								</p>
+								<div className="people-info">
+									<h2>{profile.user?.name ?? 'Developer'}</h2>
+									<p className="people-headline">
+										{profile.user?.headline || 'No headline added yet.'}
+									</p>
+									<p className="people-location">
+										{profile.location || 'Location not provided'}
+									</p>
+								</div>
 							</Link>
 						);
 					})}
