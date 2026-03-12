@@ -16,10 +16,26 @@ function Input({
 	id,
 	className,
 	wrapperClassName,
+	type,
+	onClick,
 	...props
 }: InputProps) {
 	const generatedId = React.useId();
 	const inputId = id ?? generatedId;
+	const inputRef = React.useRef<HTMLInputElement>(null);
+
+	const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+		if (type === 'date' && inputRef.current) {
+			try {
+				(
+					inputRef.current as HTMLInputElement & { showPicker: () => void }
+				).showPicker();
+			} catch {
+				// showPicker not supported in this browser
+			}
+		}
+		onClick?.(e);
+	};
 	const hintId = hint ? `${inputId}-hint` : undefined;
 	const errorId = error ? `${inputId}-error` : undefined;
 	const describedBy = [hintId, errorId].filter(Boolean).join(' ') || undefined;
@@ -37,11 +53,14 @@ function Input({
 				</label>
 			)}
 			<input
+				ref={inputRef}
 				id={inputId}
+				type={type}
 				className={className}
 				aria-describedby={describedBy}
 				aria-invalid={error ? true : undefined}
 				required={required}
+				onClick={handleClick}
 				{...props}
 			/>
 			{hint && (
