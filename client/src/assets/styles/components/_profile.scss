@@ -250,10 +250,11 @@
 	.profile-post-item-image {
 		display: block;
 		max-width: 100%;
-		max-height: 360px;
-		object-fit: cover;
-		border-radius: 10px;
-		border: 1px solid $border-default;
+		max-height: 320px;
+		width: auto;
+		height: auto;
+		object-fit: contain;
+		align-self: flex-start;
 	}
 
 	.profile-post-empty-state {
