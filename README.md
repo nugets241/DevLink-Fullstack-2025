@@ -30,7 +30,11 @@ cd DevLink-Fullstack-2025
 npm install && cd client && npm install && cd ..
 
 # 2. Create .env (copy the template and fill values)
+# macOS/Linux
 cp .env.example .env
+
+# PowerShell
+Copy-Item .env.example .env
 
 # 3. Start development servers
 npm run dev
@@ -76,7 +80,7 @@ For full details, see [TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md).
 
 ## Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root. The full server template lives in `.env.example`:
 
 ```env
 # Required
@@ -86,15 +90,20 @@ JWT_SECRET=your-long-random-secret-here
 # Optional (defaults shown)
 PORT=5000
 NODE_ENV=development
+ALLOWED_ORIGINS=http://localhost:5173
 JWT_EXPIRES_IN=1h
 JWT_ISSUER=devlink-api
 JWT_AUDIENCE=devlink-client
 
-# Production only
-ALLOWED_ORIGINS=https://app.example.com,https://www.example.com
+# Optional Argon2 tuning
+ARGON2_TIME_COST=3
+ARGON2_MEMORY_COST=65536
+ARGON2_PARALLELISM=1
 ```
 
 The server exits immediately if `MONGO_URI` or `JWT_SECRET` are missing.
+
+The client does not require its own env file for local development. If needed, you can optionally set `VITE_API_URL` in `client/.env`.
 
 ---
 
@@ -178,15 +187,6 @@ View workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 ```bash
 npm test && cd client && npm test && npm run build && cd ..
 ```
-
----
-
-## More Information
-
-- **Architecture & design rationale:** [TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md)
-- **Security details:** [TECHNICAL_DOCUMENTATION.md#security-analysis](TECHNICAL_DOCUMENTATION.md#security-analysis)
-- **Testing strategy:** [TECHNICAL_DOCUMENTATION.md#testing-strategy](TECHNICAL_DOCUMENTATION.md#testing-strategy)
-- **Future roadmap:** [TECHNICAL_DOCUMENTATION.md#limitations--future-work](TECHNICAL_DOCUMENTATION.md#limitations--future-work)
 
 ---
 
