@@ -41,6 +41,18 @@ textarea {
 	}
 }
 
+input[type='date'] {
+	&::-webkit-calendar-picker-indicator {
+		filter: invert(1);
+		cursor: pointer;
+		opacity: 0.6;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+}
+
 .form {
 	display: flex;
 	flex-direction: column;
