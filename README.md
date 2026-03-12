@@ -1,19 +1,195 @@
-# DevLink Fullstack 2025
+# DevLink
 
-Developer social networking platform
+A social networking platform for developers. Users create profiles, share posts, and interact through likes and comments.
 
-## Quick start
+**[Full Technical Documentation](TECHNICAL_DOCUMENTATION.md)** ·  
+**[CI Workflow](.github/workflows/ci.yml)** · **[GitHub Actions](https://github.com/nugets241/DevLink-Fullstack-2025/actions/workflows/ci.yml)**
 
-Requirements:
+---
 
-- Node.js (v20.13.0+ recommended)
+## Table of Contents
 
-Configuration:
+1. [Quick Start](#quick-start)
+2. [Tech Stack](#tech-stack)
+3. [Project Structure](#project-structure)
+4. [Environment Variables](#environment-variables)
+5. [Running the App](#running-the-app)
+6. [Testing](#testing)
+7. [API Routes](#api-routes)
+8. [CI/CD](#cicd)
+9. [License](#license)
 
-- Set environment variables. Do not commit secrets.
+---
 
-Contributing:
+## Quick Start
 
-- Open issues/PRs. Follow code style and add tests for new features.
+```bash
+# 1. Clone and install
+git clone https://github.com/nugets241/DevLink-Fullstack-2025.git
+cd DevLink-Fullstack-2025
+npm install && cd client && npm install && cd ..
 
-License: ISC
+# 2. Create .env (copy the template and fill values)
+cp .env.example .env
+
+# 3. Start development servers
+npm run dev
+```
+
+API: `http://localhost:5000` | Client: `http://localhost:5173`
+
+---
+
+## Tech Stack
+
+| Layer    | Technology                        |
+| -------- | --------------------------------- |
+| Frontend | React 19, TypeScript, Vite, Redux |
+| Backend  | Node.js 22, Express 5, Mongoose 8 |
+| Database | MongoDB Atlas or local            |
+| Auth     | JWT, Argon2id password hashing    |
+| Testing  | Jest (backend), Vitest (frontend) |
+
+---
+
+## Project Structure
+
+```
+.
+├── app.js, server.js, db.js           # Server entry points
+├── controllers/                        # Business logic
+├── routes/api/                         # API endpoints
+├── middleware/                         # Middleware (auth, etc.)
+├── models/                             # MongoDB schemas
+├── tests/                              # Backend tests (39 tests)
+└── client/
+    └── src/
+        ├── components/                 # React components
+        ├── pages/                      # Page routes
+        ├── store/                      # Redux slices
+        └── tests/                      # Frontend tests (29 tests)
+```
+
+For full details, see [TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md).
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+# Required
+MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/devlink
+JWT_SECRET=your-long-random-secret-here
+
+# Optional (defaults shown)
+PORT=5000
+NODE_ENV=development
+JWT_EXPIRES_IN=1h
+JWT_ISSUER=devlink-api
+JWT_AUDIENCE=devlink-client
+
+# Production only
+ALLOWED_ORIGINS=https://app.example.com,https://www.example.com
+```
+
+The server exits immediately if `MONGO_URI` or `JWT_SECRET` are missing.
+
+---
+
+## Running the App
+
+| Command          | What it does                          |
+| ---------------- | ------------------------------------- |
+| `npm run dev`    | Starts API + Vite client (hot reload) |
+| `npm run server` | API only                              |
+| `npm run client` | Vite client only                      |
+| `npm start`      | Production API                        |
+
+---
+
+## Testing
+
+### Backend (39 tests)
+
+```bash
+npm test
+```
+
+Integration tests with in-memory MongoDB. No external services needed.
+
+### Frontend (29 tests)
+
+```bash
+cd client
+npm test              # run once
+npm run test:watch    # watch mode
+npm run test:coverage # with coverage
+```
+
+---
+
+## API Routes
+
+All routes require `Authorization: Bearer <token>` except where noted.
+
+| Method | Path                          | Auth | Description           |
+| ------ | ----------------------------- | ---- | --------------------- |
+| POST   | `/api/users`                  | –    | Register              |
+| POST   | `/api/auth`                   | –    | Login                 |
+| GET    | `/api/auth`                   | ✓    | Get current user      |
+| PATCH  | `/api/users/me`               | ✓    | Update user           |
+| GET    | `/api/profile`                | –    | List all profiles     |
+| GET    | `/api/profile/me`             | ✓    | Get my profile        |
+| PATCH  | `/api/profile`                | ✓    | Create/update profile |
+| PUT    | `/api/profile/experience`     | ✓    | Add experience        |
+| PATCH  | `/api/profile/experience/:id` | ✓    | Update experience     |
+| DELETE | `/api/profile/experience/:id` | ✓    | Delete experience     |
+| PUT    | `/api/profile/education`      | ✓    | Add education         |
+| PATCH  | `/api/profile/education/:id`  | ✓    | Update education      |
+| DELETE | `/api/profile/education/:id`  | ✓    | Delete education      |
+| PUT    | `/api/profile/skills`         | ✓    | Add skill             |
+| DELETE | `/api/profile/skills/:index`  | ✓    | Delete skill          |
+| GET    | `/api/posts?page=1&limit=10`  | ✓    | Get post feed         |
+| POST   | `/api/posts`                  | ✓    | Create post           |
+| PUT    | `/api/posts/:id/like`         | ✓    | Like post             |
+| PUT    | `/api/posts/:id/unlike`       | ✓    | Unlike post           |
+| POST   | `/api/posts/:id/comments`     | ✓    | Add comment           |
+| PATCH  | `/api/posts/:id/comments/:id` | ✓    | Update comment        |
+| DELETE | `/api/posts/:id/comments/:id` | ✓    | Delete comment        |
+
+Full request/response examples and explanations: [TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md#full-api-reference)
+
+---
+
+## CI/CD
+
+GitHub Actions runs on every push to `main` and every pull request:
+
+1. **Backend tests** – all 39 pass
+2. **Frontend tests** – all 29 pass
+3. **Build** – TypeScript + Vite bundling succeeds
+
+View workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+
+**Local test before pushing:**
+
+```bash
+npm test && cd client && npm test && npm run build && cd ..
+```
+
+---
+
+## More Information
+
+- **Architecture & design rationale:** [TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md)
+- **Security details:** [TECHNICAL_DOCUMENTATION.md#security-analysis](TECHNICAL_DOCUMENTATION.md#security-analysis)
+- **Testing strategy:** [TECHNICAL_DOCUMENTATION.md#testing-strategy](TECHNICAL_DOCUMENTATION.md#testing-strategy)
+- **Future roadmap:** [TECHNICAL_DOCUMENTATION.md#limitations--future-work](TECHNICAL_DOCUMENTATION.md#limitations--future-work)
+
+---
+
+## License
+
+ISC
