@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { logout } from '../../store/slices/authSlice';
 import Button from '../common/Button';
-import { LuUsers } from 'react-icons/lu';
+import { LuUsers, LuHouse } from 'react-icons/lu';
 
 function Navbar() {
 	const dispatch = useAppDispatch();
@@ -74,15 +74,27 @@ function Navbar() {
 				</Link>
 				<div className="navbar-links">
 					{authenticatedUser && (
-						<NavLink
-							to="/people"
-							className={({ isActive }) => getNavLinkClassName(isActive)}
-							aria-label="People"
-							title="People"
-						>
-							<LuUsers aria-hidden="true" focusable="false" />
-							<span className="navbar-link-label">People</span>
-						</NavLink>
+						<>
+							<NavLink
+								to="/"
+								end
+								className={({ isActive }) => getNavLinkClassName(isActive)}
+								aria-label="Home"
+								title="Home"
+							>
+								<LuHouse aria-hidden="true" focusable="false" />
+								<span className="navbar-link-label">Home</span>
+							</NavLink>
+							<NavLink
+								to="/people"
+								className={({ isActive }) => getNavLinkClassName(isActive)}
+								aria-label="People"
+								title="People"
+							>
+								<LuUsers aria-hidden="true" focusable="false" />
+								<span className="navbar-link-label">People</span>
+							</NavLink>
+						</>
 					)}
 				</div>
 				{authenticatedUser ? (
