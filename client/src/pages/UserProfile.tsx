@@ -154,16 +154,27 @@ function UserProfile() {
 					</div>
 				</section>
 
-				<ProfilePostsSection
-					posts={viewedUserPosts}
-					isLoading={isPostsLoading}
-					hasError={postsStatus === 'failed'}
-					errorMessage={postsError}
-					emptyMessage="No posts yet."
-					loadingMessage="Loading posts..."
-					errorFallbackMessage="Could not load posts."
-					onRetry={() => dispatch(fetchPosts(PROFILE_POSTS_FETCH_PARAMS))}
-				/>
+				{token ? (
+					<ProfilePostsSection
+						posts={viewedUserPosts}
+						isLoading={isPostsLoading}
+						hasError={postsStatus === 'failed'}
+						errorMessage={postsError}
+						emptyMessage="No posts yet."
+						loadingMessage="Loading posts..."
+						errorFallbackMessage="Could not load posts."
+						onRetry={() => dispatch(fetchPosts(PROFILE_POSTS_FETCH_PARAMS))}
+					/>
+				) : (
+					<section className="profile-section-card card">
+						<header className="profile-section-header">
+							<h2>Posts</h2>
+						</header>
+						<div className="profile-contents">
+							<p className="profile-about-text">Sign in to view posts.</p>
+						</div>
+					</section>
+				)}
 
 				<section className="profile-section-card card">
 					<header className="profile-section-header">
