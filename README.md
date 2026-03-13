@@ -2,6 +2,7 @@
 
 A social networking platform for developers. Users create profiles, share posts, and interact through likes and comments.
 
+**[Full Technical Documentation](TECHNICAL_DOCUMENTATION.md)** ·  
 **[CI Workflow](.github/workflows/ci.yml)** · **[GitHub Actions](https://github.com/nugets241/DevLink-Fullstack-2025/actions/workflows/ci.yml)**
 
 ---
@@ -186,15 +187,6 @@ View workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 ```bash
 npm test && cd client && npm test && npm run build && cd ..
 ```
-
----
-
-## More Information
-
-- **Architecture & design rationale:** [TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md)
-- **Security details:** [TECHNICAL_DOCUMENTATION.md#security-analysis](TECHNICAL_DOCUMENTATION.md#security-analysis)
-- **Testing strategy:** [TECHNICAL_DOCUMENTATION.md#testing-strategy](TECHNICAL_DOCUMENTATION.md#testing-strategy)
-- **Future roadmap:** [TECHNICAL_DOCUMENTATION.md#limitations--future-work](TECHNICAL_DOCUMENTATION.md#limitations--future-work)
 
 ---
 
