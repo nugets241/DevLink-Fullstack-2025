@@ -28,7 +28,7 @@ beforeEach(clearDB);
 
 // ─── Registration ─────────────────────────────────────────────────────────────
 
-describe('POST /api/users – register', () => {
+describe('POST /api/users - register', () => {
 	it('creates a new user and returns a token + user object', async () => {
 		const res = await request(app).post('/api/users').send({
 			name: 'Alice',
@@ -86,7 +86,7 @@ describe('POST /api/users – register', () => {
 
 // ─── Login ────────────────────────────────────────────────────────────────────
 
-describe('POST /api/auth – login', () => {
+describe('POST /api/auth - login', () => {
 	beforeEach(() =>
 		registerUser({ email: 'login@example.com', password: 'mypassword' }),
 	);
@@ -127,7 +127,7 @@ describe('POST /api/auth – login', () => {
 
 // ─── Get current user ─────────────────────────────────────────────────────────
 
-describe('GET /api/auth – current user', () => {
+describe('GET /api/auth - current user', () => {
 	it('returns user data for a valid token', async () => {
 		const { token, user } = await registerUser({ email: 'me@example.com' });
 		const res = await request(app)
