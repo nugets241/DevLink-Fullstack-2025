@@ -2,7 +2,6 @@
 
 A social networking platform for developers. Users create profiles, share posts, and interact through likes and comments.
 
-**[Full Technical Documentation](TECHNICAL_DOCUMENTATION.md)** ·  
 **[CI Workflow](.github/workflows/ci.yml)** · **[GitHub Actions](https://github.com/nugets241/DevLink-Fullstack-2025/actions/workflows/ci.yml)**
 
 ---
@@ -73,8 +72,6 @@ API: `http://localhost:5000` | Client: `http://localhost:5173`
         ├── store/                      # Redux slices
         └── tests/                      # Frontend tests (29 tests)
 ```
-
-For full details, see [TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md).
 
 ---
 
@@ -167,8 +164,6 @@ All routes require `Authorization: Bearer <token>` except where noted.
 | POST   | `/api/posts/:id/comments`     | ✓    | Add comment           |
 | PATCH  | `/api/posts/:id/comments/:id` | ✓    | Update comment        |
 | DELETE | `/api/posts/:id/comments/:id` | ✓    | Delete comment        |
-
-Full request/response examples and explanations: [TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md#full-api-reference)
 
 ---
 
