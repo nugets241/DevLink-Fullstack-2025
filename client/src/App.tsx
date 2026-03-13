@@ -6,7 +6,13 @@ import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
 import People from './pages/People';
 import PostDetails from './pages/PostDetails';
-import { Navigate, Route, Routes, useParams } from 'react-router-dom';
+import {
+	Navigate,
+	Route,
+	Routes,
+	useLocation,
+	useParams,
+} from 'react-router-dom';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import { getUserData } from './store/slices/authSlice';
@@ -42,11 +48,14 @@ function LegacyProfileByIdRedirect() {
 
 function App() {
 	const dispatch = useAppDispatch();
+	const location = useLocation();
 	const { token, user } = useAppSelector((state) => state.auth);
 	const currentUserId =
 		user?.id ?? (user as ({ _id?: string } & typeof user) | null)?._id;
 	const [isAuthBootstrapComplete, setIsAuthBootstrapComplete] =
 		React.useState(false);
+	const shouldHideNavbar =
+		location.pathname === '/register' || (!token && location.pathname === '/');
 
 	React.useEffect(() => {
 		let isMounted = true;
@@ -82,7 +91,7 @@ function App() {
 
 	return (
 		<>
-			{token && <Navbar />}
+			{!shouldHideNavbar && <Navbar />}
 			<Routes>
 				<Route path="/" element={token ? <Home /> : <Landing />} />
 				<Route path="/register" element={<Register />} />
