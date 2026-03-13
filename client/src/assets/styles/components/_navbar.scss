@@ -39,6 +39,16 @@
 		gap: 1rem;
 	}
 
+	.navbar-guest-actions {
+		gap: 0.5rem;
+
+		.button {
+			border-radius: 9999px;
+			padding: 0.1rem 0.5rem;
+			font-size: 0.9rem;
+		}
+	}
+
 	.navbar-user-menu {
 		position: relative;
 	}
