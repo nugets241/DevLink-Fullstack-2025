@@ -1,5 +1,7 @@
 # DevLink
 
+[![CI](https://github.com/nugets241/DevLink-Fullstack-2025/actions/workflows/ci.yml/badge.svg)](https://github.com/nugets241/DevLink-Fullstack-2025/actions/workflows/ci.yml)
+
 A social networking platform for developers. Users create profiles, share posts, and interact through likes and comments.
 
 **[CI Workflow](.github/workflows/ci.yml)** · **[GitHub Actions](https://github.com/nugets241/DevLink-Fullstack-2025/actions/workflows/ci.yml)**
@@ -8,15 +10,25 @@ A social networking platform for developers. Users create profiles, share posts,
 
 ## Table of Contents
 
-1. [Quick Start](#quick-start)
-2. [Tech Stack](#tech-stack)
-3. [Project Structure](#project-structure)
-4. [Environment Variables](#environment-variables)
-5. [Running the App](#running-the-app)
-6. [Testing](#testing)
-7. [API Routes](#api-routes)
-8. [CI/CD](#cicd)
-9. [License](#license)
+1. [Prerequisites](#prerequisites)
+2. [Quick Start](#quick-start)
+3. [Tech Stack](#tech-stack)
+4. [Project Structure](#project-structure)
+5. [Environment Variables](#environment-variables)
+6. [Running the App](#running-the-app)
+7. [Testing](#testing)
+8. [API Routes](#api-routes)
+9. [CI/CD](#cicd)
+10. [Troubleshooting](#troubleshooting)
+11. [License](#license)
+
+---
+
+## Prerequisites
+
+- Node.js `22.x`
+- npm `10+`
+- MongoDB Atlas cluster or local MongoDB instance
 
 ---
 
@@ -26,7 +38,7 @@ A social networking platform for developers. Users create profiles, share posts,
 # 1. Clone and install
 git clone https://github.com/nugets241/DevLink-Fullstack-2025.git
 cd DevLink-Fullstack-2025
-npm install && cd client && npm install && cd ..
+npm ci && cd client && npm ci && cd ..
 
 # 2. Create .env (copy the template and fill values)
 # macOS/Linux
@@ -98,7 +110,9 @@ ARGON2_MEMORY_COST=65536
 ARGON2_PARALLELISM=1
 ```
 
-The server exits immediately if `MONGO_URI` or `JWT_SECRET` are missing.
+`MONGO_URI` and `JWT_SECRET` above are placeholder examples. Replace them with real values before running the server.
+
+The server exits immediately if `MONGO_URI` or `JWT_SECRET` are missing, and startup will fail if `MONGO_URI` is invalid or unreachable.
 
 The client does not require its own env file for local development. If needed, you can optionally set `VITE_API_URL` in `client/.env`.
 
@@ -112,6 +126,18 @@ The client does not require its own env file for local development. If needed, y
 | `npm run server` | API only                              |
 | `npm run client` | Vite client only                      |
 | `npm start`      | Production API                        |
+
+### Run API only
+
+```bash
+npm run server
+```
+
+### Run frontend only
+
+```bash
+npm run client
+```
 
 ---
 
@@ -182,6 +208,14 @@ View workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 ```bash
 npm test && cd client && npm test && npm run build && cd ..
 ```
+
+---
+
+## Troubleshooting
+
+- Missing required env vars: ensure root `.env` contains valid `MONGO_URI` and `JWT_SECRET`.
+- Mongo connection fails: verify URI format, credentials, IP allowlist, and that the cluster/local server is reachable.
+- Port already in use: set `PORT` in `.env` for API and/or stop processes using ports `5000` and `5173`.
 
 ---
 
