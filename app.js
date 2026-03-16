@@ -17,7 +17,25 @@ const __dirname = path.dirname(__filename);
 const clientDistPath = path.join(__dirname, 'client', 'dist');
 
 // ─── Security headers ────────────────────────────────────────────────────────
-app.use(helmet());
+app.use(helmetsConfig());
+
+function helmetsConfig() {
+	return helmet({
+		contentSecurityPolicy: {
+			useDefaults: true,
+			directives: {
+				// Gravatar avatars are external images; allow them explicitly.
+				imgSrc: [
+					"'self'",
+					'data:',
+					'https://www.gravatar.com',
+					'https://secure.gravatar.com',
+					'https://*.gravatar.com',
+				],
+			},
+		},
+	});
+}
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
 // In production: restrict to origins listed in ALLOWED_ORIGINS env var.
