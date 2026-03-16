@@ -52,11 +52,28 @@ jobs:
         run: |
           npm run test --if-present
 
+      - name: Prune backend deps for production
+        run: |
+          npm prune --omit=dev
+
+      - name: Prepare deployment package
+        run: |
+          rm -rf deploy release.zip
+          mkdir -p deploy/client
+
+          cp app.js server.js db.js package.json package-lock.json deploy/
+          cp -R controllers middleware models routes utils deploy/
+          cp -R node_modules deploy/
+          cp -R client/dist deploy/client/dist
+
+          cd deploy
+          zip -r ../release.zip .
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -72,6 +89,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+          path: .
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -93,7 +111,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'api-devlink'
-          package: .
+          package: release.zip
 
       - name: Wait before retry
         if: steps.deploy_attempt_1.outcome == 'failure'
@@ -104,4 +122,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'api-devlink'
-          package: .
+          package: release.zip
