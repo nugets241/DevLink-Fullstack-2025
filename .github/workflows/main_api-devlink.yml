@@ -19,6 +19,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     permissions:
       contents: read #This is required for actions/checkout
 
@@ -59,6 +61,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
