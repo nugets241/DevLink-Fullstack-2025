@@ -1,4 +1,6 @@
 import express from 'express';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -10,6 +12,9 @@ import postRoutes from './routes/api/post.js';
 import { IS_PROD, NODE_ENV, IS_TEST } from './utils/config.js';
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientDistPath = path.join(__dirname, 'client', 'dist');
 
 // ─── Security headers ────────────────────────────────────────────────────────
 app.use(helmet());
@@ -68,7 +73,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 // ─── Health check ────────────────────────────────────────────────────────────
-app.get('/', (_req, res) => {
+app.get('/api/health', (_req, res) => {
 	res.json({ status: 'ok', env: NODE_ENV });
 });
 
@@ -77,6 +82,15 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/posts', postRoutes);
+
+// ─── Frontend static hosting (production) ───────────────────────────────────
+if (IS_PROD) {
+	app.use(express.static(clientDistPath));
+
+	app.get(/^(?!\/api).*/, (_req, res) => {
+		res.sendFile(path.join(clientDistPath, 'index.html'));
+	});
+}
 
 // ─── Global error handler ────────────────────────────────────────────────────
 // eslint-disable-next-line no-unused-vars
