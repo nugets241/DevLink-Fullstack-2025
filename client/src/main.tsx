@@ -1,10 +1,6 @@
 import { Component, type ReactNode, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import App from './App.tsx';
 import './assets/styles/main.scss';
-import { store } from './store/store.ts';
 
 type RootErrorBoundaryState = {
 	hasError: boolean;
@@ -100,7 +96,15 @@ window.addEventListener('error', (event) => {
 	renderStartupFailure(event.message || 'Unexpected startup error.');
 });
 
-try {
+const bootstrap = async () => {
+	const [{ Provider }, { BrowserRouter }, { default: App }, { store }] =
+		await Promise.all([
+			import('react-redux'),
+			import('react-router-dom'),
+			import('./App.tsx'),
+			import('./store/store.ts'),
+		]);
+
 	createRoot(rootElement).render(
 		<StrictMode>
 			<RootErrorBoundary>
@@ -112,11 +116,13 @@ try {
 			</RootErrorBoundary>
 		</StrictMode>,
 	);
-} catch (error) {
+};
+
+bootstrap().catch((error: unknown) => {
 	console.error(error);
 	renderStartupFailure(
 		error instanceof Error
 			? error.message
 			: 'Failed to initialize application.',
 	);
-}
+});
