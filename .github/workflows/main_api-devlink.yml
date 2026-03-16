@@ -98,13 +98,6 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4E21B3D04DD3448CA068078CEE7DEC83 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_49EAEBE5DA604EA09E6026D082EB53C6 }}
 
-      - name: Restart App Service before deployment
-        uses: azure/cli@v2
-        with:
-          inlineScript: |
-            az webapp restart --resource-group api-devlink_group --name api-devlink
-            az webapp show --resource-group api-devlink_group --name api-devlink --query "{name:name,state:state,defaultHostName:defaultHostName}" -o table
-
       - name: 'Deploy to Azure Web App (attempt 1)'
         id: deploy_attempt_1
         continue-on-error: true
