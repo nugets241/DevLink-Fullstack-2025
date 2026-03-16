@@ -30,9 +30,15 @@ app.use(
 	cors({
 		origin: IS_PROD
 			? (origin, callback) => {
-					if (!origin) return callback(null, false);
-					if (allowedOrigins.includes(origin)) return callback(null, true);
-					callback(new Error(`CORS: origin '${origin}' not allowed`));
+					// Never throw from CORS origin callback. Throwing turns requests
+					// (including static assets) into 500 responses via the error handler.
+					if (!origin) return callback(null, true);
+
+					// If ALLOWED_ORIGINS is not configured, default to permissive mode
+					// to avoid breaking same-host App Service frontend assets.
+					if (allowedOrigins.length === 0) return callback(null, true);
+
+					return callback(null, allowedOrigins.includes(origin));
 				}
 			: true,
 		credentials: true,
