@@ -74,10 +74,18 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 
 			let observer: ResizeObserver | undefined;
 			if (typeof ResizeObserver !== 'undefined') {
+				let resizeTimeout: number | undefined;
 				observer = new ResizeObserver(() => {
-					resize(textarea);
+					if (resizeTimeout) window.clearTimeout(resizeTimeout);
+					resizeTimeout = window.setTimeout(() => {
+						resize(textarea);
+					}, 30); // Debounce to avoid ResizeObserver loop errors
 				});
 				observer.observe(textarea);
+				// Clean up timeout on unmount
+				return () => {
+					if (resizeTimeout) window.clearTimeout(resizeTimeout);
+				};
 			}
 
 			return () => {
