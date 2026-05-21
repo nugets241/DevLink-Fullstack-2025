@@ -546,7 +546,23 @@ const postsSlice = createSlice({
 			})
 			.addCase(fetchPosts.fulfilled, (state, action) => {
 				state.status = 'succeeded';
-				state.items = action.payload.posts;
+				const requestedPage =
+					action.meta.arg && typeof action.meta.arg === 'object'
+						? action.meta.arg.page
+						: undefined;
+
+				if (!requestedPage || requestedPage <= 1) {
+					state.items = action.payload.posts;
+				} else {
+					const existingIds = new Set(
+						state.items.map((post) => getPostId(post)).filter(Boolean),
+					);
+					const newPosts = action.payload.posts.filter((post) => {
+						const postId = getPostId(post);
+						return postId ? !existingIds.has(postId) : true;
+					});
+					state.items.push(...newPosts);
+				}
 				state.pagination = action.payload.pagination;
 			})
 			.addCase(fetchPosts.rejected, (state, action) => {

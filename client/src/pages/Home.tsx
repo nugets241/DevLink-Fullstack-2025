@@ -29,6 +29,7 @@ function Home() {
 		items: posts,
 		status: postsStatus,
 		error: postsError,
+		pagination,
 		createStatus,
 		createError,
 		actionStatusById,
@@ -50,6 +51,18 @@ function Home() {
 		if (!token || postsStatus !== 'idle') return;
 		dispatch(fetchPosts({ page: 1, limit: 20 }));
 	}, [dispatch, postsStatus, token]);
+
+	const handleLoadMorePosts = () => {
+		if (postsStatus === 'loading') return;
+		if (!pagination?.hasNextPage) return;
+
+		dispatch(
+			fetchPosts({
+				page: (pagination.currentPage ?? 1) + 1,
+				limit: pagination.postsPerPage ?? 20,
+			}),
+		);
+	};
 
 	const handleCreatePost = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -330,6 +343,18 @@ function Home() {
 									/>
 								);
 							})}
+							{pagination?.hasNextPage ? (
+								<div className="card">
+									<Button
+										type="button"
+										variant="tertiary"
+										onClick={handleLoadMorePosts}
+										disabled={postsStatus === 'loading'}
+									>
+										{postsStatus === 'loading' ? 'Loading...' : 'Load more'}
+									</Button>
+								</div>
+							) : null}
 						</>
 					)}
 				</main>
